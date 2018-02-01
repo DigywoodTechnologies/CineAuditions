@@ -50,13 +50,13 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.MyVi
         notifyDataSetChanged();
     }
 
-    public CandidateAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.candidate_layout, parent, false);
-        return new CandidateAdapter.MyViewHolder(itemView);
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final CandidateAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final Candidate singlecandi = candidateList.get(position);
 
         try {

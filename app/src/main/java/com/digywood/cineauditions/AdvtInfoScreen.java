@@ -119,7 +119,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         phnoEt = (EditText)findViewById(R.id.phnoET);
         emailIdEt = (EditText)findViewById(R.id.emailET);
         s1 = (Spinner)findViewById(R.id.services);
-        grid=(GridView)findViewById(R.id.grid);
+        grid=findViewById(R.id.grid);
         s1.setOnItemSelectedListener(this);
         dbHelper = new DBHelper(this);
 
@@ -139,7 +139,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             MobileNo = bundle.getString("mobileNo");
         }
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
@@ -247,7 +247,11 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         downloadDate = sdf1.format(c1.getTime());
 
                         try {
-                            encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
+                            if(imagebyte!=null){
+                                encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
+                            }else{
+                                encodedImage="NoData";
+                            }
                         }catch (Exception e){
                             e.printStackTrace();
                             Log.e("AdvtInfoScreen---",e.toString());

@@ -37,7 +37,7 @@ import com.digywood.cineauditions.Pojo.SingleProducer;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import com.digywood.cineauditions.R;
 
-public class SetPreferencesFragment extends android.support.v4.app.Fragment {
+public class SetPreferencesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +60,7 @@ public class SetPreferencesFragment extends android.support.v4.app.Fragment {
     CheckBox checkBox;
     TextView userName;
     SingleProducer user;
+    long count=0;
     ArrayList<SingleCategory> CategoryList = new ArrayList<>();
     ArrayList<String> checkedPrefList = new ArrayList<>();
     ArrayList<String> Allpref = new ArrayList<>();
@@ -142,8 +143,10 @@ public class SetPreferencesFragment extends android.support.v4.app.Fragment {
 
         _intSubCat= new int[SubCategoryList.size()];
         _intCat= new int[CategoryList.size()];
-        AdvtprefList=dbHelper.getActivePref("A");
-        Allpref=dbHelper.getAllPref();
+        AdvtprefList=dbHelper.getActivePref("A",MobileNo);
+//        count=dbHelper.getActivePrefCount("A",MobileNo);
+//        Log.e("SetPreferenceFrag---",""+count);
+        Allpref=dbHelper.getAllPref(MobileNo);
         advt_lv.setAdapter(new ContactsBaseAdapter(getActivity()));
         status="Waiting";
 //        AdvtprefList = dbHelper.getAllPreferencesUser(MobileNo);
@@ -154,7 +157,7 @@ public class SetPreferencesFragment extends android.support.v4.app.Fragment {
             for(int j=0;j<AdvtprefList.size();j++){
                 //Log.d("2:::AdvtprefList.size()", "" +AdvtprefList.get(j).getCategory()+"||subCatName::"+subCatName);
                 if(AdvtprefList.get(j).equals(subCatName)) {
-                    Log.d("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
+                    Log.e("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
 //                    checkBox.setChecked(true);
                 }
                 else {
@@ -286,14 +289,6 @@ public class SetPreferencesFragment extends android.support.v4.app.Fragment {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-/*
-                                submit_pref.setVisibility(View.INVISIBLE);
-                                Fragment fragment = new ItemsFragment();
-                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.framelayout_items, fragment);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();*/
                                 Toast.makeText(getActivity(), "Prefrences Updated to Server", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getActivity(), "Preferences Updation to Server failed", Toast.LENGTH_SHORT).show();

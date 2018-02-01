@@ -117,7 +117,7 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
         }
         Log.e("MobileNo1",""+MobileNo);
         Advtlist = dbHelper.getAllAdvts(MobileNo);
-        count = dbHelper.getAdvtCount();
+        count = dbHelper.getAdvtCount(MobileNo);
         Log.d("MobileNo)", "comes:" +MobileNo);
 
 //        AdvtsLv.setAdapter(new ContactsBaseAdapter(getContext()));
