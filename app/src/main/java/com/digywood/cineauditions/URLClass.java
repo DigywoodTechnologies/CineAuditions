@@ -9,5 +9,6 @@ public class URLClass {
 //    public static String hosturl="http://www.digywood.com/phpfiles/cinesooruProducer/";
 
     public static String hosturl="http://www.jcbpoint.com/php/cinesooruAuditions/";
+    public static String hosturl2="http://www.jcbpoint.com/php/cinesooruAuditions/";
 
 }
