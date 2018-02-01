@@ -54,13 +54,13 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder>{
         notifyDataSetChanged();
     }
 
-    public AdsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_advtlayout, parent, false);
-        return new AdsAdapter.MyViewHolder(itemView);
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final AdsAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final SingleAd singlead = surveyList.get(position);
 
         Log.e("Adp----",""+singlead.getAdvtid());

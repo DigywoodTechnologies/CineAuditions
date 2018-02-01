@@ -46,7 +46,7 @@ public class MyAdapter extends BaseAdapter {
     public MyAdapter(Context c, ArrayList<SingleAdvt> Advtlist,String MobileNo) {
         this.context = c;
         myhelper=new DBHelper(c);
-        allAdIds=myhelper.getAllInterests();
+        allAdIds=myhelper.getAllInterests(MobileNo);
         this.MobileNo = MobileNo;
         this.advtId = advtId;
         this.Advtlist = Advtlist;

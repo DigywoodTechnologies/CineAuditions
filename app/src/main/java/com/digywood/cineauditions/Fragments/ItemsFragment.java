@@ -209,12 +209,12 @@ public class ItemsFragment extends Fragment {
         }
         @Override
         public View getView(int i, View convertView, ViewGroup parent) {
-            final ContactsBaseAdapter.ViewHolder holder;
+            final ViewHolder holder;
 
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View rowView = inflater.inflate(R.layout.custom_noticelayout,parent, false);
-            holder = new ContactsBaseAdapter.ViewHolder();
+            holder = new ViewHolder();
             holder.post_date = rowView.findViewById(R.id.date_notice);
             holder.caption = rowView.findViewById(R.id.caption_notice);
             holder.imageView = rowView.findViewById(R.id.photo);
