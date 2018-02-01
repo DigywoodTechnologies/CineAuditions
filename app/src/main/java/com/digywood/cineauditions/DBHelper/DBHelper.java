@@ -280,24 +280,20 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<SingleAd> AdvtList = new ArrayList<>();
 
         Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"producer_id='"+phno+"'", null, null, null, "createdTime DESC");
-        if(c.moveToFirst()){
+        while (c.moveToNext()) {
 
-            while (c.moveToNext()) {
+            AdvtList.add(new SingleAd(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("createdTime")),
+                    c.getString(c.getColumnIndex("caption")),c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate"))
 
-                AdvtList.add(new SingleAd(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("createdTime")),
-                        c.getString(c.getColumnIndex("caption")),c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate"))
-
-                ));
-            }
-
+            ));
         }
         return AdvtList;
     }
 
-    public int getAdvtCount() {
+    public int getAdvtCount(String phno) {
         int count=0;
 
-        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"}, null, null, null, null, "createdTime DESC");
+        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"}, "producer_id='"+phno+"'", null, null, null, "createdTime DESC");
         count=c.getCount();
         return count;
     }
@@ -333,10 +329,10 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return AdvtList;
 //    }
 
-    public ArrayList<Integer> getAllInterests() {
+    public ArrayList<Integer> getAllInterests(String mobileno) {
         ArrayList<Integer> AdvtList = new ArrayList<>();
 
-        Cursor c =db.query("user_interests", new String[] {"userId","advtId","description","status"}, null, null, null, null, null);
+        Cursor c =db.query("user_interests", new String[] {"userId","advtId","description","status"},"userId='"+mobileno+"'", null, null, null, null);
         while (c.moveToNext()) {
 
             AdvtList.add(c.getInt(c.getColumnIndex("advtId")));
@@ -761,10 +757,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return AdvtCategoryList;
     }
-    public ArrayList<String> getActivePref(String status){
+    public ArrayList<String> getActivePref(String status,String mobileno){
         ArrayList<String> AdvtprefList = new ArrayList<>();
 
-        Cursor c =db.query("preferences_table", new String[] {"subCategory"},"status='"+status+"'", null, null, null,null);
+        Cursor c =db.query("preferences_table", new String[] {"subCategory"},"status='"+status+"' and userId='"+mobileno+"'", null, null, null,null);
         while (c.moveToNext()) {
 
             AdvtprefList.add(c.getString(c.getColumnIndex("subCategory")));
@@ -773,10 +769,18 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<String> getAllPref(){
+    public long getActivePrefCount(String status,String mobileno){
+        long count=0;
+        String countQuery = "select * from preferences_table where userId='"+mobileno+"' and status='"+status+"'";
+        Cursor c = db.rawQuery(countQuery, null);
+        count=c.getCount();
+        return count;
+    }
+
+    public ArrayList<String> getAllPref(String mobileno){
         ArrayList<String> AdvtprefList = new ArrayList<>();
 
-        Cursor c =db.query("preferences_table", new String[] {"subCategory"},null, null, null, null,null);
+        Cursor c =db.query("preferences_table", new String[] {"subCategory"},"userId='"+mobileno+"'", null, null, null,null);
         while (c.moveToNext()) {
 
             AdvtprefList.add(c.getString(c.getColumnIndex("subCategory")));
