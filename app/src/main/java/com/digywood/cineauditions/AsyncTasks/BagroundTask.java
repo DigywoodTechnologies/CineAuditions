@@ -93,7 +93,7 @@ public class BagroundTask extends AsyncTask<Void, String, String> {
         while (iterator.hasNext()) {
             @SuppressWarnings("rawtypes")
             Map.Entry mentry = (Map.Entry) iterator.next();
-            nvps.add(new BasicNameValuePair(mentry.getKey().toString(), mentry.getValue().toString()));
+            nvps.add(new BasicNameValuePair(mentry.getKey().toString(),mentry.getValue().toString()));
             Log.d("JSON_SERVICE", "result-nvps..."+nvps);
         }
 

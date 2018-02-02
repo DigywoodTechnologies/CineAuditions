@@ -161,4 +161,11 @@ public class MyAdapter extends BaseAdapter {
         public ImageView imageView,check;
     }
 
+    public void updateList(ArrayList<SingleAdvt> SingleAdList){
+
+        Advtlist=SingleAdList;
+        notifyDataSetChanged();
+
+    }
+
 }

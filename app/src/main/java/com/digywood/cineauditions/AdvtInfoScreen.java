@@ -248,8 +248,9 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         try {
                             if(imagebyte!=null){
                                 encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
-                            }else{
-                                encodedImage="NoData";
+                            }
+                            else{
+                                encodedImage="";
                             }
                         }catch (Exception e){
                             e.printStackTrace();
