@@ -328,10 +328,6 @@ public class ItemsFragment extends Fragment {
                                 try {
                                     jo = ja.getJSONObject(j);
                                     byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));*/
                                     SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
                                             jo.getString("description"),imageByte, jo.getString("startDate"), jo.getString("endDate"),
                                             jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
@@ -374,7 +370,7 @@ public class ItemsFragment extends Fragment {
                             JSONArray ja = new JSONArray(json);
                             Log.d("ja", "comes:" + ja);
                             if (ja.length() != 0) {
-                                JSONObject jo = null;
+                                JSONObject jo ;
                                 for (int j = 0; j < ja.length(); j++) {
                                     try {
                                         jo = ja.getJSONObject(j);

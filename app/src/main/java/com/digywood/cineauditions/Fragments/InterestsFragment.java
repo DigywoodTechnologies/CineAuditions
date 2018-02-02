@@ -112,9 +112,7 @@ public class InterestsFragment extends Fragment {
         }
         Interestlist = dbHelper.getAllInterests(MobileNo);
             getAllItemsDetailsFromHost();
-            mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
-            InterestsLv.setAdapter(mAdapter);
-
+//            String option = "Interest";
             return inflate;
         }
 
@@ -133,7 +131,7 @@ public class InterestsFragment extends Fragment {
                         Log.e("output",json);
                         if(json!=null){
                             JSONArray ja = new JSONArray(json);
-                            Log.d("ja", "comes:" + ja);
+                            Log.d("ja", "comes:" + ja.length());
                             if (ja.length() != 0) {
                                 JSONObject jo ;
                                 for (int j = 0; j < ja.length(); j++) {
@@ -148,18 +146,21 @@ public class InterestsFragment extends Fragment {
                                                 jo.getString("description"),imageByte,jo.getString("startDate"), jo.getString("endDate"),
                                                 jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
                                                 jo.getString("createdTime"), jo.getString("status"));
-                                        if(Interestlist.contains(newadvt.getAdvtRefNo())){
-                                            Advtlist.add(newadvt);
-                                        }
+                                       /* if(Interestlist.contains(newadvt.getAdvtRefNo())){
+                                        }*/
+                                        Advtlist.add(newadvt);
+
                                         //advtId = Integer.parseInt(jo.getString("advtId"));
-/*                                        Log.e("InterestsFragment --->", ""+Advtlist);
-                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");*/
+                                        Log.e("InterestsFragment --->", "hello"+Advtlist.size());
+//                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Log.e("InterestsFrag11---",e.toString());
                                     }
                                 }
-/*                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
-                                ItemLv.setAdapter(mAdapter);*/
+                                Log.e("InterestFrag-->", "hi"+Advtlist.size());
+                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
+                                InterestsLv.setAdapter(mAdapter);
                             }
                         }else{
 
