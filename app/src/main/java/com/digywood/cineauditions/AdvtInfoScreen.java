@@ -1,7 +1,6 @@
 package com.digywood.cineauditions;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -12,8 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
-import android.media.ImageWriter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,28 +38,25 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.Adapters.CustomGrid;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
+import com.digywood.cineauditions.Pojo.SingleAdvtCategory;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
-
-import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
@@ -71,7 +65,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     final ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
     ArrayList<SingleAdvt> AdvtList = new ArrayList<SingleAdvt>();
     ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
-
+    public CategoryCheck checkcat =new CategoryCheck();
+    CustomGrid adapter ;
     String[] subcatlist;
     int[] _intSubCat,_intCat;
     TextView title_newAdvt,phno,startdateEt,endDateEt;
@@ -91,7 +86,9 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
-    String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,status,url,url1,downloadDate,orgIdSt,encodedImage=null;
+    String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt, contactnameSt,phnoSt,emailIdSt,status,url,url1
+            ,downloadDate,orgIdSt,encodedImage=null;
+    public String subcat;
 
     final int REQUEST_CODE_GALLERY = 999;
 
@@ -122,6 +119,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         grid=findViewById(R.id.grid);
         s1.setOnItemSelectedListener(this);
         dbHelper = new DBHelper(this);
+        adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
+
 
         grid.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -333,7 +332,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         for(int i = 0;i < CategoryList.size();i++) {
             if (sp1.equals(CategoryList.get(i).getLongName())) {
                 categoryId = CategoryList.get(i).getCategoryId();
-                Log.d("catlistid", "comes:" + categoryId);
+                Log.d("catlistid", CategoryList.get(i).getLongName());
                 for(int j = 0;j < SubCategoryList.size();j++){
                     if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
                         //SubCategoryNamesList.clear();
@@ -341,14 +340,12 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         //subcatlist.add
                         //viewHolder.category.setText(CategoryList.get(i).getLongName());
                         //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
-                        CustomGrid adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
-                        Log.d("selected_list", "comes:" + SubCategoryNamesList);
-                        grid.setAdapter(adapter);
                     }
                 }
             }
         }
-
+        Log.d("selected_category", "contains:" + SubCategoryNamesList);
+        grid.setAdapter(adapter);
     }
 
     @Override

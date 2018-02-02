@@ -3,6 +3,9 @@ package com.digywood.cineauditions.Pojo;
 public class SingleAdvtCategory {
     private int keyId;
     private String orgId, advtId, category, subCategory;
+    public SingleAdvtCategory(){
+
+    }
 
     public SingleAdvtCategory(int keyId, String orgId, String advtId, String category, String subCategory) {
         this.keyId = keyId;

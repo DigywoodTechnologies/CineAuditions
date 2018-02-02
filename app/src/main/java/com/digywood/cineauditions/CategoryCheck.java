@@ -3,6 +3,9 @@ package com.digywood.cineauditions;
 public class CategoryCheck {
     private int keyId;
     private String category, subCategory,status;
+    public CategoryCheck(){
+
+    }
 
     public CategoryCheck(int keyId, String category, String subCategory, String status) {
         this.keyId = keyId;
