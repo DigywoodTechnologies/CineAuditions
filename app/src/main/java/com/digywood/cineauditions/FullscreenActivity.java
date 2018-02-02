@@ -207,7 +207,7 @@ public class FullscreenActivity extends AppCompatActivity {
                             if (st.equals("verified") || st.equals("skipped")) {
                                 Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
                                 intent.putExtra("mobileNo", MobileNo);
-                                intent.putExtra("key", "F1");
+                                intent.putExtra("key", "F2");
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();
@@ -219,7 +219,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
                             url = URLClass.hosturl+"checkProducerExist.php";
 
-                            new BagroundTask(url, hmap1, FullscreenActivity.this, new IBagroundListener() {
+                            new BagroundTask(url, hmap1, FullscreenActivity.this,new IBagroundListener() {
 
                                 @Override
                                 public void bagroundData(String json) {
@@ -231,23 +231,23 @@ public class FullscreenActivity extends AppCompatActivity {
 
                                         } else {
 
-//                                            JSONArray ja = new JSONArray(json);
-//                                            for(int i =0; i< ja.length();i++) {
-//                                                JSONObject jo = ja.getJSONObject(i);
-//                                                long insertFlag=dbHelper.insertNewProducer(jo.getString("producer_name"), jo.getString("address"), jo.getString("city"), jo.getString("state"), jo.getString("contact_person"),
-//                                                        jo.getString("phno"), jo.getString("emailId"), jo.getString("otpNo"), jo.getString("dateofRegistration"), jo.getString("status"));
-//                                                if(insertFlag>0){
-//                                                    Toast.makeText(getApplicationContext(),"Interested",Toast.LENGTH_SHORT).show();
-//                                                }else{
-//                                                    Toast.makeText(getApplicationContext(),"Not Interested",Toast.LENGTH_SHORT).show();
-//                                                }
-//
-//                                            }
+                                            JSONArray ja = new JSONArray(json);
+                                            for(int i =0; i< ja.length();i++) {
+                                                JSONObject jo = ja.getJSONObject(i);
+                                                long insertFlag=dbHelper.insertNewProducer(jo.getString("producer_name"), jo.getString("address"), jo.getString("city"), jo.getString("state"), jo.getString("contact_person"),
+                                                        jo.getString("phno"), jo.getString("emailId"), jo.getString("otpNo"), jo.getString("dateofRegistration"), jo.getString("status"));
+                                                if(insertFlag>0){
+                                                    Toast.makeText(getApplicationContext(),"Interested",Toast.LENGTH_SHORT).show();
+                                                }else{
+                                                    Toast.makeText(getApplicationContext(),"Not Interested",Toast.LENGTH_SHORT).show();
+                                                }
+
+                                            }
                                             count=dbHelper.checkCategoryExists();
                                             if(count>0){
                                                 Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
                                                 intent.putExtra("mobileNo", MobileNo);
-                                                intent.putExtra("key", "F1");
+                                                intent.putExtra("key", "F2");
                                                 startActivity(intent);
                                             }else{
                                                 syncData(MobileNo);

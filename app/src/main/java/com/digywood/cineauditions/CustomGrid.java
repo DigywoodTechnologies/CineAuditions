@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
+import com.digywood.cineauditions.Pojo.SingleSubcat;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,8 @@ public class CustomGrid extends BaseAdapter {
     DBHelper dbHelper;
     String subCategory,category;
     private Context mContext;
-    private ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
+    ArrayList<String> checkList=new ArrayList<>();
+    private ArrayList<String> SubCategoryNamesList = new ArrayList<>();
     private ArrayList<String> SubCategoryCheckedList = new ArrayList<String>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
@@ -69,12 +71,28 @@ public class CustomGrid extends BaseAdapter {
             grid = new View(mContext);
             grid = inflater.inflate(R.layout.custom_pref_grid, null);
             TextView textView = (TextView) grid.findViewById(R.id.prefcat_list);
-            CheckBox checkBox = (CheckBox)grid.findViewById(R.id.checkbox_preflist);
-            //ImageView imageView = (ImageView)grid.findViewById(R.id.grid_image);
-            textView.setText(SubCategoryNamesList.get(position));
-            //imageView.setImageResource(Imageid[position]);
+            final CheckBox checkBox = (CheckBox)grid.findViewById(R.id.checkbox_preflist);
 
-            checkBox.setChecked(checkBoxState[position]);
+            if(checkList.size()!=0){
+                if(checkList.contains(SubCategoryNamesList.get(position))){
+                    textView.setText(SubCategoryNamesList.get(position));
+
+                    checkBox.setChecked(true);
+                }else{
+                    textView.setText(SubCategoryNamesList.get(position));
+
+                    checkBox.setChecked(false);
+                }
+            }else{
+
+                textView.setText(SubCategoryNamesList.get(position));
+
+                checkBox.setChecked(false);
+
+            }
+//            textView.setText(SubCategoryNamesList.get(position));
+//
+//            checkBox.setChecked(false);
 
             checkBox.setOnClickListener(new View.OnClickListener() {
 
@@ -82,50 +100,49 @@ public class CustomGrid extends BaseAdapter {
                     if (((CheckBox) v).isChecked()) {
                         checkBoxState[position] = true;
 
-                        SubCategoryCheckedList.add(SubCategoryNamesList.get(position));
+                        if(checkList.size()!=0){
+                            if(checkList.contains(SubCategoryNamesList.get(position))){
 
-                        subCategory = SubCategoryNamesList.get(position);
-
-                        for(int i = 0;i < SubCategoryList.size();i++){
-                            if(subCategory.equals(SubCategoryList.get(i).getLongName())){
-                                for(int j = 0;j < CategoryList.size();j++){
-                                    if(SubCategoryList.get(i).getCategoryId().equals(CategoryList.get(j).getCategoryId())){
-                                        category =  CategoryList.get(j).getLongName();
-                                    }
-                                }
+                            }else{
+                                checkList.add(SubCategoryNamesList.get(position));
                             }
+                        }else{
+                            checkList.add(SubCategoryNamesList.get(position));
                         }
 
-
-                        Log.d("SubCategoryCheckedList", "" + SubCategoryCheckedList.size() + ":" + SubCategoryCheckedList);
-
-                        dbHelper.insertCategoryCheck(category,SubCategoryNamesList.get(position),"created");
-                        Log.d("insertAdvtCategory", "" + category + ":" + SubCategoryNamesList.get(position));
-                        CategoryCheckedList = dbHelper.getCategoriesChecked("created");
-
-                        Log.d("AdvtCategoryList.Size", "" + CategoryCheckedList.size() );
 
                     } else {
                         checkBoxState[position] = false;
 
-                        SubCategoryCheckedList.remove(SubCategoryNamesList.get(position));
-                        Log.d("SubCategoryCheckedList", "" + SubCategoryCheckedList.size() + ":"
-                                + SubCategoryCheckedList);
+                        if(checkList.size()!=0){
+                            if(checkList.contains(SubCategoryNamesList.get(position))){
+                                checkList.remove(SubCategoryNamesList.get(position));
+                            }else{
 
-                        dbHelper.deleteCategoryCheck(SubCategoryNamesList.get(position));
+                            }
+                        }else{
 
-                        CategoryCheckedList = dbHelper.getCategoriesChecked("created");
-
-                        Log.d("AdvtCategoryList.Size", "" + CategoryCheckedList.size() );
+                        }
 
                     }
                 }
             });
 
+            Log.e("CustomGrid---",""+checkList.size());
+
         } else {
             grid = (View) convertView;
         }
-
         return grid;
     }
+
+    public void updateGrid(ArrayList<String> newList){
+        SubCategoryNamesList.clear();
+        SubCategoryNamesList=newList;
+    }
+
+    public ArrayList<String> getChkList(){
+        return checkList;
+    }
+
 }
