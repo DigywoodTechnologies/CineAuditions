@@ -46,8 +46,11 @@ import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
+import com.digywood.cineauditions.Pojo.SingleSubcat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -85,6 +88,9 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     private ProgressDialog dialog;
     BagroundTask task1;
     int advtId;
+    int count=0;
+    ArrayList<String> myList=new ArrayList<>();
+    CustomGrid adapter;
     byte[] imagebyte=null;
     Bitmap bitmap=null;
     HashMap<String, String> hmap = new HashMap<>();
@@ -164,8 +170,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         btn_browse.setTypeface(myTypeface1);
         btn_submit.setTypeface(myTypeface1);
 
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, CategoryNamesList);
+        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,CategoryNamesList);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dataAdapter2.notifyDataSetChanged();
         s1.setAdapter(dataAdapter2);
@@ -288,14 +294,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                         long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,imagebyte,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
                                         if(insertFlag>0){
                                             Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-//                                                insertCatSubcat(advtId);
-                                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
-                                            intent.putExtra("mobileNo", MobileNo);
-                                            intent.putExtra("key", "F2");
-                                            overridePendingTransition(0, 0);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                            finish();
-                                            startActivity(intent);
+                                            insertCatSubcat(advtId);
                                         }else{
                                             Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
                                         }
@@ -323,31 +322,57 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     }
 
 
+
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
                                long arg3) {
         // TODO Auto-generated method stub
         String sp1= String.valueOf(s1.getSelectedItem());
+
+        Log.e("SpinItem---",sp1);
+        String CatId=dbHelper.getCatId(sp1);
+        Log.e("CatItem---",CatId);
+        ArrayList<String> subcatList=dbHelper.getSubCategoriesByCat(CatId);
+
+
         //String[] subcatlist = new String[SubCategoryList.size()];
 
-        SubCategoryNamesList.clear();
-        for(int i = 0;i < CategoryList.size();i++) {
-            if (sp1.equals(CategoryList.get(i).getLongName())) {
-                categoryId = CategoryList.get(i).getCategoryId();
-                Log.d("catlistid", "comes:" + categoryId);
-                for(int j = 0;j < SubCategoryList.size();j++){
-                    if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
-                        //SubCategoryNamesList.clear();
-                        SubCategoryNamesList.add(SubCategoryList.get(j).getLongName());
-                        //subcatlist.add
-                        //viewHolder.category.setText(CategoryList.get(i).getLongName());
-                        //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
-                        CustomGrid adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
-                        Log.d("selected_list", "comes:" + SubCategoryNamesList);
-                        grid.setAdapter(adapter);
-                    }
-                }
-            }
+//        SubCategoryNamesList.clear();
+//        for(int i = 0;i < CategoryList.size();i++) {
+//            if (sp1.equals(CategoryList.get(i).getLongName())) {
+//                categoryId = CategoryList.get(i).getCategoryId();
+//                Log.d("catlistid", "comes:" + categoryId);
+//                for(int j = 0;j < SubCategoryList.size();j++){
+//                    if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
+//                        //SubCategoryNamesList.clear();
+//                        SubCategoryNamesList.add(SubCategoryList.get(j).getLongName());
+//                        //subcatlist.add
+//                        //viewHolder.category.setText(CategoryList.get(i).getLongName());
+//                        //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
+//                        if(count>0){
+//                            adapter.updateGrid(subcatList);
+//                        }else{
+//                            count++;
+//                            adapter = new CustomGrid(AdvtInfoScreen.this,subcatList);
+//                            Log.d("selected_list", "comes:" + SubCategoryNamesList);
+//                            grid.setAdapter(adapter);
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
+        if(count>0){
+            Log.e("AdvtInfo---","secondtime");
+            adapter.updateGrid(subcatList);
+            adapter.notifyDataSetChanged();
+            grid.setAdapter(adapter);
+        }else{
+            Log.e("AdvtInfo---","firsttime");
+            count++;
+            adapter = new CustomGrid(AdvtInfoScreen.this,subcatList);
+            Log.d("selected_list", "comes:" + SubCategoryNamesList);
+            grid.setAdapter(adapter);
         }
 
     }
@@ -375,17 +400,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    public static byte[] imageViewToByte(ImageView image) {
-        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        long lengthbmp = byteArray.length/1024;
-
-        return byteArray;
     }
 
     @Override
@@ -491,27 +505,48 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
     public void insertCatSubcat(int advtId){
 
-        hmap.clear();
-        url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
-        hmap.put("orgId","ORG001");
-        hmap.put("advtId", String.valueOf(advtId));
-//        hmap.put("category", CategoryCheckedList.get(i).getCategory());
-//        hmap.put("subCategory", CategoryCheckedList.get(i).getSubCategory());
-        try {
-            new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
-                @Override
-                public void bagroundData(String json) {
-                    Log.d("ja", "comes:" + json);
-                    if (json.equals("Inserted")) {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).execute();
+        myList.clear();
+        myList= adapter.getChkList();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(myList.size()!=0){
+
+            JSONObject myjo=JSONEncode(advtId,myList);
+            hmap.clear();
+            url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
+            hmap.put("CatSubcatData",myjo.toString());
+            try {
+                new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
+                    @Override
+                    public void bagroundData(String json) {
+                        Log.d("ja", "comes:" + json);
+                        if (json.equals("Inserted")) {
+                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+                            intent.putExtra("mobileNo", MobileNo);
+                            intent.putExtra("key", "F2");
+                            overridePendingTransition(0, 0);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            finish();
+                            startActivity(intent);
+                            Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).execute();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+            intent.putExtra("mobileNo", MobileNo);
+            intent.putExtra("key", "F2");
+            overridePendingTransition(0, 0);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            startActivity(intent);
+            Log.e("AdvtInfoScreen---","Empty Cat and Subcat");
         }
 
     }
@@ -538,6 +573,30 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             e.printStackTrace();
         }
         return data;
+    }
+
+    public JSONObject JSONEncode(int advtId,ArrayList<String> finalList){
+        JSONObject job=new JSONObject();
+        JSONArray UserCatSubcat = new JSONArray();
+        try{
+            JSONObject CatSubcat;
+            for(int i=0;i<finalList.size();i++){
+                CatSubcat = new JSONObject();
+                CatSubcat.put("orgId","ORG001");
+                CatSubcat.put("advtId",advtId);
+                ArrayList<SingleSubcat> mysubcatList=dbHelper.getCatIdbySubcatid(finalList.get(i));
+                SingleSubcat mysubcat=mysubcatList.get(0);
+
+                CatSubcat.put("category",mysubcat.getCatid());
+                CatSubcat.put("subCategory",mysubcat.getSubcatid());
+                UserCatSubcat.put(CatSubcat);
+            }
+            job.put("CatSubcatData",UserCatSubcat);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return job;
     }
 
 }

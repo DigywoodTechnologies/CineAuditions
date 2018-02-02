@@ -16,6 +16,7 @@ import com.digywood.cineauditions.Pojo.SingleAdvtCategory;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleProducer;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
+import com.digywood.cineauditions.Pojo.SingleSubcat;
 
 import java.util.ArrayList;
 
@@ -97,6 +98,40 @@ public class DBHelper extends SQLiteOpenHelper {
         insertFlag = db.insert("producer_table",null, cv);
         return insertFlag;
     }
+
+    public ArrayList<SingleSubcat> getCatIdbySubcatid(String subctname){
+        ArrayList<SingleSubcat> myList=new ArrayList<>();
+
+        Cursor c =db.query("sub_category_table", new String[] {"keyId","categoryId","subCategoryId","longName"},"longName='"+subctname+"'", null, null, null,null);
+        while (c.moveToNext()) {
+
+            myList.add(new SingleSubcat(c.getString(c.getColumnIndex("categoryId")),c.getString(c.getColumnIndex("subCategoryId"))));
+        }
+        return myList;
+    }
+
+    public ArrayList<String> getSubCategoriesByCat(String cat_id){
+        ArrayList<String> subcatList =new ArrayList<>();
+
+        Cursor c =db.query("sub_category_table", new String[] {"keyId","categoryId","subCategoryId","longName"},"categoryId='"+cat_id+"'", null, null, null,null);
+        while (c.moveToNext()) {
+
+            subcatList.add(c.getString(c.getColumnIndex("longName")));
+        }
+        return subcatList;
+    }
+
+    public String getCatId(String catName){
+        String cat_name=null;
+
+        Cursor c =db.query("category_table", new String[] {"keyId","categoryId"},"longName='"+catName+"'", null, null, null,null);
+        while (c.moveToNext()) {
+
+            cat_name=c.getString(c.getColumnIndex("categoryId"));
+        }
+        return cat_name;
+    }
+
     public long updateProducer(String phno, String otp, String status, String regDate){
         long updateFlag=0;
         ContentValues cv = new ContentValues();
