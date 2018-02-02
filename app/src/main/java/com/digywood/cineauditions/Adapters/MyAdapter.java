@@ -123,14 +123,6 @@ public class MyAdapter extends BaseAdapter {
 
                 String time = Advtlist.get(final_i).getCreatedTime();
                 int advtId = Advtlist.get(final_i).getAdvtRefNo();
-
-//                Intent intent = new Intent(context.getApplicationContext(), RespondAvtInfo.class);
-//                intent.putExtra("mobileNo", MobileNo);
-//                intent.putExtra("time", time);
-//                intent.putExtra("advtId",advtId);
-//                Log.d("advtId",""+Advtlist.get(final_i).getAdvtRefNo());
-//                context.startActivity(intent);
-
                 SingleAdvt singlead = Advtlist.get(final_i);
                 Intent intent = new Intent(context,RespondAvtInfo.class);
                 intent.putExtra("mobileNo",MobileNo);

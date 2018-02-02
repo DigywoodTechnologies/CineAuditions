@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
+import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
 import com.digywood.cineauditions.Fragments.ListOfAdvtsFragment;
 import com.digywood.cineauditions.Fragments.SetPreferencesFragment ;
@@ -48,9 +49,8 @@ public class LandingActivity extends AppCompatActivity {
     SingleProducer user;
     private boolean shouldLoadHomeFragOnBackPress = true;
     boolean openF2;
-    private ItemsFragment itemsFragment;
+    private InterestsFragment interestsFragment;
     DBHelper dbHelper;
-    SetPreferencesFragment obj = new SetPreferencesFragment();
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -58,10 +58,10 @@ public class LandingActivity extends AppCompatActivity {
     private static final String TAG_NOTICE_LIST = "notice list";
     private static final String TAG_POST_ADVT = "post advertisement";
     private static final String TAG_PUBLISH = "publish";
-    private static final String TAG_ORDERS = "orders";
-    private static final String TAG_ORDERS_DATA = "orders data";
+    private static final String TAG_INTERESTS = "interests";
     private static final String TAG_SETTINGS = "settings";
     public static String CURRENT_TAG = TAG_NOTICE_LIST;
+
 
     private Handler mHandler;
 
@@ -77,6 +77,7 @@ public class LandingActivity extends AppCompatActivity {
             key = cmgintent.getStringExtra("key");
 
         }
+        Log.e("Landing--->", phno);
 
         if(key!=null){
 
@@ -214,29 +215,15 @@ public class LandingActivity extends AppCompatActivity {
             case 0:
                 ItemsFragment itemsFragment = new ItemsFragment();
                 return itemsFragment;
-//                AdvtInfoFragment advtInfoFragment = new AdvtInfoFragment();
-//                return advtInfoFragment;
             case 1:
-
                 ListOfAdvtsFragment listOfAdvtsFragment = new ListOfAdvtsFragment();
                 return listOfAdvtsFragment;
             case 2:
-
                 SetPreferencesFragment setPreferencesFragment = new SetPreferencesFragment();
                 return setPreferencesFragment;
             case 3:
-/*                OrdersFragment ordersFragment = new OrdersFragment();
-                return ordersFragment;*/
-//
-//            case 4:
-//
-//                OrdersdataActivity ordersdataActivity = new OrdersdataActivity();
-//                return ordersdataActivity;
-//
-//            case 5:
-//
-//                SettingsFragment settingsFragment = new SettingsFragment();
-//                return settingsFragment;
+                InterestsFragment interestsfragment = new InterestsFragment();
+                return interestsfragment;
             default:
                 return new ItemsFragment();
         }
@@ -289,10 +276,10 @@ public class LandingActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_PUBLISH;
                         break;
-//                    case R.id.nav_orders_data:
-//                        navItemIndex = 4;
-//                        CURRENT_TAG = TAG_ORDERS_DATA;
-//                        break;
+                    case R.id.nav_intrests:
+                        navItemIndex = 3;
+                        CURRENT_TAG = TAG_INTERESTS;
+                        break;
 //                    case R.id.nav_settings:
 //                        navItemIndex = 5;
 //                        CURRENT_TAG = TAG_SETTINGS;
@@ -337,7 +324,9 @@ public class LandingActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
     private void toggleFab() {
-        if (navItemIndex == 0) {//    fab.show();
+        if (navItemIndex == 0) {//
+
+            //    fab.show();
         }else{}
 //            fab.hide();
     }

@@ -66,26 +66,17 @@ public class ItemsFragment extends Fragment {
 
     int[] _intAdvtlist;
     int advtId;
-    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();;
+    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SinglePreference> AdvtprefList = new ArrayList<SinglePreference>();
-    TextView title;
-    EditText name_item,price_item,description_item;
-    public ImageView imageView;
     public ListView ItemLv;
-    Button upload,submit;
-    Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
-    String name_itemSt,price_itemSt,description_itemSt,shortName,ImageName,tax,group,status,createdby, createdDate, modifiedBy, modifiedDate,group1;
     ArrayList<SingleItem> ItemsList = new ArrayList<>();
-    Dialog d,d1;
     boolean flag_loading=false;
     MyAdapter mAdapter;
     DBHelper dbHelper;
     Uri selectedImageUri;
-    String MobileNo,url;
-    Spinner groupType,grpType;
-    private String[] arraySpinner;
+    public static String MobileNo,url;
 
 
     final int REQUEST_CODE_GALLERY = 999;
@@ -148,10 +139,9 @@ public class ItemsFragment extends Fragment {
             AdvtprefList = dbHelper.getAllPreferencesUser(MobileNo);
             Log.d("AdvtprefList.size", "comes:" + AdvtprefList.size()+"||"+MobileNo);
 //            Advtlist = dbHelper.getPrefAdvtProducer();
-//            Advtlist = dbHelper.getPrefAdvtProducer();
-            //contact server to get all the advertisements
-
             getAllItemsDetailsFromHost();
+            mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
+            ItemLv.setAdapter(mAdapter);
             Log.d("Advtlist.size", "comes:" + Advtlist.size()+"||"+MobileNo);
 
         }else{
@@ -180,11 +170,6 @@ public class ItemsFragment extends Fragment {
 
         //_intRadio= new int[ItemsList.size()];
         //ItemLv.setAdapter(new LsAdapter());
-
-        myTypeface1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sans.ttf");
-        myTypeface2 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sansbold.ttf");
-        myTypeface3 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exolight.otf");
-        myTypeface4 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exobold.otf");
 
         ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -409,8 +394,8 @@ public class ItemsFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
-                                ItemLv.setAdapter(mAdapter);
+/*                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
+                                ItemLv.setAdapter(mAdapter);*/
                             }
                         }else{
 
@@ -437,12 +422,6 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override

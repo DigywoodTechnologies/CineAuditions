@@ -59,12 +59,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
-    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
-    final ArrayList<String> CategoryNamesList = new ArrayList<String>();
-    final ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
-    ArrayList<SingleAdvt> AdvtList = new ArrayList<SingleAdvt>();
-    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
+    ArrayList<SingleCategory> CategoryList = new ArrayList<>();
+    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<>();
+    final ArrayList<String> CategoryNamesList = new ArrayList<>();
+    final ArrayList<String> SubCategoryNamesList = new ArrayList<>();
+    ArrayList<SingleAdvt> AdvtList = new ArrayList<>();
+    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<>();
     public CategoryCheck checkcat =new CategoryCheck();
     CustomGrid adapter ;
     String[] subcatlist;
@@ -88,7 +88,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
     String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt, contactnameSt,phnoSt,emailIdSt,status,url,url1
             ,downloadDate,orgIdSt,encodedImage=null;
-    public String subcat;
+    File file;
 
     final int REQUEST_CODE_GALLERY = 999;
 
@@ -102,25 +102,31 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS, R.string.emailerror);
 
-        title_newAdvt = (TextView)findViewById(R.id.title_newAdvt);
-        start_date = (Button)findViewById(R.id.btn_startDate);
-        end_date = (Button)findViewById(R.id.btn_endDate);
-        btn_submit = (Button)findViewById(R.id.submit_Info);
-        btn_browse = (Button)findViewById(R.id.upload_Image);
-        imageView = (ImageView)findViewById(R.id.imgView);
-        startdateEt = (TextView)findViewById(R.id.startDateEt);
-        endDateEt = (TextView)findViewById(R.id.endDateEt);
-        captionEt = (EditText)findViewById(R.id.captionET);
-        descEt = (EditText)findViewById(R.id.descET);
-        contactnameEt = (EditText)findViewById(R.id.contactnameET);
-        phnoEt = (EditText)findViewById(R.id.phnoET);
-        emailIdEt = (EditText)findViewById(R.id.emailET);
-        s1 = (Spinner)findViewById(R.id.services);
+        title_newAdvt = findViewById(R.id.title_newAdvt);
+        start_date = findViewById(R.id.btn_startDate);
+        end_date = findViewById(R.id.btn_endDate);
+        btn_submit = findViewById(R.id.submit_Info);
+        btn_browse = findViewById(R.id.upload_Image);
+        imageView =  findViewById(R.id.imgView);
+        startdateEt = findViewById(R.id.startDateEt);
+        endDateEt =  findViewById(R.id.endDateEt);
+        captionEt =  findViewById(R.id.captionET);
+        descEt = findViewById(R.id.descET);
+        contactnameEt = findViewById(R.id.contactnameET);
+        phnoEt = findViewById(R.id.phnoET);
+        emailIdEt = findViewById(R.id.emailET);
+        s1 = findViewById(R.id.services);
         grid=findViewById(R.id.grid);
         s1.setOnItemSelectedListener(this);
         dbHelper = new DBHelper(this);
         adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
 
+        if(getDir("AudtitonsPlus",this.MODE_PRIVATE) == null){
+            file = new File(this.getFilesDir(), "AuditionsPlus");
+        }
+        else {
+            file = getDir("AudtitonsPlus",this.MODE_PRIVATE);
+        }
 
         grid.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -250,7 +256,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                 encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
                             }
                             else{
-                                encodedImage="";
+                                encodedImage=null;
                             }
                         }catch (Exception e){
                             e.printStackTrace();
@@ -274,38 +280,42 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         final String str = "";
 
                         try {
-                            //inserting advertisement into server
-                            new BagroundTask(url, hmap, AdvtInfoScreen.this,new IBagroundListener() {
-                                @Override
-                                public void bagroundData(String json) {
-                                    Log.e("ja", "comes:" + json);
+                            if(encodedImage != null) {
+                                //inserting advertisement into server
+                                new BagroundTask(url, hmap, AdvtInfoScreen.this, new IBagroundListener() {
+                                    @Override
+                                    public void bagroundData(String json) {
+                                        Log.e("ja", "comes:" + json);
 
-                                    if (!json.equalsIgnoreCase("Not Inserted")) {
-                                        advtId = Integer.parseInt(json);
-                                        Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
-                                        //inserting advertisement into local advertisement list
-                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,imagebyte,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-                                        if(insertFlag>0){
-                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+                                        if (!json.equalsIgnoreCase("Not Inserted")) {
+                                            advtId = Integer.parseInt(json);
+                                            Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
+                                            //inserting advertisement into local advertisement list
+                                            long insertFlag = dbHelper.insertNewAdvt(advtId, orgIdSt, MobileNo, captionSt, descSt, imagebyte, startdateSt, endDateSt, contactnameSt, phnoSt, emailIdSt, downloadDate, status);
+                                            if (insertFlag > 0) {
+                                                Toast.makeText(getApplicationContext(), "Inserted", Toast.LENGTH_SHORT).show();
 //                                                insertCatSubcat(advtId);
-                                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
-                                            intent.putExtra("mobileNo", MobileNo);
-                                            intent.putExtra("key", "F2");
-                                            overridePendingTransition(0, 0);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                            finish();
-                                            startActivity(intent);
-                                        }else{
-                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+                                                intent.putExtra("mobileNo", MobileNo);
+                                                intent.putExtra("key", "F2");
+                                                overridePendingTransition(0, 0);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                                finish();
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Advt Insertion failed in Local", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        } else {
+                                            Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
                                         }
-
-                                    } else {
-                                        Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
                                     }
-                                }
-                            }).execute();
-                            Log.v("jo", str);
-
+                                }).execute();
+                                Log.v("jo", str);
+                            }
+                            else{
+                                Toast.makeText(AdvtInfoScreen.this,"Please Insert Image",Toast.LENGTH_LONG);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

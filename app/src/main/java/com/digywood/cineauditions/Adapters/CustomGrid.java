@@ -105,7 +105,7 @@ public class CustomGrid extends BaseAdapter {
                         }
                         Log.e("cat",category);
                         Log.e("subcat",subCategory);
-                        obj.subcat = subCategory;
+//                        obj.subcat = subCategory;
 //                        obj.catsubcat.setCategory(category);
 //                        obj.catsubcat.setCategory(subCategory);
                         obj.checkcat = new CategoryCheck(0,category,subCategory,"");
