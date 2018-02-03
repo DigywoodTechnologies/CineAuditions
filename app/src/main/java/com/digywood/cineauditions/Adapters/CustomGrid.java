@@ -1,4 +1,4 @@
-package com.digywood.cineauditions;
+package com.digywood.cineauditions.Adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,10 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.digywood.cineauditions.CategoryCheck;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
-import com.digywood.cineauditions.Pojo.SingleSubcat;
+import com.digywood.cineauditions.R;
 
 import java.util.ArrayList;
 
