@@ -31,6 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -61,6 +64,7 @@ public class FullscreenActivity extends AppCompatActivity {
     long count=0;
     CheckBox cb_remember;
     DBHelper dbHelper;
+    File file;
     SharedPreferences mypreferences,myretrievepreferences;
     SharedPreferences.Editor editor=null;
     String email,pasword,uname,url,url1,gpsAddress,EmailId1,Password1,MobileNo;
@@ -205,6 +209,19 @@ public class FullscreenActivity extends AppCompatActivity {
                             int checkOTPFlag = 0;
                             String st = dbHelper.getOTPStatus(MobileNo);
                             if (st.equals("verified") || st.equals("skipped")) {
+
+                                try {
+                                    String path = android.os.Environment.getExternalStorageDirectory().toString()+ "/AuditionsPlus/";
+                                    File file = new File(path);
+
+                                    if(!file.exists())
+                                    {
+                                        file.mkdirs();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                                 Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
                                 intent.putExtra("mobileNo", MobileNo);
                                 intent.putExtra("key", "F1");
@@ -243,6 +260,13 @@ public class FullscreenActivity extends AppCompatActivity {
 //                                                }
 //
 //                                            }
+
+                                                if(getDir("/storage/emulated/AudtitonsPlus",FullscreenActivity.this.MODE_PRIVATE) == null){
+                                                file = new File("/storage/emulated", "AuditionsPlus");
+                                            }
+                                            else {
+                                                file = getDir("/storage/emulated/AudtitonsPlus",FullscreenActivity.this.MODE_PRIVATE);
+                                            }
                                             count=dbHelper.checkCategoryExists();
                                             if(count>0){
                                                 Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);

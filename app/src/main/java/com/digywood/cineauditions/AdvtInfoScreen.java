@@ -49,6 +49,7 @@ import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -81,14 +82,17 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     BagroundTask task1;
     int advtId;
     byte[] imagebyte=null;
-    Bitmap bitmap=null;
+    static Bitmap bitmap=null;
     HashMap<String, String> hmap = new HashMap<>();
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
-    Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
+    Typeface myTypeface1;
+    File mypath;
+    FileOutputStream fos = null;
+    String path = android.os.Environment.getExternalStorageDirectory().toString()+ "/AuditionsPlus/PostedAds";
     String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt, contactnameSt,phnoSt,emailIdSt,status,url,url1
             ,downloadDate,orgIdSt,encodedImage=null;
-    File file;
+
 
     final int REQUEST_CODE_GALLERY = 999;
 
@@ -120,13 +124,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         s1.setOnItemSelectedListener(this);
         dbHelper = new DBHelper(this);
         adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
+        File file = new File(path);
 
-        if(getDir("AudtitonsPlus",this.MODE_PRIVATE) == null){
-            file = new File(this.getFilesDir(), "AuditionsPlus");
+        if(!file.exists())
+        {
+            file.mkdirs();
         }
-        else {
-            file = getDir("AudtitonsPlus",this.MODE_PRIVATE);
-        }
+
 
         grid.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -318,6 +322,12 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }finally {
+                            try {
+                                fos.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                     } else {
@@ -442,10 +452,10 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             }
             else if(scheme.equals(ContentResolver.SCHEME_FILE))
             {
-                String path = uri.getPath();
+                String pathvar = uri.getPath();
                 File f=null;
                 try {
-                    f = new File(path);
+                    f = new File(pathvar);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -469,6 +479,9 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                     bitmap = BitmapFactory.decodeStream(inputStream);
                     imageView.setImageBitmap(bitmap);
                     imagebyte=convertImageToByte(uri,imgSize);
+                    mypath=new File(path,"IMG_"+advtId+".png");
+                    fos = new FileOutputStream(mypath);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("AdvtInfoScreen---",e.toString());
@@ -496,32 +509,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         alert.show();
     }
 
-    public void insertCatSubcat(int advtId){
-
-        hmap.clear();
-        url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
-        hmap.put("orgId","ORG001");
-        hmap.put("advtId", String.valueOf(advtId));
-//        hmap.put("category", CategoryCheckedList.get(i).getCategory());
-//        hmap.put("subCategory", CategoryCheckedList.get(i).getSubCategory());
-        try {
-            new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
-                @Override
-                public void bagroundData(String json) {
-                    Log.d("ja", "comes:" + json);
-                    if (json.equals("Inserted")) {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).execute();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public byte[] convertImageToByte(Uri uri,long imgsize){
         byte[] data = null;
@@ -546,6 +533,21 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         }
         return data;
     }
+/*    private void loadImageFromStorage(String path)
+    {
+
+        try {
+            File f=new File(path, "profile.jpg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            ImageView img=(ImageView)findViewById(R.id.imgPicker);
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }*/
 
 }
 

@@ -111,16 +111,15 @@ public class InterestsFragment extends Fragment {
             e.printStackTrace();
         }
         Interestlist = dbHelper.getAllInterests(MobileNo);
-            getAllItemsDetailsFromHost();
-//            String option = "Interest";
+        getAllInterestsDetailsFromHost();
             return inflate;
         }
 
-    public void getAllItemsDetailsFromHost()
+    public void getAllInterestsDetailsFromHost()
     {
         dbHelper.deleteAllPrefAdvts();
         HashMap<String, String> hmap1 = new HashMap<>();
-        url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
+        url = URLClass.hosturl+"getInterestedAdDetails.php";
         hmap1.put("userId", MobileNo);
         Advtlist.clear();
         try {
@@ -130,29 +129,29 @@ public class InterestsFragment extends Fragment {
                     try {
                         Log.e("output",json);
                         if(json!=null){
-                            JSONArray ja = new JSONArray(json);
+                            /*JSONArray ja = new JSONArray(json);
                             Log.d("ja", "comes:" + ja.length());
                             if (ja.length() != 0) {
-                                JSONObject jo ;
+                                JSONObject interestjo ;
                                 for (int j = 0; j < ja.length(); j++) {
                                     try {
-                                        jo = ja.getJSONObject(j);
-                                        byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));*/
-                                        SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                                jo.getString("description"),imageByte,jo.getString("startDate"), jo.getString("endDate"),
-                                                jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                                jo.getString("createdTime"), jo.getString("status"));
-                                       /* if(Interestlist.contains(newadvt.getAdvtRefNo())){
-                                        }*/
+                                        interestjo = ja.getJSONObject(j);
+                                        byte[] imageByte = Base64.decode(interestjo.getString("image"), Base64.DEFAULT);
+                                    *//*dbHelper.insertPrefAdvt(interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),
+                                            interestjo.getString("description"), imageByte, interestjo.getString("startDate"), interestjo.getString("endDate"),
+                                            interestjo.getString("contactName"), interestjo.getString("contactNumber"), interestjo.getString("emailId"),
+                                            interestjo.getString("createdTime"), interestjo.getString("status"));*//*
+                                        SingleAdvt newadvt=new SingleAdvt(interestjo.getInt("advtId"),interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),
+                                                interestjo.getString("description"),imageByte,interestjo.getString("startDate"), interestjo.getString("endDate"),
+                                                interestjo.getString("contactName"), interestjo.getString("contactNumber"), interestjo.getString("emailId"),
+                                                interestjo.getString("createdTime"), interestjo.getString("status"));
+                                       *//* if(Interestlist.contains(newadvt.getAdvtRefNo())){
+                                        }*//*
                                         Advtlist.add(newadvt);
 
-                                        //advtId = Integer.parseInt(jo.getString("advtId"));
+                                        //advtId = Integer.parseInt(interestjo.getString("advtId"));
                                         Log.e("InterestsFragment --->", "hello"+Advtlist.size());
-//                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+//                                        Log.d("ja", "" + interestjo.getString("advtId")+"Inserted");
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                         Log.e("InterestsFrag11---",e.toString());
@@ -161,6 +160,41 @@ public class InterestsFragment extends Fragment {
                                 Log.e("InterestFrag-->", "hi"+Advtlist.size());
                                 mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
                                 InterestsLv.setAdapter(mAdapter);
+                            }*/
+                            JSONObject myObj = new JSONObject(json);
+                            Object obj2=myObj.get("interestedads");
+                            JSONArray ja_user_interests;
+                            JSONObject interestjo;
+
+                            if (obj2 instanceof JSONArray)
+                            {
+                                ja_user_interests=myObj.getJSONArray("interestedads");
+                                if(ja_user_interests.length()>0){
+
+                                    Log.e("interestLength---",""+ja_user_interests.length());
+                                    int p=0,q=0;
+                                    for(int i=0;i<ja_user_interests.length();i++){
+
+                                        interestjo=ja_user_interests.getJSONObject(i);
+                                        byte[] imageByte = Base64.decode(interestjo.getString("image"), Base64.DEFAULT);
+                                    /*dbHelper.insertPrefAdvt(interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),
+                                            interestjo.getString("description"), imageByte, interestjo.getString("startDate"), interestjo.getString("endDate"),
+                                            interestjo.getString("contactName"), interestjo.getString("contactNumber"), interestjo.getString("emailId"),
+                                            interestjo.getString("createdTime"), interestjo.getString("status"));*/
+                                        SingleAdvt newadvt=new SingleAdvt(interestjo.getInt("advtId"),interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),
+                                                interestjo.getString("description"),imageByte,interestjo.getString("startDate"), interestjo.getString("endDate"),
+                                                interestjo.getString("contactName"), interestjo.getString("contactNumber"), interestjo.getString("emailId"),
+                                                interestjo.getString("createdTime"), interestjo.getString("status"));
+                                        Advtlist.add(newadvt);}
+                                        
+                                }else{
+                                    Log.e("BackGroundTask--","EmptyJsonArray");
+                                }
+                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
+                                InterestsLv.setAdapter(mAdapter);
+                            }
+                            else {
+                                Log.e("interest--","No Interested Ads");
                             }
                         }else{
 
@@ -172,6 +206,7 @@ public class InterestsFragment extends Fragment {
                     }
                 }
             }).execute();
+
         }catch (Exception e){
             e.printStackTrace();
         }

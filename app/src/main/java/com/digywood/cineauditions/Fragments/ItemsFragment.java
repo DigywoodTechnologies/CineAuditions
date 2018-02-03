@@ -390,8 +390,9 @@ public class ItemsFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-/*                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
-                                ItemLv.setAdapter(mAdapter);*/
+                                mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
+                                ItemLv.setAdapter(mAdapter);
+
                             }
                         }else{
 
