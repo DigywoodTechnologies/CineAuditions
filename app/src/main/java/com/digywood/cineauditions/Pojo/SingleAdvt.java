@@ -6,7 +6,7 @@ public class SingleAdvt {
     private String orgId,producer_id,caption, description, startDate, endDate, contactName, contactNumber, emailId, createdTime, status;
     private byte[] image;
 
-    public SingleAdvt(int advtRefNo, String orgId, String producer_id, String caption, String description,byte[] image, String startDate, String endDate, String contactName, String contactNumber, String emailId, String createdTime, String status) {
+    public SingleAdvt(int advtRefNo, String orgId, String producer_id, String caption, String description, String startDate, String endDate, String contactName, String contactNumber, String emailId, String createdTime, String status) {
         this.advtRefNo = advtRefNo;
         this.orgId = orgId;
         this.producer_id = producer_id;

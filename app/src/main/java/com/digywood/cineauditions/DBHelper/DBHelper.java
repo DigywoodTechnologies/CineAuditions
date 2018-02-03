@@ -40,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(tblProducerReg_Status);
 
         String tblItemTable="CREATE TABLE IF NOT EXISTS advt_info_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text, caption text, description text," +
-                " image mediumblob, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                "  startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblItemTable);
 
         String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_pref_producer(advtRefNo INTEGER PRIMARY KEY, orgId text, producer_id text, caption text, description text," +
@@ -192,7 +192,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return AddressList;
 //    }
 
-    public long insertNewAdvt( int keyId, String orgId, String producer_id,String caption, String description, byte[] image, String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
+    public long insertNewAdvt( int keyId, String orgId, String producer_id,String caption, String description, String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
         long insertFlag=0;
         ContentValues cv = new ContentValues();
         cv.put("advtRefNo", keyId);
@@ -200,7 +200,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("producer_id", producer_id);
         cv.put("caption", caption);
         cv.put("description", description);
-        cv.put("image", image);
         cv.put("startDate", startDate);
         cv.put("endDate", endDate);
         cv.put("contactName", contactName);
@@ -271,7 +270,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             myad=new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),c.getBlob(c.getColumnIndex("image")),
+                    c.getString(c.getColumnIndex("description")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
@@ -341,7 +340,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             AdvtList.add(new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),c.getBlob(c.getColumnIndex("image")),
+                    c.getString(c.getColumnIndex("description")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
@@ -450,7 +449,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             PrefAdvtList.add(new SingleAdvt(c.getInt(c.getColumnIndex("advtId")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),c.getBlob(c.getColumnIndex("image")),
+                    c.getString(c.getColumnIndex("description")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),

@@ -6,8 +6,10 @@ package com.digywood.cineauditions;
 
 public class URLClass {
 
-      public static String hosturl="http://www.digywood.com/phpfiles/cinesooruProducer/";
+//      public static String hosturl="http://www.digywood.com/phpfiles/cinesooruProducer/";
 
-//      public static String hosturl="http://www.jcbpoint.com/php/cinesooruAuditions/";
+      public static String hosturl="http://www.jcbpoint.com/cinesooruAuditions/php/";
+
+      public static String imageurl="http://www.jcbpoint.com/cinesooruAuditions/post_resources/";
 
 }

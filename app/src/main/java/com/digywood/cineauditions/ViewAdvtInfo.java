@@ -107,15 +107,15 @@ public class ViewAdvtInfo extends AppCompatActivity {
         captionview.setTypeface(myTypeface1);
 
         if(myad!=null){
-            lotsImage = myad.getImage();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage,0,lotsImage.length);
-            if(bitmap!=null){
-
-                view_img.setImageBitmap(bitmap);
-
-            }else{
-                Log.e("ViewOwnInfo-----","Empty Bitmap");
-            }
+//            lotsImage = myad.getImage();
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage,0,lotsImage.length);
+//            if(bitmap!=null){
+//
+//                view_img.setImageBitmap(bitmap);
+//
+//            }else{
+//                Log.e("ViewOwnInfo-----","Empty Bitmap");
+//            }
 
             captionview.setText("" + myad.getCaption() + " ");
             view_startTv.setText(myad.getStartDate());
