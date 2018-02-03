@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.Adapters.CustomGrid;
 import com.digywood.cineauditions.AsyncTasks.AdvtBagroundTask;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
