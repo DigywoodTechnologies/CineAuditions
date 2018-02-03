@@ -115,6 +115,7 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
             MobileNo = cmgintent.getStringExtra("mobileNo");
             //tv_producer_phno.setText(MobileNo);
         }
+
         Log.e("MobileNo1",""+MobileNo);
         Advtlist = dbHelper.getAllAdvts(MobileNo);
         count = dbHelper.getAdvtCount(MobileNo);

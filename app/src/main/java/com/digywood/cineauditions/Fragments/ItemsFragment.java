@@ -66,17 +66,26 @@ public class ItemsFragment extends Fragment {
 
     int[] _intAdvtlist;
     int advtId;
-    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();
+    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();;
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SinglePreference> AdvtprefList = new ArrayList<SinglePreference>();
+    TextView title;
+    EditText name_item,price_item,description_item;
+    public ImageView imageView;
     public ListView ItemLv;
+    Button upload,submit;
+    Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
+    String name_itemSt,price_itemSt,description_itemSt,shortName,ImageName,tax,group,status,createdby, createdDate, modifiedBy, modifiedDate,group1;
     ArrayList<SingleItem> ItemsList = new ArrayList<>();
+    Dialog d,d1;
     boolean flag_loading=false;
     MyAdapter mAdapter;
     DBHelper dbHelper;
     Uri selectedImageUri;
-    public static String MobileNo,url;
+    String MobileNo,url;
+    Spinner groupType,grpType;
+    private String[] arraySpinner;
 
 
     final int REQUEST_CODE_GALLERY = 999;
@@ -139,9 +148,10 @@ public class ItemsFragment extends Fragment {
             AdvtprefList = dbHelper.getAllPreferencesUser(MobileNo);
             Log.d("AdvtprefList.size", "comes:" + AdvtprefList.size()+"||"+MobileNo);
 //            Advtlist = dbHelper.getPrefAdvtProducer();
+//            Advtlist = dbHelper.getPrefAdvtProducer();
+            //contact server to get all the advertisements
+
             getAllItemsDetailsFromHost();
-            mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
-            ItemLv.setAdapter(mAdapter);
             Log.d("Advtlist.size", "comes:" + Advtlist.size()+"||"+MobileNo);
 
         }else{
@@ -170,6 +180,11 @@ public class ItemsFragment extends Fragment {
 
         //_intRadio= new int[ItemsList.size()];
         //ItemLv.setAdapter(new LsAdapter());
+
+        myTypeface1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sans.ttf");
+        myTypeface2 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sansbold.ttf");
+        myTypeface3 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exolight.otf");
+        myTypeface4 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exobold.otf");
 
         ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -328,6 +343,10 @@ public class ItemsFragment extends Fragment {
                                 try {
                                     jo = ja.getJSONObject(j);
                                     byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
+                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
+                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
+                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
+                                            jo.getString("createdTime"), jo.getString("status"));*/
                                     SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
                                             jo.getString("description"),imageByte, jo.getString("startDate"), jo.getString("endDate"),
                                             jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
@@ -370,7 +389,7 @@ public class ItemsFragment extends Fragment {
                             JSONArray ja = new JSONArray(json);
                             Log.d("ja", "comes:" + ja);
                             if (ja.length() != 0) {
-                                JSONObject jo ;
+                                JSONObject jo = null;
                                 for (int j = 0; j < ja.length(); j++) {
                                     try {
                                         jo = ja.getJSONObject(j);
@@ -392,7 +411,6 @@ public class ItemsFragment extends Fragment {
                                 }
                                 mAdapter = new MyAdapter(getContext(),Advtlist,MobileNo);
                                 ItemLv.setAdapter(mAdapter);
-
                             }
                         }else{
 
@@ -419,6 +437,12 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override

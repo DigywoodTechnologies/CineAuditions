@@ -87,9 +87,9 @@ public class MyAdapter extends BaseAdapter {
             //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);
             for (int x = 0; x < _intAdvtlist.length; x++) {
 
-                byte[] lotsImage = Advtlist.get(i).getImage();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
-                holder.imageView.setImageBitmap(bitmap);
+//                byte[] lotsImage = Advtlist.get(i).getImage();
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
+//                holder.imageView.setImageBitmap(bitmap);
                 holder.post_date.setText(Advtlist.get(i).getCreatedTime());
                 holder.caption.setText(Advtlist.get(i).getCaption());
                 holder.tv_adid.setText("AdvtId: "+String.valueOf(Advtlist.get(i).getAdvtRefNo()));
@@ -104,9 +104,9 @@ public class MyAdapter extends BaseAdapter {
             //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);
             for (int x = 0; x < _intAdvtlist.length; x++) {
 
-                byte[] lotsImage = Advtlist.get(i).getImage();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
-                holder.imageView.setImageBitmap(bitmap);
+//                byte[] lotsImage = Advtlist.get(i).getImage();
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
+//                holder.imageView.setImageBitmap(bitmap);
                 holder.post_date.setText(Advtlist.get(i).getCreatedTime());
                 holder.caption.setText(Advtlist.get(i).getCaption());
                 holder.tv_adid.setText("AdvtId: "+String.valueOf(Advtlist.get(i).getAdvtRefNo()));

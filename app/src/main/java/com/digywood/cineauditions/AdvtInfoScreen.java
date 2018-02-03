@@ -1,6 +1,7 @@
 package com.digywood.cineauditions;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -11,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
+import android.media.ImageWriter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,13 +41,13 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
-import com.digywood.cineauditions.Adapters.CustomGrid;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
-import com.digywood.cineauditions.Pojo.SingleAdvtCategory;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
+
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,22 +55,23 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    ArrayList<SingleCategory> CategoryList = new ArrayList<>();
-    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<>();
-    final ArrayList<String> CategoryNamesList = new ArrayList<>();
-    final ArrayList<String> SubCategoryNamesList = new ArrayList<>();
-    ArrayList<SingleAdvt> AdvtList = new ArrayList<>();
-    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<>();
-    public CategoryCheck checkcat =new CategoryCheck();
-    CustomGrid adapter ;
+    ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
+    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
+    final ArrayList<String> CategoryNamesList = new ArrayList<String>();
+    final ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
+    ArrayList<SingleAdvt> AdvtList = new ArrayList<SingleAdvt>();
+    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
+
     String[] subcatlist;
     int[] _intSubCat,_intCat;
     TextView title_newAdvt,phno,startdateEt,endDateEt;
@@ -82,17 +86,12 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     BagroundTask task1;
     int advtId;
     byte[] imagebyte=null;
-    static Bitmap bitmap=null;
+    Bitmap bitmap=null;
     HashMap<String, String> hmap = new HashMap<>();
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
-    Typeface myTypeface1;
-    File mypath;
-    FileOutputStream fos = null;
-    String path = android.os.Environment.getExternalStorageDirectory().toString()+ "/AuditionsPlus/PostedAds";
-    String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt, contactnameSt,phnoSt,emailIdSt,status,url,url1
-            ,downloadDate,orgIdSt,encodedImage=null;
-
+    Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
+    String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,status,url,url1,downloadDate,orgIdSt,encodedImage=null;
 
     final int REQUEST_CODE_GALLERY = 999;
 
@@ -106,31 +105,23 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS, R.string.emailerror);
 
-        title_newAdvt = findViewById(R.id.title_newAdvt);
-        start_date = findViewById(R.id.btn_startDate);
-        end_date = findViewById(R.id.btn_endDate);
-        btn_submit = findViewById(R.id.submit_Info);
-        btn_browse = findViewById(R.id.upload_Image);
-        imageView =  findViewById(R.id.imgView);
-        startdateEt = findViewById(R.id.startDateEt);
-        endDateEt =  findViewById(R.id.endDateEt);
-        captionEt =  findViewById(R.id.captionET);
-        descEt = findViewById(R.id.descET);
-        contactnameEt = findViewById(R.id.contactnameET);
-        phnoEt = findViewById(R.id.phnoET);
-        emailIdEt = findViewById(R.id.emailET);
-        s1 = findViewById(R.id.services);
+        title_newAdvt = (TextView)findViewById(R.id.title_newAdvt);
+        start_date = (Button)findViewById(R.id.btn_startDate);
+        end_date = (Button)findViewById(R.id.btn_endDate);
+        btn_submit = (Button)findViewById(R.id.submit_Info);
+        btn_browse = (Button)findViewById(R.id.upload_Image);
+        imageView = (ImageView)findViewById(R.id.imgView);
+        startdateEt = (TextView)findViewById(R.id.startDateEt);
+        endDateEt = (TextView)findViewById(R.id.endDateEt);
+        captionEt = (EditText)findViewById(R.id.captionET);
+        descEt = (EditText)findViewById(R.id.descET);
+        contactnameEt = (EditText)findViewById(R.id.contactnameET);
+        phnoEt = (EditText)findViewById(R.id.phnoET);
+        emailIdEt = (EditText)findViewById(R.id.emailET);
+        s1 = (Spinner)findViewById(R.id.services);
         grid=findViewById(R.id.grid);
         s1.setOnItemSelectedListener(this);
         dbHelper = new DBHelper(this);
-        adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
-        File file = new File(path);
-
-        if(!file.exists())
-        {
-            file.mkdirs();
-        }
-
 
         grid.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -260,7 +251,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                 encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
                             }
                             else{
-                                encodedImage=null;
+                                encodedImage="";
                             }
                         }catch (Exception e){
                             e.printStackTrace();
@@ -284,50 +275,40 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         final String str = "";
 
                         try {
-                            if(encodedImage != null) {
-                                //inserting advertisement into server
-                                new BagroundTask(url, hmap, AdvtInfoScreen.this, new IBagroundListener() {
-                                    @Override
-                                    public void bagroundData(String json) {
-                                        Log.e("ja", "comes:" + json);
+                            //inserting advertisement into server
+                            new BagroundTask(url, hmap, AdvtInfoScreen.this,new IBagroundListener() {
+                                @Override
+                                public void bagroundData(String json) {
+                                    Log.e("ja", "comes:" + json);
 
-                                        if (!json.equalsIgnoreCase("Not Inserted")) {
-                                            advtId = Integer.parseInt(json);
-                                            Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
-                                            //inserting advertisement into local advertisement list
-                                            long insertFlag = dbHelper.insertNewAdvt(advtId, orgIdSt, MobileNo, captionSt, descSt, imagebyte, startdateSt, endDateSt, contactnameSt, phnoSt, emailIdSt, downloadDate, status);
-                                            if (insertFlag > 0) {
-                                                Toast.makeText(getApplicationContext(), "Inserted", Toast.LENGTH_SHORT).show();
+                                    if (!json.equalsIgnoreCase("Not Inserted")) {
+                                        advtId = Integer.parseInt(json);
+                                        Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
+                                        //inserting advertisement into local advertisement list
+                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,imagebyte,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+                                        if(insertFlag>0){
+                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
 //                                                insertCatSubcat(advtId);
-                                                Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
-                                                intent.putExtra("mobileNo", MobileNo);
-                                                intent.putExtra("key", "F2");
-                                                overridePendingTransition(0, 0);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                                finish();
-                                                startActivity(intent);
-                                            } else {
-                                                Toast.makeText(getApplicationContext(), "Advt Insertion failed in Local", Toast.LENGTH_SHORT).show();
-                                            }
-
-                                        } else {
-                                            Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+                                            intent.putExtra("mobileNo", MobileNo);
+                                            intent.putExtra("key", "F2");
+                                            overridePendingTransition(0, 0);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                            finish();
+                                            startActivity(intent);
+                                        }else{
+                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
                                         }
+
+                                    } else {
+                                        Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
                                     }
-                                }).execute();
-                                Log.v("jo", str);
-                            }
-                            else{
-                                Toast.makeText(AdvtInfoScreen.this,"Please Insert Image",Toast.LENGTH_LONG);
-                            }
+                                }
+                            }).execute();
+                            Log.v("jo", str);
+
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }finally {
-                            try {
-                                fos.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
                         }
 
                     } else {
@@ -353,7 +334,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         for(int i = 0;i < CategoryList.size();i++) {
             if (sp1.equals(CategoryList.get(i).getLongName())) {
                 categoryId = CategoryList.get(i).getCategoryId();
-                Log.d("catlistid", CategoryList.get(i).getLongName());
+                Log.d("catlistid", "comes:" + categoryId);
                 for(int j = 0;j < SubCategoryList.size();j++){
                     if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
                         //SubCategoryNamesList.clear();
@@ -361,12 +342,14 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         //subcatlist.add
                         //viewHolder.category.setText(CategoryList.get(i).getLongName());
                         //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
+                        CustomGrid adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
+                        Log.d("selected_list", "comes:" + SubCategoryNamesList);
+                        grid.setAdapter(adapter);
                     }
                 }
             }
         }
-        Log.d("selected_category", "contains:" + SubCategoryNamesList);
-        grid.setAdapter(adapter);
+
     }
 
     @Override
@@ -452,10 +435,10 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             }
             else if(scheme.equals(ContentResolver.SCHEME_FILE))
             {
-                String pathvar = uri.getPath();
+                String path = uri.getPath();
                 File f=null;
                 try {
-                    f = new File(pathvar);
+                    f = new File(path);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -479,9 +462,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                     bitmap = BitmapFactory.decodeStream(inputStream);
                     imageView.setImageBitmap(bitmap);
                     imagebyte=convertImageToByte(uri,imgSize);
-                    mypath=new File(path,"IMG_"+advtId+".png");
-                    fos = new FileOutputStream(mypath);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e("AdvtInfoScreen---",e.toString());
@@ -509,6 +489,32 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         alert.show();
     }
 
+    public void insertCatSubcat(int advtId){
+
+        hmap.clear();
+        url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
+        hmap.put("orgId","ORG001");
+        hmap.put("advtId", String.valueOf(advtId));
+//        hmap.put("category", CategoryCheckedList.get(i).getCategory());
+//        hmap.put("subCategory", CategoryCheckedList.get(i).getSubCategory());
+        try {
+            new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
+                @Override
+                public void bagroundData(String json) {
+                    Log.d("ja", "comes:" + json);
+                    if (json.equals("Inserted")) {
+                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public byte[] convertImageToByte(Uri uri,long imgsize){
         byte[] data = null;
@@ -533,21 +539,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         }
         return data;
     }
-/*    private void loadImageFromStorage(String path)
-    {
-
-        try {
-            File f=new File(path, "profile.jpg");
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            ImageView img=(ImageView)findViewById(R.id.imgPicker);
-            img.setImageBitmap(b);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-
-    }*/
 
 }
 

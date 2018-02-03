@@ -1,4 +1,4 @@
-package com.digywood.cineauditions.Adapters;
+package com.digywood.cineauditions;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,13 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.digywood.cineauditions.AdvtInfoScreen;
-import com.digywood.cineauditions.CategoryCheck;
 import com.digywood.cineauditions.DBHelper.DBHelper;
-import com.digywood.cineauditions.Pojo.SingleAdvtCategory;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
-import com.digywood.cineauditions.R;
 
 import java.util.ArrayList;
 
@@ -25,15 +21,11 @@ public class CustomGrid extends BaseAdapter {
     DBHelper dbHelper;
     String subCategory,category;
     private Context mContext;
-    public  ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
+    private ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
     private ArrayList<String> SubCategoryCheckedList = new ArrayList<String>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
     ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
-    CategoryCheck check =new CategoryCheck();
-//    ArrayList<SingleAdvtCategory> obj = new ArrayList<SingleAdvtCategory>();
-    AdvtInfoScreen obj = new AdvtInfoScreen();
-    SingleAdvtCategory catsubcat = new SingleAdvtCategory();
     //private final String[] web;
     //private final int[] Imageid;
 
@@ -103,13 +95,7 @@ public class CustomGrid extends BaseAdapter {
                                 }
                             }
                         }
-                        Log.e("cat",category);
-                        Log.e("subcat",subCategory);
-//                        obj.subcat = subCategory;
-//                        obj.catsubcat.setCategory(category);
-//                        obj.catsubcat.setCategory(subCategory);
-                        obj.checkcat = new CategoryCheck(0,category,subCategory,"");
-                        Log.e("data",category);
+
 
                         Log.d("SubCategoryCheckedList", "" + SubCategoryCheckedList.size() + ":" + SubCategoryCheckedList);
 
