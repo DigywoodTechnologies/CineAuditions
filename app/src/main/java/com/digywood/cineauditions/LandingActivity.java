@@ -403,10 +403,10 @@ public class LandingActivity extends AppCompatActivity {
 
                                 advtjo=ja_advt_info_table.getJSONObject(i);
 
-                                String image=advtjo.getString("image");
-                                byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
+//                                String image=advtjo.getString("image");
+//                                byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
 
-                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),imgbyte,advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
+                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
                                 if(insertFlag>0){
                                     p++;
                                 }else{

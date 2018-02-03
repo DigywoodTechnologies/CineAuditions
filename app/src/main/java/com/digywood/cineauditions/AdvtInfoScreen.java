@@ -5,9 +5,12 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -17,7 +20,10 @@ import android.media.ImageWriter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -41,6 +47,7 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.AsyncTasks.AdvtBagroundTask;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
@@ -53,17 +60,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -89,6 +100,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     BagroundTask task1;
     int advtId;
     int count=0;
+    String path="",fileType="";
+    String myfile;
     ArrayList<String> myList=new ArrayList<>();
     CustomGrid adapter;
     byte[] imagebyte=null;
@@ -269,9 +282,12 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         hmap.put("userId",MobileNo);
                         hmap.put("caption",captionSt);
                         hmap.put("description",descSt);
-                        hmap.put("image",encodedImage);
+                        hmap.put("fileType",fileType);
+                        hmap.put("fileName","hiii");
+                        hmap.put("filePath","hiii");
+//                        hmap.put("image",encodedImage);
                         hmap.put("startDate",startdateSt);
-                        hmap.put("endDate",endDateSt);//
+                        hmap.put("endDate",endDateSt);
                         hmap.put("contactName",contactnameSt);
                         hmap.put("contactNumber",phnoSt);
                         hmap.put("emailId",emailIdSt);
@@ -282,7 +298,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
                         try {
                             //inserting advertisement into server
-                            new BagroundTask(url, hmap, AdvtInfoScreen.this,new IBagroundListener() {
+                            new AdvtBagroundTask(url,hmap,MobileNo,myfile,AdvtInfoScreen.this,new IBagroundListener() {
                                 @Override
                                 public void bagroundData(String json) {
                                     Log.e("ja", "comes:" + json);
@@ -291,13 +307,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                         advtId = Integer.parseInt(json);
                                         Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
                                         //inserting advertisement into local advertisement list
-                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,imagebyte,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-                                        if(insertFlag>0){
-                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-                                            insertCatSubcat(advtId);
-                                        }else{
-                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
-                                        }
+//                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+//                                        if(insertFlag>0){
+//                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+//                                            insertCatSubcat(advtId);
+//                                        }else{
+//                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+//                                        }
 
                                     } else {
                                         Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
@@ -334,34 +350,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         Log.e("CatItem---",CatId);
         ArrayList<String> subcatList=dbHelper.getSubCategoriesByCat(CatId);
 
-
-        //String[] subcatlist = new String[SubCategoryList.size()];
-
-//        SubCategoryNamesList.clear();
-//        for(int i = 0;i < CategoryList.size();i++) {
-//            if (sp1.equals(CategoryList.get(i).getLongName())) {
-//                categoryId = CategoryList.get(i).getCategoryId();
-//                Log.d("catlistid", "comes:" + categoryId);
-//                for(int j = 0;j < SubCategoryList.size();j++){
-//                    if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
-//                        //SubCategoryNamesList.clear();
-//                        SubCategoryNamesList.add(SubCategoryList.get(j).getLongName());
-//                        //subcatlist.add
-//                        //viewHolder.category.setText(CategoryList.get(i).getLongName());
-//                        //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
-//                        if(count>0){
-//                            adapter.updateGrid(subcatList);
-//                        }else{
-//                            count++;
-//                            adapter = new CustomGrid(AdvtInfoScreen.this,subcatList);
-//                            Log.d("selected_list", "comes:" + SubCategoryNamesList);
-//                            grid.setAdapter(adapter);
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
         if(count>0){
             Log.e("AdvtInfo---","secondtime");
             adapter.updateGrid(subcatList);
@@ -425,6 +413,11 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         if(requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null){
             Uri uri = data.getData();
+
+            path=getPath(AdvtInfoScreen.this,uri);
+            Log.e("AdvtInfoScreen",path);
+            fileType=path.substring(path.lastIndexOf("."));
+            myfile=path;
             int dataSize=0;
             long imgSize=0;
 
@@ -486,6 +479,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     public  void showAlert(String messege){
         AlertDialog.Builder builder = new AlertDialog.Builder(AdvtInfoScreen.this);
@@ -573,6 +567,90 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             e.printStackTrace();
         }
         return data;
+    }
+
+    public static String getPath(final Context context,final Uri uri) {
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{split[1]};
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {column};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     public JSONObject JSONEncode(int advtId,ArrayList<String> finalList){
