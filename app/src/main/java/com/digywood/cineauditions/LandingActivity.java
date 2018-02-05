@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
+import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
 import com.digywood.cineauditions.Fragments.ListOfAdvtsFragment;
 import com.digywood.cineauditions.Fragments.SetPreferencesFragment ;
@@ -225,8 +226,8 @@ public class LandingActivity extends AppCompatActivity {
                 SetPreferencesFragment setPreferencesFragment = new SetPreferencesFragment();
                 return setPreferencesFragment;
             case 3:
-/*                OrdersFragment ordersFragment = new OrdersFragment();
-                return ordersFragment;*/
+                InterestsFragment interestsFragment = new InterestsFragment();
+                return interestsFragment;
 //
 //            case 4:
 //
@@ -289,10 +290,10 @@ public class LandingActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_PUBLISH;
                         break;
-//                    case R.id.nav_orders_data:
-//                        navItemIndex = 4;
-//                        CURRENT_TAG = TAG_ORDERS_DATA;
-//                        break;
+                    case R.id.nav_interestedads:
+                        navItemIndex = 3;
+                        CURRENT_TAG = TAG_ORDERS_DATA;
+                        break;
 //                    case R.id.nav_settings:
 //                        navItemIndex = 5;
 //                        CURRENT_TAG = TAG_SETTINGS;
@@ -403,10 +404,7 @@ public class LandingActivity extends AppCompatActivity {
 
                                 advtjo=ja_advt_info_table.getJSONObject(i);
 
-//                                String image=advtjo.getString("image");
-//                                byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
-
-                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
+                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("fileType"),advtjo.getString("fileName"),advtjo.getString("filePath"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
                                 if(insertFlag>0){
                                     p++;
                                 }else{

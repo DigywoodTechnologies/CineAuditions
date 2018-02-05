@@ -434,7 +434,8 @@ public class FullscreenActivity extends AppCompatActivity {
 //                               String image=advtjo.getString("image");
 //                               byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
 
-                               long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
+                               Log.e("FullScreenActivity----",""+advtjo.getInt("advtId"));
+                               long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("fileType"),advtjo.getString("fileName"),advtjo.getString("filePath"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
                                if(insertFlag>0){
                                    p++;
                                }else{

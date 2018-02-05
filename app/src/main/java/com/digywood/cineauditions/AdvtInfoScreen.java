@@ -26,6 +26,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -79,13 +80,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+
 public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
-    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
-    final ArrayList<String> CategoryNamesList = new ArrayList<String>();
-    final ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
-    ArrayList<SingleAdvt> AdvtList = new ArrayList<SingleAdvt>();
-    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
+    ArrayList<SingleCategory> CategoryList = new ArrayList<>();
+    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<>();
+    final ArrayList<String> CategoryNamesList = new ArrayList<>();
+    final ArrayList<String> SubCategoryNamesList = new ArrayList<>();
+    ArrayList<SingleAdvt> AdvtList = new ArrayList<>();
+    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList();
 
     String[] subcatlist;
     int[] _intSubCat,_intCat;
@@ -111,9 +116,11 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
+    String fileName=null,fileUrl=null;
     String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,status,url,url1,downloadDate,orgIdSt,encodedImage=null;
 
     final int REQUEST_CODE_GALLERY = 999;
+    public static final int RequestPermissionCode = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -152,7 +159,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         });
 
-        myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        myTypeface1 = Typeface.createFromAsset(getAssets(),"fonts/Raleway-Medium.ttf");
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -236,11 +243,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         btn_browse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(
-                        AdvtInfoScreen.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_CODE_GALLERY
-                );
+                if(checkPermission()){
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, REQUEST_CODE_GALLERY);
+                }else{
+                    requestPermission();
+                }
             }
         });
 
@@ -260,7 +269,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         contactnameSt = contactnameEt.getText().toString();
                         phnoSt = phnoEt.getText().toString();
                         emailIdSt = emailIdEt.getText().toString();
-                        status = "created";
+                        status ="created";
 
                         Calendar c1 = Calendar.getInstance();
                         SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -277,6 +286,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                             e.printStackTrace();
                             Log.e("AdvtInfoScreen---",e.toString());
                         }
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                        String currentDateandTime = sdf.format(new Date());
+
+                        fileName=MobileNo+"_"+currentDateandTime +fileType;
+                        fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
+
                         url = URLClass.hosturl+"insertAdvtInfo.php";
                         hmap.clear();
                         hmap.put("orgId",orgIdSt);
@@ -284,9 +300,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                         hmap.put("caption",captionSt);
                         hmap.put("description",descSt);
                         hmap.put("fileType",fileType);
-                        hmap.put("fileName","hiii");
-                        hmap.put("filePath","hiii");
-//                        hmap.put("image",encodedImage);
+                        hmap.put("fileName",fileName);
+                        hmap.put("filePath",fileUrl);
                         hmap.put("startDate",startdateSt);
                         hmap.put("endDate",endDateSt);
                         hmap.put("contactName",contactnameSt);
@@ -299,7 +314,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
                         try {
                             //inserting advertisement into server
-                            new AdvtBagroundTask(url,hmap,MobileNo,myfile,AdvtInfoScreen.this,new IBagroundListener() {
+                            new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
                                 @Override
                                 public void bagroundData(String json) {
                                     Log.e("ja", "comes:" + json);
@@ -308,13 +323,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                         advtId = Integer.parseInt(json);
                                         Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
                                         //inserting advertisement into local advertisement list
-//                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-//                                        if(insertFlag>0){
-//                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-//                                            insertCatSubcat(advtId);
-//                                        }else{
-//                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
-//                                        }
+                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+                                        if(insertFlag>0){
+                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+                                            insertCatSubcat(advtId);
+                                        }else{
+                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                        }
 
                                     } else {
                                         Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
@@ -337,8 +352,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
 
     }
-
-
 
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
@@ -394,8 +407,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if(requestCode == REQUEST_CODE_GALLERY){
-            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if(requestCode == RequestPermissionCode){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, REQUEST_CODE_GALLERY);
@@ -676,6 +689,20 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         }
 
         return job;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(AdvtInfoScreen.this, new
+                String[]{WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE},RequestPermissionCode);
+    }
+
+
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED && result1==PackageManager.PERMISSION_GRANTED;
     }
 
 }

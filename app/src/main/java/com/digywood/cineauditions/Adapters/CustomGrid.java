@@ -129,8 +129,6 @@ public class CustomGrid extends BaseAdapter {
                 }
             });
 
-            Log.e("CustomGrid---",""+checkList.size());
-
         } else {
             grid = (View) convertView;
         }
