@@ -22,8 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_weight="15">
+            android:orientation="horizontal">
             <ListView
                 android:id="@+id/ItemsLv"
                 android:layout_width="match_parent"
@@ -31,6 +30,14 @@
                 android:divider="@null"
                 android:dividerHeight="4dp"
                 />
+
+            <TextView
+                android:id="@+id/tv_emptydata"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#FF0000"
+                android:visibility="gone"
+                android:gravity="center_vertical|center_horizontal|center"/>
 
         </LinearLayout>
 

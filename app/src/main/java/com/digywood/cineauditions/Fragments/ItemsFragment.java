@@ -79,6 +79,7 @@ public class ItemsFragment extends Fragment {
     String name_itemSt,price_itemSt,description_itemSt,shortName,ImageName,tax,group,status,createdby, createdDate, modifiedBy, modifiedDate,group1;
     ArrayList<SingleItem> ItemsList = new ArrayList<>();
     Dialog d,d1;
+    TextView tv_emptydata;
     boolean flag_loading=false;
     MyAdapter mAdapter;
     DBHelper dbHelper;
@@ -132,6 +133,7 @@ public class ItemsFragment extends Fragment {
         View inflate = inflater.inflate(R.layout.fragment_items, container, false);
 
         ItemLv = (ListView) inflate.findViewById(R.id.ItemsLv);
+        tv_emptydata=inflate.findViewById(R.id.tv_emptydata);
         dbHelper = new DBHelper(this.getContext());
         Intent cmgintent=getActivity().getIntent();
         if (cmgintent != null) {
@@ -269,7 +271,7 @@ public class ItemsFragment extends Fragment {
 
     public void getAllItemsDetailsFromHost()
     {
-        dbHelper.deleteAllPrefAdvts();
+//        dbHelper.deleteAllPrefAdvts();
         HashMap<String, String> hmap1 = new HashMap<>();
         url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
         hmap1.put("userId", MobileNo);
@@ -280,7 +282,7 @@ public class ItemsFragment extends Fragment {
                 public void bagroundData(String json) {
                     try {
                         Log.e("output",json);
-                        if(json!=null){
+                        if(!json.equalsIgnoreCase("No-Records-Found")){
                             JSONArray ja = new JSONArray(json);
                             Log.d("ja", "comes:" + ja);
                             if (ja.length() != 0) {
@@ -288,13 +290,8 @@ public class ItemsFragment extends Fragment {
                                 for (int j = 0; j < ja.length(); j++) {
                                     try {
                                         jo = ja.getJSONObject(j);
-//                                        byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));*/
                                         SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                                jo.getString("description"),jo.getString("startDate"), jo.getString("endDate"),
+                                                jo.getString("description"),jo.getString("fileType"),jo.getString("fileName"),jo.getString("filePath"),jo.getString("startDate"), jo.getString("endDate"),
                                                 jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
                                                 jo.getString("createdTime"), jo.getString("status"));
                                         Advtlist.add(newadvt);
@@ -308,7 +305,9 @@ public class ItemsFragment extends Fragment {
                                 ItemLv.setAdapter(mAdapter);
                             }
                         }else{
-
+                            tv_emptydata.setVisibility(View.VISIBLE);
+                            ItemLv.setSystemUiVisibility(View.GONE);
+                            tv_emptydata.setText("No Recent Posts Found");
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }

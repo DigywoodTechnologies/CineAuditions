@@ -3,16 +3,17 @@ package com.digywood.cineauditions.Pojo;
 public class SingleAdvt {
 
     private int advtRefNo;
-    private String orgId,producer_id,caption, description, startDate, endDate, contactName, contactNumber, emailId, createdTime, status;
-    private byte[] image;
+    private String orgId,downloadUrl,producer_id,caption, description,fileType,filename, startDate, endDate, contactName, contactNumber, emailId, createdTime, status;
 
-    public SingleAdvt(int advtRefNo, String orgId, String producer_id, String caption, String description, String startDate, String endDate, String contactName, String contactNumber, String emailId, String createdTime, String status) {
+    public SingleAdvt(int advtRefNo,String orgId,String producer_id, String caption, String description,String fileType,String fileName,String downloadUrl,String startDate, String endDate, String contactName, String contactNumber, String emailId, String createdTime, String status) {
         this.advtRefNo = advtRefNo;
         this.orgId = orgId;
         this.producer_id = producer_id;
         this.caption = caption;
         this.description=description;
-        this.image=image;
+        this.fileType=fileType;
+        this.filename=fileName;
+        this.downloadUrl=downloadUrl;
         this.startDate = startDate;
         this.endDate = endDate;
         this.contactName=contactName;
@@ -61,14 +62,6 @@ public class SingleAdvt {
         this.description = description;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
     public String getStartDate() { return startDate;  }
 
     public void setStartDate(String startDate) {
@@ -115,4 +108,35 @@ public class SingleAdvt {
         this.createdTime = createdTime;
     }
 
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
 }

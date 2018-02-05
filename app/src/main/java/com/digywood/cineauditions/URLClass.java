@@ -12,4 +12,8 @@ public class URLClass {
 
       public static String imageurl="http://www.jcbpoint.com/cinesooruAuditions/post_resources/";
 
+      public static String myadspath=android.os.Environment.getExternalStorageDirectory().toString()+ "/CiniAuditions/MyAds/";
+
+      public static String interestedpath=android.os.Environment.getExternalStorageDirectory().toString()+ "/CiniAuditions/InterestedAds/";
+
 }

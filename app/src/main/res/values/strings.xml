@@ -39,7 +39,7 @@
         <item>Notice List</item>
         <item>Post Advertisement</item>
         <item>Set Preferences</item>
-        <!--<item>Orders</item>-->
+        <item>InterestedAds</item>
         <!--<item>Orders Data</item>-->
         <!--<item>Settings</item>-->
     </string-array>

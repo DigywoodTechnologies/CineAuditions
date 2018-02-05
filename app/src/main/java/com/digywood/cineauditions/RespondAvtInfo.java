@@ -18,12 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
+import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,13 +35,12 @@ public class RespondAvtInfo extends AppCompatActivity {
 
     int[] _intAdvtlist;
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat;
-    String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category;
+    String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
     String key=null;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
-    byte[] cmimage=null;
     ArrayList<String> subcatList;
     ArrayList<SingleAdvt> Advtlist;
     Typeface myTypeface1;
@@ -61,7 +62,9 @@ public class RespondAvtInfo extends AppCompatActivity {
             advtId = cmgintent.getIntExtra("advtId",0);
             Log.e("ViewAdvtInfo-----",""+advtId);
             Bundle getextras=cmgintent.getExtras();
-            cmimage=getextras.getByteArray("image");
+            cmdownloadUrl=getextras.getString("url");
+            cmfileType=getextras.getString("filetype");
+            cmfileName=getextras.getString("filename");
             cmcaption=getextras.getString("caption");
             cmstart=getextras.getString("start");
             cmend=getextras.getString("end");
@@ -69,6 +72,8 @@ public class RespondAvtInfo extends AppCompatActivity {
             cmname=getextras.getString("name");
             cmnumber=getextras.getString("number");
             cmemail=getextras.getString("email");
+            cmcreatetime=getextras.getString("createtime");
+            cmstatus=getextras.getString("status");
         }
 
         Advtlist = new ArrayList<SingleAdvt>();
@@ -101,8 +106,21 @@ public class RespondAvtInfo extends AppCompatActivity {
         tv_cat.setTypeface(myTypeface1);
         tv_subcat.setTypeface(myTypeface1);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(cmimage, 0,cmimage.length);
-        view_img.setImageBitmap(bitmap);
+        try{
+
+//            URL url = new URL(cmdownloadUrl);
+//            new AsyncTaskLoadImage(view_img,url);
+
+            URL url = new URL(cmdownloadUrl);
+            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            view_img.setImageBitmap(bmp);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("RespondAdvtInfo---",e.toString());
+        }
+
+//        view_img.setImageBitmap(bitmap);
         captionview.setText("" + cmcaption + " ");
         view_startTv.setText(cmstart);
         view_endTv.setText(cmend);
@@ -119,7 +137,7 @@ public class RespondAvtInfo extends AppCompatActivity {
         hmap1.put("advtId", String.valueOf(advtId));
 
         try {
-            new BagroundTask(url,hmap1,RespondAvtInfo.this, new IBagroundListener() {
+            new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
                 @Override
                 public void bagroundData(String json) {
 
@@ -229,11 +247,37 @@ public class RespondAvtInfo extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
                                 }
 
-                                finish();
-                                Intent i=new Intent(getApplicationContext(),LandingActivity.class);
-                                i.putExtra("mobileNo",MobileNo);
-                                i.putExtra("key","F1");
-                                startActivity(i);
+                                String[] urlList={cmdownloadUrl};
+                                String[] nameList={cmfileName};
+
+                                new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList, new IDownloadStatus() {
+                                    @Override
+                                    public void downloadStatus(String status) {
+
+                                        try{
+                                            if(status.equalsIgnoreCase("Completed")){
+
+                                                long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+                                                if(insertFlag>0){
+                                                    Toast.makeText(getApplicationContext(),"Interest Inserted",Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }else{
+                                                    Toast.makeText(getApplicationContext(),"Interest Not Inserted",Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+
+                                            }else{
+
+                                            }
+
+                                        }catch (Exception e){
+
+                                            e.printStackTrace();
+                                            Log.e("DownloadFile----",e.toString());
+                                        }
+                                    }
+                                }).execute();
+
                             }
                         }
                     });
