@@ -75,7 +75,7 @@ public class MyAdapter extends BaseAdapter {
 
         View rowView = inflater.inflate(R.layout.advertisement_card,parent, false);
         Typeface myTypeface1 = Typeface.createFromAsset(context.getApplicationContext().getAssets(), "fonts/MontserratAlternates-Medium.ttf");
-        holder.imageView = rowView.findViewById(R.id.photo);
+//        holder.imageView = rowView.findViewById(R.id.photo);
         holder.caption =  rowView.findViewById(R.id.caption_notice);
         holder.caption.setTypeface(myTypeface1);
         holder.tv_adid=rowView.findViewById(R.id.tv_adId);
@@ -119,10 +119,10 @@ public class MyAdapter extends BaseAdapter {
         SingleAdvt singlead=Advtlist.get(position);
 
         try {
-            URL url = new URL(singlead.getDownloadUrl());
-//            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//            holder.imageView.setImageBitmap(bmp);
-            new AsyncTaskLoadImage(holder.imageView,url).execute();
+//            URL url = new URL(singlead.getDownloadUrl());
+////            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+////            holder.imageView.setImageBitmap(bmp);
+//            new AsyncTaskLoadImage(holder.imageView,url).execute();
             holder.post_date.setText(singlead.getCreatedTime());
             holder.caption.setText(singlead.getCaption());
             holder.tv_adid.setText("AdvtId: " + String.valueOf(singlead.getAdvtRefNo()));

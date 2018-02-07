@@ -21,21 +21,10 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
 import com.digywood.cineauditions.Pojo.SingleProducer;
-import com.digywood.cineauditions.Pojo.SingleSubCategory;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URI;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,10 +43,6 @@ public class ViewAdvtInfo extends AppCompatActivity {
     SingleAdvt myad=null;
     ArrayList<SingleAdvt> Advtlist,Interested;
     ArrayList<SingleInterest> InterestList;
-    ArrayList<String> Comment,Email,Name,Contact;
-    String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail;
-    byte[] cmimage;
-    ListView contacts;
     Typeface myTypeface1;
     Button view_interests,btnClosePopup;
     LinearLayout linearLayout;
@@ -103,8 +88,13 @@ public class ViewAdvtInfo extends AppCompatActivity {
         if(myad!=null){
 
             try {
-                Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
-                view_img.setImageBitmap(bmp);
+                if(!myad.getFilename().equalsIgnoreCase("")){
+                    Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
+                    view_img.setImageBitmap(bmp);
+                }else{
+                    Log.e("ViewAdvtInfo---","No image for Ad");
+                }
+
             }catch (Exception e){
                 e.printStackTrace();
                 Log.e("ViewAdvtInfo---",e.toString());

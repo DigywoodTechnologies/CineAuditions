@@ -107,20 +107,21 @@ public class RespondAvtInfo extends AppCompatActivity {
         tv_subcat.setTypeface(myTypeface1);
 
         try{
-
-//            URL url = new URL(cmdownloadUrl);
-//            new AsyncTaskLoadImage(view_img,url);
-
-            URL url = new URL(cmdownloadUrl);
-            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            view_img.setImageBitmap(bmp);
+            Log.e("RespondAdvtInfo---",cmdownloadUrl);
+            if(!cmdownloadUrl.equalsIgnoreCase("")){
+                Log.e("RespondAvtInfo---","not null");
+                URL url = new URL(cmdownloadUrl);
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                view_img.setImageBitmap(bmp);
+            }else{
+                Log.e("RespondAvtInfo---","null");
+            }
 
         }catch (Exception e){
             e.printStackTrace();
             Log.e("RespondAdvtInfo---",e.toString());
         }
 
-//        view_img.setImageBitmap(bitmap);
         captionview.setText("" + cmcaption + " ");
         view_startTv.setText(cmstart);
         view_endTv.setText(cmend);
@@ -247,36 +248,48 @@ public class RespondAvtInfo extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
                                 }
 
-                                String[] urlList={cmdownloadUrl};
-                                String[] nameList={cmfileName};
+                                if(!cmdownloadUrl.equalsIgnoreCase("")){
+                                    String[] urlList={cmdownloadUrl};
+                                    String[] nameList={cmfileName};
 
-                                new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList, new IDownloadStatus() {
-                                    @Override
-                                    public void downloadStatus(String status) {
+                                    new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList, new IDownloadStatus() {
+                                        @Override
+                                        public void downloadStatus(String status) {
 
-                                        try{
-                                            if(status.equalsIgnoreCase("Completed")){
+                                            try{
+                                                if(status.equalsIgnoreCase("Completed")){
 
-                                                long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
-                                                if(insertFlag>0){
-                                                    Toast.makeText(getApplicationContext(),"Interest Inserted",Toast.LENGTH_SHORT).show();
-                                                    finish();
+                                                    long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+                                                    if(insertFlag>0){
+                                                        Toast.makeText(getApplicationContext(),"Interest Inserted",Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    }else{
+                                                        Toast.makeText(getApplicationContext(),"Interest Not Inserted",Toast.LENGTH_SHORT).show();
+                                                        finish();
+                                                    }
+
                                                 }else{
-                                                    Toast.makeText(getApplicationContext(),"Interest Not Inserted",Toast.LENGTH_SHORT).show();
-                                                    finish();
+
                                                 }
 
-                                            }else{
+                                            }catch (Exception e){
 
+                                                e.printStackTrace();
+                                                Log.e("DownloadFile----",e.toString());
                                             }
-
-                                        }catch (Exception e){
-
-                                            e.printStackTrace();
-                                            Log.e("DownloadFile----",e.toString());
                                         }
+                                    }).execute();
+
+                                }else{
+                                    long insertFlag1=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+                                    if(insertFlag1>0){
+                                        Toast.makeText(getApplicationContext(),"Interest Inserted in Local",Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }else{
+                                        Toast.makeText(getApplicationContext(),"Interest Not Inserted in Local",Toast.LENGTH_SHORT).show();
+                                        finish();
                                     }
-                                }).execute();
+                                }
 
                             }
                         }
