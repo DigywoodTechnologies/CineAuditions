@@ -97,80 +97,84 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
 
         status = "Connecting to server..";
         publishProgress(status);
-
-
-
+        
         try {
 
-            int upload_res=uploadFile(path,userid,hmap);
+            if(path!=null){
+                int upload_res=uploadFile(path,userid,hmap);
+                if(upload_res==200){
+                    Log.e("AdvtBackgroundTask---","image uploaded");
+                }else{
+                    Log.e("AdvtBackgroundTask---","image not uploaded");
+                }
 
-            if(upload_res==200){
-                HttpClient httpClient = new DefaultHttpClient();
-                httpPost = new HttpPost(urlAddress);
-                List<? super NameValuePair> nvps = new ArrayList<>();
+            }else {
+
+            }
+
+            HttpClient httpClient = new DefaultHttpClient();
+            httpPost = new HttpPost(urlAddress);
+            List<? super NameValuePair> nvps = new ArrayList<>();
 
 		/* Adding Arguments to List Of Name value Pairs  */
-                Set<Map.Entry<String, String>> set = hmap.entrySet();
-                Iterator<Map.Entry<String, String>> iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    @SuppressWarnings("rawtypes")
-                    Map.Entry mentry = (Map.Entry) iterator.next();
-                    nvps.add(new BasicNameValuePair(mentry.getKey().toString(),mentry.getValue().toString()));
-                    Log.d("JSON_SERVICE", "result-nvps..."+nvps);
-                }
+            Set<Map.Entry<String, String>> set = hmap.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
+            while (iterator.hasNext()) {
+                @SuppressWarnings("rawtypes")
+                Map.Entry mentry = (Map.Entry) iterator.next();
+                nvps.add(new BasicNameValuePair(mentry.getKey().toString(),mentry.getValue().toString()));
+                Log.d("JSON_SERVICE", "result-nvps..."+nvps);
+            }
 
-                try {
-                    httpPost.setEntity(new UrlEncodedFormEntity((List<? extends NameValuePair>) nvps));
-                    response = httpClient.execute(httpPost);
-                    int responCode = response.getStatusLine().getStatusCode();
-                    status = getHttpStatusDescription(responCode);
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity((List<? extends NameValuePair>) nvps));
+                response = httpClient.execute(httpPost);
+                int responCode = response.getStatusLine().getStatusCode();
+                status = getHttpStatusDescription(responCode);
+                publishProgress(status);
+
+                HttpEntity entity = response.getEntity();
+                InputStream is = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    sb.append(line);
+
+                    status = "Loading the data..";
                     publishProgress(status);
-
-                    HttpEntity entity = response.getEntity();
-                    InputStream is = entity.getContent();
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(is, "UTF-8"), 8);
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-
-                        sb.append(line);
-
-                        status = "Loading the data..";
-                        publishProgress(status);
-                    }
-
-                    System.out.println("JSONArray--" + sb.toString());
-                    is.close();
-                    resultString = sb.toString();
-
-                    if(!resultString.equalsIgnoreCase("Not Inserted")){
-                        moveFile(path,URLClass.myadspath);
-                    }
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-
                 }
-                finally {
-                    HttpEntity entity  = response.getEntity();
-                    try {
-                        if (entity != null) {
-                            httpPost.abort();
-                        }
-                    }
-                    catch(NullPointerException e){
-                        e.printStackTrace();
+
+                System.out.println("JSONArray--" + sb.toString());
+                is.close();
+                resultString = sb.toString();
+
+                if(!resultString.equalsIgnoreCase("Not Inserted")){
+                    moveFile(path,URLClass.myadspath);
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+            finally {
+                HttpEntity entity  = response.getEntity();
+                try {
+                    if (entity != null) {
+                        httpPost.abort();
                     }
                 }
-            }else{
-                resultString="Unable Process";
+                catch(NullPointerException e){
+                    e.printStackTrace();
+                }
             }
 
         }  catch (Exception e) {

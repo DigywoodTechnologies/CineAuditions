@@ -106,7 +106,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     BagroundTask task1;
     int advtId;
     int count=0;
-    String path="",fileType="";
+    String path="",fileType=null;
     String myfile;
     ArrayList<String> myList=new ArrayList<>();
     CustomGrid adapter;
@@ -261,85 +261,106 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
                     if (isInternetConnected()) {
 
-                        orgIdSt ="ORG001";
-                        captionSt = captionEt.getText().toString();
-                        descSt = descEt.getText().toString();
-                        startdateSt = startdateEt.getText().toString();
-                        endDateSt = endDateEt.getText().toString();
-                        contactnameSt = contactnameEt.getText().toString();
-                        phnoSt = phnoEt.getText().toString();
-                        emailIdSt = emailIdEt.getText().toString();
-                        status ="created";
-
-                        Calendar c1 = Calendar.getInstance();
-                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                        downloadDate = sdf1.format(c1.getTime());
-
                         try {
-                            if(imagebyte!=null){
-                                encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
-                            }
-                            else{
-                                encodedImage="";
-                            }
+                            myList = adapter.getChkList();
                         }catch (Exception e){
                             e.printStackTrace();
                             Log.e("AdvtInfoScreen---",e.toString());
                         }
 
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                        String currentDateandTime = sdf.format(new Date());
+                        if(myList.size()!=0){
+                            orgIdSt ="ORG001";
+                            captionSt = captionEt.getText().toString();
+                            descSt = descEt.getText().toString();
+                            startdateSt = startdateEt.getText().toString();
+                            endDateSt = endDateEt.getText().toString();
+                            contactnameSt = contactnameEt.getText().toString();
+                            phnoSt = phnoEt.getText().toString();
+                            emailIdSt = emailIdEt.getText().toString();
+                            status ="created";
 
-                        fileName=MobileNo+"_"+currentDateandTime +fileType;
-                        fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
+                            Calendar c1 = Calendar.getInstance();
+                            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            downloadDate = sdf1.format(c1.getTime());
 
-                        url = URLClass.hosturl+"insertAdvtInfo.php";
-                        hmap.clear();
-                        hmap.put("orgId",orgIdSt);
-                        hmap.put("userId",MobileNo);
-                        hmap.put("caption",captionSt);
-                        hmap.put("description",descSt);
-                        hmap.put("fileType",fileType);
-                        hmap.put("fileName",fileName);
-                        hmap.put("filePath",fileUrl);
-                        hmap.put("startDate",startdateSt);
-                        hmap.put("endDate",endDateSt);
-                        hmap.put("contactName",contactnameSt);
-                        hmap.put("contactNumber",phnoSt);
-                        hmap.put("emailId",emailIdSt);
-                        hmap.put("createdTime",downloadDate);
-                        hmap.put("status",status);
+//                            try {
+//                                if(imagebyte!=null){
+//                                    encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
+//                                }
+//                                else{
+//                                    encodedImage="";
+//                                }
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                                Log.e("AdvtInfoScreen---",e.toString());
+//                            }
 
-                        final String str = "";
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                            String currentDateandTime = sdf.format(new Date());
 
-                        try {
-                            //inserting advertisement into server
-                            new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
-                                @Override
-                                public void bagroundData(String json) {
-                                    Log.e("ja", "comes:" + json);
+                            if(fileType!=null){
 
-                                    if (!json.equalsIgnoreCase("Not Inserted")) {
-                                        advtId = Integer.parseInt(json);
-                                        Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
-                                        //inserting advertisement into local advertisement list
-                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-                                        if(insertFlag>0){
-                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-                                            insertCatSubcat(advtId);
-                                        }else{
-                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                fileName=MobileNo+"_"+currentDateandTime +fileType;
+                                fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
+
+                            }else{
+
+                                fileType="";
+                                fileName="";
+                                fileUrl="";
+
+                            }
+
+                            url = URLClass.hosturl+"insertAdvtInfo.php";
+                            hmap.clear();
+                            hmap.put("orgId",orgIdSt);
+                            hmap.put("userId",MobileNo);
+                            hmap.put("caption",captionSt);
+                            hmap.put("description",descSt);
+                            hmap.put("fileType",fileType);
+                            hmap.put("fileName",fileName);
+                            hmap.put("filePath",fileUrl);
+                            hmap.put("startDate",startdateSt);
+                            hmap.put("endDate",endDateSt);
+                            hmap.put("contactName",contactnameSt);
+                            hmap.put("contactNumber",phnoSt);
+                            hmap.put("emailId",emailIdSt);
+                            hmap.put("createdTime",downloadDate);
+                            hmap.put("status",status);
+
+                            final String str = "";
+
+                            try {
+                                //inserting advertisement into server
+                                new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
+                                    @Override
+                                    public void bagroundData(String json) {
+                                        Log.e("ja", "comes:" + json);
+
+                                        if (!json.equalsIgnoreCase("Not Inserted")) {
+                                            advtId = Integer.parseInt(json);
+                                            Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
+                                            //inserting advertisement into local advertisement list
+                                            long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+                                            if(insertFlag>0){
+                                                Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+                                                insertCatSubcat(advtId);
+                                            }else{
+                                                Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                            }
+
+                                        } else {
+                                            Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
                                         }
-
-                                    } else {
-                                        Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
                                     }
-                                }
-                            }).execute();
-                            Log.v("jo", str);
+                                }).execute();
+                                Log.v("jo", str);
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(AdvtInfoScreen.this,"Please Choose Any Services", Toast.LENGTH_LONG).show();
                         }
 
                     } else {
@@ -513,8 +534,14 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
     public void insertCatSubcat(int advtId){
 
-        myList.clear();
-        myList= adapter.getChkList();
+        try {
+            myList= adapter.getChkList();
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("AdvtInfoScreen---",e.toString());
+        }
+
+        Log.e("AdvtInfoScreen---",""+myList.size());
 
         if(myList.size()!=0){
 

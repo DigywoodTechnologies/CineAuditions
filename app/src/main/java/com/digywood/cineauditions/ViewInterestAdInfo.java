@@ -93,11 +93,16 @@ public class ViewInterestAdInfo extends AppCompatActivity {
         if(myad!=null){
 
             try {
-                Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
-                view_img.setImageBitmap(bmp);
+                if(!myad.getFilename().equalsIgnoreCase("")){
+                    Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
+                    view_img.setImageBitmap(bmp);
+                }else{
+                    Log.e("ViewInterestAdInfo---","No Image for Ad");
+                }
+
             }catch (Exception e){
                 e.printStackTrace();
-                Log.e("ViewAdvtInfo---",e.toString());
+                Log.e("ViewInterestAdInfo---",e.toString());
             }
 
             captionview.setText("" + myad.getCaption() + " ");
@@ -107,14 +112,14 @@ public class ViewInterestAdInfo extends AppCompatActivity {
             nameTv.setText(myad.getContactName());
             numberTv.setText(myad.getContactNumber());
             view_emailTv.setText(myad.getEmailId());
-            getCatSubcatIntMsg();
+            getCatSubcatInterestMsg();
         }else{
             Toast.makeText(getApplicationContext(),"No Data",Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void getCatSubcatIntMsg(){
+    public void getCatSubcatInterestMsg(){
 
         String url = URLClass.hosturl+"getSingleInterest.php";
         HashMap<String, String> hmap1 = new HashMap<>();

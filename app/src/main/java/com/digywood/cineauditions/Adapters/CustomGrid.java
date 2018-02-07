@@ -91,9 +91,6 @@ public class CustomGrid extends BaseAdapter {
                 checkBox.setChecked(false);
 
             }
-//            textView.setText(SubCategoryNamesList.get(position));
-//
-//            checkBox.setChecked(false);
 
             checkBox.setOnClickListener(new View.OnClickListener() {
 
@@ -126,11 +123,12 @@ public class CustomGrid extends BaseAdapter {
                         }
 
                     }
+                    Log.e("CustomGrid----",""+checkList.size());
                 }
             });
 
         } else {
-            grid = (View) convertView;
+            grid =convertView;
         }
         return grid;
     }

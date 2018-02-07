@@ -263,6 +263,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return  deleteFlag;
     }
 
+    public long deleteAllInterestedAdvts(){
+        long deleteFlag=0;
+        deleteFlag=db.delete("advt_interest_producer", null, null);
+        //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
+        return  deleteFlag;
+    }
+
     public Cursor getData(String sql){
         SQLiteDatabase database = getReadableDatabase();
         return database.rawQuery(sql, null);
