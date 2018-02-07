@@ -209,7 +209,7 @@ public class FullscreenActivity extends AppCompatActivity {
                             if (st.equals("verified") || st.equals("skipped")) {
                                 Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
                                 intent.putExtra("mobileNo", MobileNo);
-                                intent.putExtra("key", "F2");
+                                intent.putExtra("key", "F1");
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();

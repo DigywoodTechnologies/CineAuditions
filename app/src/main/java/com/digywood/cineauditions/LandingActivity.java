@@ -372,14 +372,14 @@ public class LandingActivity extends AppCompatActivity {
                 ArrayList<String> finalUrls=new ArrayList<>();
                 ArrayList<String> finalNames=new ArrayList<>();
                 try{
-                    Log.e("interestdelcount---","comes: "+json);
+                    Log.e("OwnAds---","comes: "+json);
                     if(!json.equalsIgnoreCase("NoData")){
 
                         long ownaddelcount=dbHelper.deleteAllAdvts();
                         Log.e("ownaddelcount---",""+ownaddelcount);
 
                         ja_ownads=new JSONArray(json);
-                        Log.e("InterestedAds Length--",""+ja_ownads.length());
+                        Log.e("OwnAdsLength--",""+ja_ownads.length());
                         int p=0,q=0;
                         for(int i=0;i<ja_ownads.length();i++){
 
@@ -464,7 +464,7 @@ public class LandingActivity extends AppCompatActivity {
 
         HashMap<String,String> hmap=new HashMap<>();
         hmap.put("userId",phno);
-        new BagroundTask(URLClass.hosturl+"getInterestedAdsofUser.php", hmap, LandingActivity.this, new IBagroundListener() {
+        new BagroundTask(URLClass.hosturl+"getInterestedAdsofUser.php", hmap, LandingActivity.this,new IBagroundListener() {
             @Override
             public void bagroundData(String json) throws JSONException {
 

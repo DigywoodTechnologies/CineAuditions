@@ -24,12 +24,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digywood.cineauditions.Adapters.MyAdapter;
+import com.digywood.cineauditions.AdvtInfoScreen;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.HidingScrollListener;
@@ -66,7 +68,8 @@ public class ItemsFragment extends Fragment {
 
     int[] _intAdvtlist;
     int advtId;
-    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();;
+    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();
+    ArrayList<String> newList = new ArrayList<>();;
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SinglePreference> AdvtprefList = new ArrayList<SinglePreference>();
@@ -190,28 +193,70 @@ public class ItemsFragment extends Fragment {
         myTypeface3 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exolight.otf");
         myTypeface4 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exobold.otf");
 
+//        ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//                Log.e("ItemsFragment----","first: "+firstVisibleItem+" : visibleCount: "+visibleItemCount+" : totalItemCount: "+totalItemCount);
+//                if(firstVisibleItem+visibleItemCount==totalItemCount && totalItemCount!=0){
+//
+//                    if(flag_loading == false){
+//
+//                        flag_loading=true;
+//                        hmap.clear();
+//                        hmap.put("userId",MobileNo);
+//                        hmap.put("offset",String.valueOf(Advtlist.size()));
+//                        Log.e("OffSet",""+Advtlist.size());
+//                        pgetAllItemsDetailsFromHost(hmap);
+//                    }
+//                }
+//            }
+//        });
+
         ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private int currentVisibleItemCount;
+            private int currentScrollState;
+            private int currentFirstVisibleItem;
+            private int totalItem;
+            private LinearLayout lBelow;
+
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+                // TODO Auto-generated method stub
+                this.currentScrollState = scrollState;
+                this.isScrollCompleted();
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                // TODO Auto-generated method stub
+                this.currentFirstVisibleItem = firstVisibleItem;
+                this.currentVisibleItemCount = visibleItemCount;
+                this.totalItem = totalItemCount;
 
-                if(firstVisibleItem+visibleItemCount==totalItemCount && totalItemCount!=0){
 
-                    if(flag_loading == false){
+            }
 
-                        flag_loading=true;
-                        hmap.clear();
-                        hmap.put("userId",MobileNo);
-                        hmap.put("offset",String.valueOf(Advtlist.size()));
-                        pgetAllItemsDetailsFromHost(hmap);
-                    }
+            private void isScrollCompleted() {
+                if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
+                        && this.currentScrollState == SCROLL_STATE_IDLE) {
+                    hmap.clear();
+                    hmap.put("userId",MobileNo);
+                    hmap.put("offset",String.valueOf(Advtlist.size()));
+                    Log.e("OffSet",""+Advtlist.size());
+                    pgetAllItemsDetailsFromHost(hmap);
+
                 }
             }
         });
+
 
         return inflate;
     }
@@ -327,7 +372,6 @@ public class ItemsFragment extends Fragment {
 
     public void pgetAllItemsDetailsFromHost(HashMap<String,String> hmap)
     {
-//        dbHelper.deleteAllPrefAdvts();
 
         url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
 
@@ -356,12 +400,21 @@ public class ItemsFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
+                                if(Advtlist.size()!=0){
+                                    Log.e("ItemsFragment----","AdvtListSize: "+Advtlist.size());
+                                    for(int i=0;i<Advtlist.size();i++){
+
+                                        Log.e("AdvtId: ",""+Advtlist.get(i).getAdvtRefNo());
+
+                                    }
+                                }
+
                                 mAdapter.updateList(Advtlist);
                             }
                         }else{
-                            tv_emptydata.setVisibility(View.VISIBLE);
-                            ItemLv.setSystemUiVisibility(View.GONE);
-                            tv_emptydata.setText("No Recent Posts Found");
+//                            tv_emptydata.setVisibility(View.VISIBLE);
+//                            ItemLv.setSystemUiVisibility(View.GONE);
+//                            tv_emptydata.setText("No Recent Posts Found");
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }
@@ -373,6 +426,7 @@ public class ItemsFragment extends Fragment {
         }catch (Exception e){
             e.printStackTrace();
         }
+        flag_loading=false;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
