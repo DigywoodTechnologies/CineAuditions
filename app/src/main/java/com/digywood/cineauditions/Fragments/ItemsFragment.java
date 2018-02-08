@@ -146,8 +146,8 @@ public class ItemsFragment extends Fragment {
             MobileNo = cmgintent.getStringExtra("mobileNo");
             //tv_producer_phno.setText(MobileNo);
         }
-//        SetPreferencesFragment obj = new SetPreferencesFragment();
-//        obj.setChecked();
+        SetPreferencesFragment obj = new SetPreferencesFragment();
+        obj.setChecked();
         //Checking for user preference locally
         int checkFlag = 0;
         checkFlag = (int) dbHelper.checkPreferencesExist(MobileNo);

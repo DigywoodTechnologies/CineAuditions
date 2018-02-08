@@ -102,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<SingleSubcat> getCatIdbySubcatid(String subctname){
         ArrayList<SingleSubcat> myList=new ArrayList<>();
 
-        Cursor c =db.query("sub_category_table", new String[] {"keyId","categoryId","subCategoryId","longName"},"longName='"+subctname+"'", null, null, null,null);
+        Cursor c =db.query("sub_category_table", new String[] {"keyId","categoryId","subCategoryId"},"longName='"+subctname+"'", null, null, null,null);
         while (c.moveToNext()) {
 
             myList.add(new SingleSubcat(c.getString(c.getColumnIndex("categoryId")),c.getString(c.getColumnIndex("subCategoryId"))));
@@ -130,6 +130,17 @@ public class DBHelper extends SQLiteOpenHelper {
             cat_name=c.getString(c.getColumnIndex("categoryId"));
         }
         return cat_name;
+    }
+
+    public String getCatName(String catId){
+        String cat_id=null;
+
+        Cursor c =db.query("category_table", new String[] {"keyId","longName"},"categoryId='"+catId+"'", null, null, null,null);
+        while (c.moveToNext()) {
+
+            cat_id=c.getString(c.getColumnIndex("longName"));
+        }
+        return cat_id;
     }
 
     public ArrayList<String> getCatNames(ArrayList<String> catIds){

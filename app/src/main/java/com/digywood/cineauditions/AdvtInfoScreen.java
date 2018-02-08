@@ -700,9 +700,14 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                 CatSubcat.put("advtId",advtId);
                 ArrayList<SingleSubcat> mysubcatList=dbHelper.getCatIdbySubcatid(finalList.get(i));
                 SingleSubcat mysubcat=mysubcatList.get(0);
-
                 CatSubcat.put("category",mysubcat.getCatid());
                 CatSubcat.put("subCategory",mysubcat.getSubcatid());
+                String catname=dbHelper.getCatName(mysubcat.getCatid());
+                CatSubcat.put("catName",catname);
+                CatSubcat.put("subCatName",finalList.get(i));
+
+//                Log.e("Values: "," Catid: "+mysubcat.getCatid()+" Subcatid: "+mysubcat.getSubcatid()+" catName: "+catname+" SubcatName: "+finalList.get(i));
+
                 UserCatSubcat.put(CatSubcat);
             }
             job.put("CatSubcatData",UserCatSubcat);

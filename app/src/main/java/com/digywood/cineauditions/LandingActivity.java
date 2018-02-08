@@ -1,12 +1,16 @@
 package com.digywood.cineauditions;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,6 +43,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.digywood.cineauditions.AdvtInfoScreen.RequestPermissionCode;
 
 public class LandingActivity extends AppCompatActivity {
 
@@ -270,57 +278,12 @@ public class LandingActivity extends AppCompatActivity {
 
         if (id == R.id.action_refresh){
 
-            if(navItemIndex==0){
-                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            syncData();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }).execute();
-            }else if(navItemIndex==1){
-                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            syncOwnAds();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }).execute();
-            }else if(navItemIndex==2){
-                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            syncData();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }).execute();
-            }else if(navItemIndex==3){
-                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            syncInterestedAds();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }).execute();
+            if(checkPermission()){
+                refresh();
             }else{
-
+                requestPermission();
             }
+
             return true;
         }
 
@@ -398,6 +361,60 @@ public class LandingActivity extends AppCompatActivity {
         if (navItemIndex == 0) {//    fab.show();
         }else{}
 //            fab.hide();
+    }
+
+    public void refresh(){
+        if(navItemIndex==0){
+            new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        syncData();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
+        }else if(navItemIndex==1){
+            new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        syncOwnAds();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
+        }else if(navItemIndex==2){
+            new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        syncData();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
+        }else if(navItemIndex==3){
+            new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        syncInterestedAds();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
+        }else{
+
+        }
     }
 
     public void syncOwnAds(){
@@ -717,6 +734,37 @@ public class LandingActivity extends AppCompatActivity {
             }
         }).execute();
     }
+
+    ///
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED && result1==PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(LandingActivity.this, new
+                String[]{WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE},RequestPermissionCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == RequestPermissionCode){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                refresh();
+            }
+            else {
+                Toast.makeText(LandingActivity.this, "You don't have permission to access file location!", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+    ///
 }
 
 
