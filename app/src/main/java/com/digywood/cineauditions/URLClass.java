@@ -18,4 +18,6 @@ public class URLClass {
 
       public static String interestedpath=android.os.Environment.getExternalStorageDirectory().toString()+ "/CiniAuditions/InterestedAds/";
 
+      public static String temppath=android.os.Environment.getExternalStorageDirectory().toString()+ "/CiniAuditions/temp/";
+
 }
