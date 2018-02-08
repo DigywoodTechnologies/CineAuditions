@@ -48,6 +48,9 @@
             android:name=".AdvtInfoScreen"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ViewInterestAdInfo"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ListofInterests"
             android:screenOrientation="portrait" />
         <activity

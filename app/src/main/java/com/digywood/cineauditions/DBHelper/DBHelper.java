@@ -40,11 +40,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(tblProducerReg_Status);
 
         String tblItemTable="CREATE TABLE IF NOT EXISTS advt_info_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text, caption text, description text," +
-                "  startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblItemTable);
 
-        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_pref_producer(advtRefNo INTEGER PRIMARY KEY, orgId text, producer_id text, caption text, description text," +
-                " image BLOB, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text, caption text, description text," +
+                "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblAdvtPrefTable);
 
         String tblPreferences="CREATE TABLE IF NOT EXISTS preferences_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, userId text, " +
@@ -132,6 +132,48 @@ public class DBHelper extends SQLiteOpenHelper {
         return cat_name;
     }
 
+    public ArrayList<String> getCatNames(ArrayList<String> catIds){
+        ArrayList<String> catNames=new ArrayList<>();
+        String catName=null;
+        String fullname=null;
+
+        if(catIds.size()!=0){
+            for(int i=0;i<catIds.size();i++){
+                fullname=fullname+catIds.get(i)+",";
+            }
+        }
+
+        Cursor c =db.query("category_table", new String[] {"longName"},"categoryId IN ("+fullname+")", null, null, null,null);
+        while (c.moveToNext()) {
+            catName=c.getString(c.getColumnIndex("longName"));
+            catNames.add(catName);
+        }
+        return catNames;
+    }
+
+    public ArrayList<String> getSubCatNames(ArrayList<String> subCatIds){
+        ArrayList<String> subCatNames=new ArrayList<>();
+        String subcatName=null;
+        String fullname="";
+
+        if(subCatIds.size()!=0){
+            for(int i=0;i<subCatIds.size();i++){
+                if(i==0){
+                    fullname="'"+subCatIds.get(i)+"'";
+                }else{
+                    fullname=fullname+","+"'"+subCatIds.get(i)+"'";
+                }
+            }
+        }
+
+        Cursor c =db.query("sub_category_table", new String[] {"longName"},"subCategoryId IN ("+fullname+")", null, null, null,null);
+        while (c.moveToNext()) {
+            subcatName=c.getString(c.getColumnIndex("longName"));
+            subCatNames.add(subcatName);
+        }
+        return subCatNames;
+    }
+
     public long updateProducer(String phno, String otp, String status, String regDate){
         long updateFlag=0;
         ContentValues cv = new ContentValues();
@@ -192,7 +234,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return AddressList;
 //    }
 
-    public long insertNewAdvt( int keyId, String orgId, String producer_id,String caption, String description, String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
+    public long insertNewAdvt( int keyId,String orgId,String producer_id,String caption, String description,String fileType,String fileName,String filePath,String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
         long insertFlag=0;
         ContentValues cv = new ContentValues();
         cv.put("advtRefNo", keyId);
@@ -200,6 +242,9 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("producer_id", producer_id);
         cv.put("caption", caption);
         cv.put("description", description);
+        cv.put("fileType", fileType);
+        cv.put("fileName", fileName);
+        cv.put("filePath", filePath);
         cv.put("startDate", startDate);
         cv.put("endDate", endDate);
         cv.put("contactName", contactName);
@@ -207,8 +252,29 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("emailId", emailId);
         cv.put("createdTime", createdTime);
         cv.put("status", status);
-
         insertFlag = db.insert("advt_info_producer",null, cv);
+        return insertFlag;
+    }
+
+    public long insertInterestedAdvt(int keyId,String orgId,String producer_id,String caption, String description,String fileType,String fileName,String filePath,String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
+        long insertFlag=0;
+        ContentValues cv = new ContentValues();
+        cv.put("advtRefNo",keyId);
+        cv.put("orgId", orgId);
+        cv.put("producer_id", producer_id);
+        cv.put("caption", caption);
+        cv.put("description", description);
+        cv.put("fileType", fileType);
+        cv.put("fileName", fileName);
+        cv.put("filePath", filePath);
+        cv.put("startDate", startDate);
+        cv.put("endDate", endDate);
+        cv.put("contactName", contactName);
+        cv.put("contactNumber", contactNumber);
+        cv.put("emailId", emailId);
+        cv.put("createdTime", createdTime);
+        cv.put("status", status);
+        insertFlag = db.insert("advt_interest_producer",null, cv);
         return insertFlag;
     }
 
@@ -239,6 +305,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return  deleteFlag;
     }
 
+    public long deleteAllInterestedAdvts(){
+        long deleteFlag=0;
+        deleteFlag=db.delete("advt_interest_producer", null, null);
+        //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
+        return  deleteFlag;
+    }
+
     public Cursor getData(String sql){
         SQLiteDatabase database = getReadableDatabase();
         return database.rawQuery(sql, null);
@@ -262,28 +335,40 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return AdvtList;
 //    }
 
-    public SingleAdvt getAllAdvtProducer(int producer_id){
+    public SingleAdvt getLocalAd(int producer_id){
         SingleAdvt myad =null;
 
-        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","orgId","producer_id","caption","description","image","startDate","endDate","contactName","contactNumber","emailId","createdTime","status"}, "advtRefNo='"+producer_id+"'", null, null, null, "createdTime DESC");
+        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","orgId","producer_id","caption","description","fileType","fileName","filePath","startDate","endDate","contactName","contactNumber","emailId","createdTime","status"}, "advtRefNo='"+producer_id+"'", null, null, null, "createdTime DESC");
         while (c.moveToNext()) {
 
             myad=new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),
+                    c.getString(c.getColumnIndex("description")),c.getString(c.getColumnIndex("fileType")),
+                    c.getString(c.getColumnIndex("fileName")),c.getString(c.getColumnIndex("filePath")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
                     c.getString(c.getColumnIndex("status")));
 
-//            AdvtList.add(new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
-//                    c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-//                    c.getString(c.getColumnIndex("description")),c.getBlob(c.getColumnIndex("image")),
-//                    c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
-//                    c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
-//                    c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
-//                    c.getString(c.getColumnIndex("status"))
-//            ));
+        }
+        return myad;
+    }
+
+    public SingleAdvt getLocalInterestedAd(int advtid){
+        SingleAdvt myad =null;
+
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","orgId","producer_id","caption","description","fileType","fileName","filePath","startDate","endDate","contactName","contactNumber","emailId","createdTime","status"}, "advtRefNo='"+advtid+"'", null, null, null, null);
+        while (c.moveToNext()) {
+
+            myad=new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
+                    c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
+                    c.getString(c.getColumnIndex("description")),c.getString(c.getColumnIndex("fileType")),
+                    c.getString(c.getColumnIndex("fileName")),c.getString(c.getColumnIndex("filePath")),
+                    c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
+                    c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
+                    c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
+                    c.getString(c.getColumnIndex("status")));
+
         }
         return myad;
     }
@@ -324,10 +409,32 @@ public class DBHelper extends SQLiteOpenHelper {
         return AdvtList;
     }
 
+    public ArrayList<SingleAd> getInterestedAdvts(String phno) {
+        ArrayList<SingleAd> AdvtList = new ArrayList<>();
+
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"producer_id='"+phno+"'", null, null, null, "createdTime DESC");
+        while (c.moveToNext()) {
+
+            AdvtList.add(new SingleAd(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("createdTime")),
+                    c.getString(c.getColumnIndex("caption")),c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate"))
+
+            ));
+        }
+        return AdvtList;
+    }
+
     public int getAdvtCount(String phno) {
         int count=0;
 
-        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"}, "producer_id='"+phno+"'", null, null, null, "createdTime DESC");
+        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"producer_id='"+phno+"'" , null, null, null, "createdTime DESC");
+        count=c.getCount();
+        return count;
+    }
+
+    public int getInterestedAdvtCount(String phno) {
+        int count=0;
+
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"}, "producer_id='"+phno+"'", null, null, null, "createdTime DESC");
         count=c.getCount();
         return count;
     }
@@ -340,7 +447,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             AdvtList.add(new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),
+                    c.getString(c.getColumnIndex("description")),c.getString(c.getColumnIndex("fileType")),
+                    c.getString(c.getColumnIndex("fileName")),c.getString(c.getColumnIndex("filePath")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),
@@ -449,7 +557,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             PrefAdvtList.add(new SingleAdvt(c.getInt(c.getColumnIndex("advtId")),c.getString(c.getColumnIndex("orgId")),
                     c.getString(c.getColumnIndex("producer_id")),c.getString(c.getColumnIndex("caption")),
-                    c.getString(c.getColumnIndex("description")),
+                    c.getString(c.getColumnIndex("description")),c.getString(c.getColumnIndex("fileType")),
+                    c.getString(c.getColumnIndex("fileName")),c.getString(c.getColumnIndex("filePath")),
                     c.getString(c.getColumnIndex("startDate")),c.getString(c.getColumnIndex("endDate")),
                     c.getString(c.getColumnIndex("contactName")), c.getString(c.getColumnIndex("contactNumber")),
                     c.getString(c.getColumnIndex("emailId")), c.getString(c.getColumnIndex("createdTime")),

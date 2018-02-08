@@ -24,16 +24,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digywood.cineauditions.Adapters.MyAdapter;
+import com.digywood.cineauditions.AdvtInfoScreen;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.HidingScrollListener;
 import com.digywood.cineauditions.IBagroundListener;
+import com.digywood.cineauditions.INetStatus;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleItem;
@@ -66,7 +70,8 @@ public class ItemsFragment extends Fragment {
 
     int[] _intAdvtlist;
     int advtId;
-    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();;
+    ArrayList<SingleAdvt> Advtlist = new ArrayList<>();
+    ArrayList<String> newList = new ArrayList<>();;
     ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
     ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
     ArrayList<SinglePreference> AdvtprefList = new ArrayList<SinglePreference>();
@@ -75,10 +80,12 @@ public class ItemsFragment extends Fragment {
     public ImageView imageView;
     public ListView ItemLv;
     Button upload,submit;
+    HashMap<String,String> hmap=new HashMap<>();
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
     String name_itemSt,price_itemSt,description_itemSt,shortName,ImageName,tax,group,status,createdby, createdDate, modifiedBy, modifiedDate,group1;
     ArrayList<SingleItem> ItemsList = new ArrayList<>();
     Dialog d,d1;
+    TextView tv_emptydata;
     boolean flag_loading=false;
     MyAdapter mAdapter;
     DBHelper dbHelper;
@@ -132,14 +139,15 @@ public class ItemsFragment extends Fragment {
         View inflate = inflater.inflate(R.layout.fragment_items, container, false);
 
         ItemLv = (ListView) inflate.findViewById(R.id.ItemsLv);
+        tv_emptydata=inflate.findViewById(R.id.tv_emptydata);
         dbHelper = new DBHelper(this.getContext());
         Intent cmgintent=getActivity().getIntent();
         if (cmgintent != null) {
             MobileNo = cmgintent.getStringExtra("mobileNo");
             //tv_producer_phno.setText(MobileNo);
         }
-        SetPreferencesFragment obj = new SetPreferencesFragment();
-        obj.setChecked();
+//        SetPreferencesFragment obj = new SetPreferencesFragment();
+//        obj.setChecked();
         //Checking for user preference locally
         int checkFlag = 0;
         checkFlag = (int) dbHelper.checkPreferencesExist(MobileNo);
@@ -151,7 +159,19 @@ public class ItemsFragment extends Fragment {
 //            Advtlist = dbHelper.getPrefAdvtProducer();
             //contact server to get all the advertisements
 
-            getAllItemsDetailsFromHost();
+            new AsyncCheckInternet(getActivity(), new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        hmap.put("userId",MobileNo);
+                        hmap.put("offset",String.valueOf(0));
+                        getAllItemsDetailsFromHost(hmap);
+                    }else{
+                        Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
             Log.d("Advtlist.size", "comes:" + Advtlist.size()+"||"+MobileNo);
 
         }else{
@@ -186,206 +206,156 @@ public class ItemsFragment extends Fragment {
         myTypeface3 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exolight.otf");
         myTypeface4 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/exobold.otf");
 
+//        ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//
+//                Log.e("ItemsFragment----","first: "+firstVisibleItem+" : visibleCount: "+visibleItemCount+" : totalItemCount: "+totalItemCount);
+//                if(firstVisibleItem+visibleItemCount==totalItemCount && totalItemCount!=0){
+//
+//                    if(flag_loading == false){
+//
+//                        flag_loading=true;
+//                        hmap.clear();
+//                        hmap.put("userId",MobileNo);
+//                        hmap.put("offset",String.valueOf(Advtlist.size()));
+//                        Log.e("OffSet",""+Advtlist.size());
+//                        pgetAllItemsDetailsFromHost(hmap);
+//                    }
+//                }
+//            }
+//        });
+
         ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private int currentVisibleItemCount;
+            private int currentScrollState;
+            private int currentFirstVisibleItem;
+            private int totalItem;
+            private LinearLayout lBelow;
+
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+                // TODO Auto-generated method stub
+                this.currentScrollState = scrollState;
+                this.isScrollCompleted();
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                // TODO Auto-generated method stub
+                this.currentFirstVisibleItem = firstVisibleItem;
+                this.currentVisibleItemCount = visibleItemCount;
+                this.totalItem = totalItemCount;
 
-                if(firstVisibleItem+visibleItemCount==totalItemCount && totalItemCount!=0){
 
-                    if(flag_loading == false){
+            }
 
-                        flag_loading=true;
-                        addItems();
-                    }
+            private void isScrollCompleted() {
+                if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
+                        && this.currentScrollState == SCROLL_STATE_IDLE) {
+
+                    new AsyncCheckInternet(getActivity(), new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
+                            if(netStatus){
+                                hmap.clear();
+                                hmap.put("userId",MobileNo);
+                                hmap.put("offset",String.valueOf(Advtlist.size()));
+                                Log.e("OffSet",""+Advtlist.size());
+                                pgetAllItemsDetailsFromHost(hmap);
+                            }else{
+                                Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    }).execute();
+
                 }
             }
         });
 
+
         return inflate;
     }
 
-//    public class ContactsBaseAdapter extends BaseAdapter {
-//        private static final String TAG = "CONTACTS_BASE_ADAPTER";
+//    public void addItems(){
 //
-//        Context context;
-//        ContactsBaseAdapter(Context c){
-//            context = c;
-//        }
-//        @Override
-//        public int getCount() {
-//            return Advtlist.size();
-//        }
+//        int value=Advtlist.size();
+//        SingleAdvt myad=Advtlist.get(value-1);
 //
-//        @Override
-//        public Object getItem(int i) {
-//            return Advtlist.get(i);
-//        }
-//        @Override
-//        public long getItemId(int i) {
-//            return i;
-//        }
-//        @Override
-//        public View getView(int i, View convertView, ViewGroup parent) {
-//            final ViewHolder holder;
+//        HashMap<String, String> hmap1 = new HashMap<>();
+//        url = URLClass.hosturl+"sample.php";
+//        hmap1.put("userId", MobileNo);
+//        hmap1.put("advtId",String.valueOf(myad.getAdvtRefNo()));
 //
-//            LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//            View rowView = inflater.inflate(R.layout.custom_noticelayout,parent, false);
-//            holder = new ViewHolder();
-//            holder.post_date = rowView.findViewById(R.id.date_notice);
-//            holder.caption = rowView.findViewById(R.id.caption_notice);
-//            holder.imageView = rowView.findViewById(R.id.photo);
-////            holder.start_date = (TextView) rowView.findViewById(R.id.start_dateTv);
-////            holder.end_date = (TextView) rowView.findViewById(R.id.end_dateTv);
-//
-//            _intAdvtlist= new int[Advtlist.size()];
-//            //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);
-//            for (int x = 0; x < _intAdvtlist.length; x++) {
-//
-//                holder.post_date.setText(Advtlist.get(i).getCreatedTime());
-//                holder.caption.setText(Advtlist.get(i).getCaption());
-//
-//                byte[] lotsImage = Advtlist.get(i).getImage();
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
-//                holder.imageView.setImageBitmap(bitmap);
-//
-////                holder.start_date.setText(Advtlist.get(i).getStartDate());
-////                holder.end_date.setText(Advtlist.get(i).getEndDate());
-//
-//            }
-//            final int final_i = i;
-//
-//            rowView.setOnClickListener(new View.OnClickListener() {
+//        try {
+//            new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
 //                @Override
-//                public void onClick(View view) {
+//                public void bagroundData(String json) {
+//                    try {
+//                        Log.e("output",json);
+//                        if(json!=null){
 //
-//                    SingleAdvt singlead = Advtlist.get(final_i);
+//                        }else{
 //
-//                    Intent intent = new Intent(getActivity(),RespondAvtInfo.class);
-//                    intent.putExtra("mobileNo",MobileNo);
-//                    intent.putExtra("time",singlead.getCreatedTime());
-//                    intent.putExtra("advtId",singlead.getAdvtRefNo());
-//                    intent.putExtra("key","notice");
-//                    Bundle extras=new Bundle();
-//                    extras.putByteArray("image",singlead.getImage());
-//                    extras.putString("caption",singlead.getCaption());
-//                    extras.putString("start",singlead.getStartDate());
-//                    extras.putString("end",singlead.getEndDate());
-//                    extras.putString("description",singlead.getDescription());
-//                    extras.putString("name",singlead.getContactName());
-//                    extras.putString("number",singlead.getContactNumber());
-//                    extras.putString("email",singlead.getEmailId());
-//                    intent.putExtras(extras);
-//                    startActivity(intent);
-//
-////                    d1=new Dialog(ListOfLots.this);
-////                    d1.getWindow();
-////                    d1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-////                    d1.setContentView(R.layout.new_lot_window);
-////                    d1.show();
+//                        }
+//                        JSONArray ja = new JSONArray(json);
+//                        Log.d("ja", "comes:" + ja);
+//                        if (ja.length() != 0) {
+//                            JSONObject jo = null;
+//                            for (int j = 0; j < ja.length(); j++) {
+//                                try {
+//                                    jo = ja.getJSONObject(j);
+//                                    byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
+//                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
+//                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
+//                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
+//                                            jo.getString("createdTime"), jo.getString("status"));*/
+//                                    SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
+//                                            jo.getString("description"),imageByte, jo.getString("startDate"), jo.getString("endDate"),
+//                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
+//                                            jo.getString("createdTime"), jo.getString("status"));
+//                                    Advtlist.add(newadvt);
+//                                    //advtId = Integer.parseInt(jo.getString("advtId"));
+//                                    Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+////                            mAdapter.updateList(Advtlist);
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 //                }
-//            });
-//            return rowView;
+//            }).execute();
+//        }catch (Exception e){
+//            e.printStackTrace();
 //        }
-//        public class ViewHolder
-//        {
-//            public TextView post_date,caption;
-//            public ImageView imageView;
-//        }
+//        flag_loading=false;
+//
 //    }
 
-
-    public boolean isInternetConnected() {
-        boolean iNetFlag = false;
-        try {
-            URL url = new URL("https://www.google.com");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(10000);
-            connection.connect();
-            iNetFlag = (connection.getResponseCode() == 200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return iNetFlag;
-    }
-
-    public void addItems(){
-
-        int value=Advtlist.size();
-        SingleAdvt myad=Advtlist.get(value-1);
-
-        HashMap<String, String> hmap1 = new HashMap<>();
-        url = URLClass.hosturl+"sample.php";
-        hmap1.put("userId", MobileNo);
-        hmap1.put("advtId",String.valueOf(myad.getAdvtRefNo()));
-
-        try {
-            new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
-                @Override
-                public void bagroundData(String json) {
-                    try {
-                        Log.e("output",json);
-                        if(json!=null){
-
-                        }else{
-
-                        }
-                        JSONArray ja = new JSONArray(json);
-                        Log.d("ja", "comes:" + ja);
-                        if (ja.length() != 0) {
-                            JSONObject jo = null;
-                            for (int j = 0; j < ja.length(); j++) {
-                                try {
-                                    jo = ja.getJSONObject(j);
-                                    byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));*/
-                                    SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"),imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));
-                                    Advtlist.add(newadvt);
-                                    //advtId = Integer.parseInt(jo.getString("advtId"));
-                                    Log.d("ja", "" + jo.getString("advtId")+"Inserted");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-//                            mAdapter.updateList(Advtlist);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).execute();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        flag_loading=false;
-
-    }
-
-    public void getAllItemsDetailsFromHost()
+    public void getAllItemsDetailsFromHost(HashMap<String,String> hmap)
     {
-        dbHelper.deleteAllPrefAdvts();
-        HashMap<String, String> hmap1 = new HashMap<>();
+//        dbHelper.deleteAllPrefAdvts();
+
         url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
-        hmap1.put("userId", MobileNo);
 
         try {
-            new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
+            new BagroundTask(url,hmap,getActivity(),new IBagroundListener() {
                 @Override
                 public void bagroundData(String json) {
                     try {
                         Log.e("output",json);
-                        if(json!=null){
+                        if(!json.equalsIgnoreCase("No-Records-Found")){
                             JSONArray ja = new JSONArray(json);
                             Log.d("ja", "comes:" + ja);
                             if (ja.length() != 0) {
@@ -393,13 +363,8 @@ public class ItemsFragment extends Fragment {
                                 for (int j = 0; j < ja.length(); j++) {
                                     try {
                                         jo = ja.getJSONObject(j);
-                                        byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));*/
                                         SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                                jo.getString("description"),imageByte,jo.getString("startDate"), jo.getString("endDate"),
+                                                jo.getString("description"),jo.getString("fileType"),jo.getString("fileName"),jo.getString("filePath"),jo.getString("startDate"), jo.getString("endDate"),
                                                 jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
                                                 jo.getString("createdTime"), jo.getString("status"));
                                         Advtlist.add(newadvt);
@@ -413,7 +378,9 @@ public class ItemsFragment extends Fragment {
                                 ItemLv.setAdapter(mAdapter);
                             }
                         }else{
-
+                            tv_emptydata.setVisibility(View.VISIBLE);
+                            ItemLv.setSystemUiVisibility(View.GONE);
+                            tv_emptydata.setText("No Recent Posts Found");
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }
@@ -425,6 +392,65 @@ public class ItemsFragment extends Fragment {
             }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void pgetAllItemsDetailsFromHost(HashMap<String,String> hmap)
+    {
+
+        url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
+
+        try {
+            new BagroundTask(url,hmap,getActivity(),new IBagroundListener() {
+                @Override
+                public void bagroundData(String json) {
+                    try {
+                        Log.e("output",json);
+                        if(!json.equalsIgnoreCase("No-Records-Found")){
+                            JSONArray ja = new JSONArray(json);
+                            Log.d("ja", "comes:" + ja);
+                            if (ja.length() != 0) {
+                                JSONObject jo = null;
+                                for (int j = 0; j < ja.length(); j++) {
+                                    try {
+                                        jo = ja.getJSONObject(j);
+                                        SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
+                                                jo.getString("description"),jo.getString("fileType"),jo.getString("fileName"),jo.getString("filePath"),jo.getString("startDate"), jo.getString("endDate"),
+                                                jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
+                                                jo.getString("createdTime"), jo.getString("status"));
+                                        Advtlist.add(newadvt);
+                                        //advtId = Integer.parseInt(jo.getString("advtId"));
+                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if(Advtlist.size()!=0){
+                                    Log.e("ItemsFragment----","AdvtListSize: "+Advtlist.size());
+                                    for(int i=0;i<Advtlist.size();i++){
+
+                                        Log.e("AdvtId: ",""+Advtlist.get(i).getAdvtRefNo());
+
+                                    }
+                                }
+
+                                mAdapter.updateList(Advtlist);
+                            }
+                        }else{
+//                            tv_emptydata.setVisibility(View.VISIBLE);
+//                            ItemLv.setSystemUiVisibility(View.GONE);
+//                            tv_emptydata.setText("No Recent Posts Found");
+                            Log.e("ItemsFragment----","Empty Advt List");
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        flag_loading=false;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -27,10 +27,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundAsynkTask;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.IBagroundListener;
+import com.digywood.cineauditions.INetStatus;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleProducer;
@@ -170,138 +173,147 @@ public class SetPreferencesFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Log.d("insertDetails:", "" + SelectedSubCategoryList.size());
-                url = "http://www.digywood.com/phpfiles/cinesooruProducer/insertPreferencesofUser.php";
-                try {
-                        BagroundAsynkTask task = new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
-                            @Override
-                            public void bagroundData(String json) {
-                            Log.e("PrefFragment-------", json);
-                            if (json.equals("Inserted")) {
+                new AsyncCheckInternet(getActivity(), new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            Log.d("insertDetails:", "" + SelectedSubCategoryList.size());
+                            url = "http://www.digywood.com/phpfiles/cinesooruProducer/insertPreferencesofUser.php";
+                            try {
+                                BagroundAsynkTask task = new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
+                                    @Override
+                                    public void bagroundData(String json) {
+                                        Log.e("PrefFragment-------", json);
+                                        if (json.equals("Inserted")) {
 //                                dbHelper.deleteAllPrefAdvts();
-                                HashMap<String, String> hmap1 = new HashMap<>();
-                                url = "http://www.digywood.com/phpfiles/cinesooruProducer/getUserPrefAdvtDetails.php";
-                                hmap1.put("userId", MobileNo);
-                                try {
+                                            HashMap<String, String> hmap1 = new HashMap<>();
+                                            url = "http://www.digywood.com/phpfiles/cinesooruProducer/getUserPrefAdvtDetails.php";
+                                            hmap1.put("userId", MobileNo);
+                                            try {
 
-                                    Log.e("InnerBackSelectList---",""+SelectedSubCategoryList.size());
-                                    Log.e("InnerBackAllPref---",""+Allpref.size());
+                                                Log.e("InnerBackSelectList---",""+SelectedSubCategoryList.size());
+                                                Log.e("InnerBackAllPref---",""+Allpref.size());
 
-                                    int inserts=0,updates=0,p=0,q=0,r=0,s=0,x=0,y=0;
-                                    for(int i=0;i<SelectedSubCategoryList.size();i++){
+                                                int inserts=0,updates=0,p=0,q=0,r=0,s=0,x=0,y=0;
+                                                for(int i=0;i<SelectedSubCategoryList.size();i++){
 
-                                        SingleSubCategory ssc=SelectedSubCategoryList.get(i);
+                                                    SingleSubCategory ssc=SelectedSubCategoryList.get(i);
 
 //                                        Log.e("If Cond---",ssc.getSubCategoryId());
 
 //                                        String subcatname=dbHelper.getSubCategoryName(ssc.getSubCategoryId());
 
-                                        if(Allpref.contains(ssc.getSubCategoryId())){
+                                                    if(Allpref.contains(ssc.getSubCategoryId())){
 
-                                            long updateFlag=dbHelper.updatePref(MobileNo,ssc.getSubCategoryId(),ssc.getStatus());
-                                            if(updateFlag>0){
-                                                x++;
-                                            }else{
-                                                y++;
-                                            }
+                                                        long updateFlag=dbHelper.updatePref(MobileNo,ssc.getSubCategoryId(),ssc.getStatus());
+                                                        if(updateFlag>0){
+                                                            x++;
+                                                        }else{
+                                                            y++;
+                                                        }
 
-                                        }else{
+                                                    }else{
 
-                                            if(ssc.getUploadstatus().equalsIgnoreCase("I")){
-                                                inserts++;
+                                                        if(ssc.getUploadstatus().equalsIgnoreCase("I")){
+                                                            inserts++;
 
-                                                long insertFlag=dbHelper.insertPref(ssc.getOrgId(),MobileNo,ssc.getCategoryId(),ssc.getSubCategoryId(),ssc.getStatus());
-                                                if(insertFlag>0){
-                                                    p++;
-                                                }else{
-                                                    q++;
+                                                            long insertFlag=dbHelper.insertPref(ssc.getOrgId(),MobileNo,ssc.getCategoryId(),ssc.getSubCategoryId(),ssc.getStatus());
+                                                            if(insertFlag>0){
+                                                                p++;
+                                                            }else{
+                                                                q++;
+                                                            }
+
+                                                        }else{
+
+                                                            updates++;
+                                                            long updateFlag=dbHelper.updatePref(MobileNo,ssc.getSubCategoryId(),ssc.getStatus());
+                                                            if(updateFlag>0){
+                                                                r++;
+                                                            }else{
+                                                                s++;
+                                                            }
+
+                                                        }
+                                                    }
+
                                                 }
 
-                                            }else{
+                                                if(p==inserts){
 
-                                                updates++;
-                                                long updateFlag=dbHelper.updatePref(MobileNo,ssc.getSubCategoryId(),ssc.getStatus());
-                                                if(updateFlag>0){
-                                                    r++;
+                                                    Log.e("PrefFragment----","Inserted: "+p+" : "+q);
                                                 }else{
-                                                    s++;
+                                                    Log.e("PrefFragment----","Not Inserted: "+p+" : "+q);
                                                 }
 
-                                            }
-                                        }
+                                                if(r==updates){
 
-                                    }
+                                                    Log.e("PrefFragment----","Updated: "+r+" : "+s);
+                                                }else{
+                                                    Log.e("PrefFragment----","Not Updated: "+r+" : "+s);
+                                                }
 
-                                    if(p==inserts){
+                                                Log.e("ExistUpdate----","Data: "+x+" : "+y);
 
-                                        Log.e("PrefFragment----","Inserted: "+p+" : "+q);
-                                    }else{
-                                        Log.e("PrefFragment----","Not Inserted: "+p+" : "+q);
-                                    }
-
-                                    if(r==updates){
-
-                                        Log.e("PrefFragment----","Updated: "+r+" : "+s);
-                                    }else{
-                                        Log.e("PrefFragment----","Not Updated: "+r+" : "+s);
-                                    }
-
-                                    Log.e("ExistUpdate----","Data: "+x+" : "+y);
-
-                                    BagroundTask task1 = new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
-                                        @Override
-                                        public void bagroundData(String json) {
-                                            try {
-                                                JSONArray ja = new JSONArray(json);
-                                                Log.d("ja", "comes:" + ja);
-                                                if (ja.length() != 0) {
-                                                    JSONObject jo = null;
-                                                    for (int j = 0; j < ja.length(); j++) {
+                                                BagroundTask task1 = new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
+                                                    @Override
+                                                    public void bagroundData(String json) {
                                                         try {
-                                                            jo = ja.getJSONObject(j);
+                                                            JSONArray ja = new JSONArray(json);
+                                                            Log.d("ja", "comes:" + ja);
+                                                            if (ja.length() != 0) {
+                                                                JSONObject jo = null;
+                                                                for (int j = 0; j < ja.length(); j++) {
+                                                                    try {
+                                                                        jo = ja.getJSONObject(j);
 
-                                                            byte[] imageByte = Base64.decode(jo.getString("image"),Base64.DEFAULT);
-                                                            dbHelper.insertPrefAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                                                    jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                                                    jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                                                    jo.getString("createdTime"), jo.getString("status"));
-                                                            //advtId = Integer.parseInt(jo.getString("advtId"));
-                                                            Log.d("ja", "" + jo.getString("advtId")+"Inserted");
-                                                        } catch (Exception e) {
+                                                                        byte[] imageByte = Base64.decode(jo.getString("image"),Base64.DEFAULT);
+                                                                        dbHelper.insertPrefAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
+                                                                                jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
+                                                                                jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
+                                                                                jo.getString("createdTime"), jo.getString("status"));
+                                                                        //advtId = Integer.parseInt(jo.getString("advtId"));
+                                                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+                                                                    } catch (Exception e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                }
+                                                            }
+                                                        } catch (JSONException e) {
                                                             e.printStackTrace();
                                                         }
                                                     }
-                                                }
-                                            } catch (JSONException e) {
+                                                });
+                                                task1.execute();
+                                                submit_pref.setVisibility(View.INVISIBLE);
+                                                Fragment fragment = new ItemsFragment();
+                                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                fragmentTransaction.replace(R.id.framelayout_items, fragment);
+                                                fragmentTransaction.addToBackStack(null);
+                                                fragmentTransaction.commit();
+
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
+                                            Toast.makeText(getActivity(), "Prefrences Updated to Server", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Preferences Updation to Server failed", Toast.LENGTH_SHORT).show();
                                         }
-                                    });
-                                    task1.execute();
-                                    submit_pref.setVisibility(View.INVISIBLE);
-                                    Fragment fragment = new ItemsFragment();
-                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    fragmentTransaction.replace(R.id.framelayout_items, fragment);
-                                    fragmentTransaction.addToBackStack(null);
-                                    fragmentTransaction.commit();
+                                    }
+                                });
+                                task.execute();
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                Toast.makeText(getActivity(), "Prefrences Updated to Server", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getActivity(), "Preferences Updation to Server failed", Toast.LENGTH_SHORT).show();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                                }
-                        });
-                        task.execute();
+                        }else{
+                            Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+                    }
+                }).execute();
 
             }
         });
@@ -514,7 +526,7 @@ public class SetPreferencesFragment extends Fragment {
             url = "http://www.digywood.com/phpfiles/cinesooruProducer/getUserPreferences.php";
             hmap1.put("userId", MobileNo);
             try {
-                BagroundTask task1 = new BagroundTask(url, hmap1, getActivity(), new IBagroundListener() {
+                BagroundTask task1 = new BagroundTask(url, hmap1, getActivity(),new IBagroundListener() {
                     @Override
                     public void bagroundData(String json) {
                         try {

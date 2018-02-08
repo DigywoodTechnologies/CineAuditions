@@ -1,11 +1,15 @@
 package com.digywood.cineauditions;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,31 +21,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
+import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.digywood.cineauditions.AdvtInfoScreen.RequestPermissionCode;
+
 public class RespondAvtInfo extends AppCompatActivity {
 
     int[] _intAdvtlist;
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat;
-    String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category;
+    String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
     String key=null;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
-    byte[] cmimage=null;
     ArrayList<String> subcatList;
     ArrayList<SingleAdvt> Advtlist;
+    ArrayList<String> catNames=new ArrayList<>();
+    ArrayList<String> subcatNames=new ArrayList<>();
     Typeface myTypeface1;
     CheckBox interested;
     EditText comment;
@@ -61,7 +73,9 @@ public class RespondAvtInfo extends AppCompatActivity {
             advtId = cmgintent.getIntExtra("advtId",0);
             Log.e("ViewAdvtInfo-----",""+advtId);
             Bundle getextras=cmgintent.getExtras();
-            cmimage=getextras.getByteArray("image");
+            cmdownloadUrl=getextras.getString("url");
+            cmfileType=getextras.getString("filetype");
+            cmfileName=getextras.getString("filename");
             cmcaption=getextras.getString("caption");
             cmstart=getextras.getString("start");
             cmend=getextras.getString("end");
@@ -69,6 +83,8 @@ public class RespondAvtInfo extends AppCompatActivity {
             cmname=getextras.getString("name");
             cmnumber=getextras.getString("number");
             cmemail=getextras.getString("email");
+            cmcreatetime=getextras.getString("createtime");
+            cmstatus=getextras.getString("status");
         }
 
         Advtlist = new ArrayList<SingleAdvt>();
@@ -101,8 +117,22 @@ public class RespondAvtInfo extends AppCompatActivity {
         tv_cat.setTypeface(myTypeface1);
         tv_subcat.setTypeface(myTypeface1);
 
-        Bitmap bitmap = BitmapFactory.decodeByteArray(cmimage, 0,cmimage.length);
-        view_img.setImageBitmap(bitmap);
+        try{
+            Log.e("RespondAdvtInfo---",cmdownloadUrl);
+            if(!cmdownloadUrl.equalsIgnoreCase("")){
+                Log.e("RespondAvtInfo---","not null");
+                URL url = new URL(cmdownloadUrl);
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                view_img.setImageBitmap(bmp);
+            }else{
+                Log.e("RespondAvtInfo---","null");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("RespondAdvtInfo---",e.toString());
+        }
+
         captionview.setText("" + cmcaption + " ");
         view_startTv.setText(cmstart);
         view_endTv.setText(cmend);
@@ -111,140 +141,239 @@ public class RespondAvtInfo extends AppCompatActivity {
         numberTv.setText(cmnumber);
         view_emailTv.setText(cmemail);
 
-        String url = URLClass.hosturl+"getSingleInterest.php";
-        HashMap<String, String> hmap1 = new HashMap<>();
+        new AsyncCheckInternet(RespondAvtInfo.this, new INetStatus() {
+            @Override
+            public void inetSatus(Boolean netStatus) {
+                if(netStatus){
+                    String url = URLClass.hosturl+"getSingleInterest.php";
+                    HashMap<String, String> hmap1 = new HashMap<>();
 
-        Log.e("ResponseAvtInfo---",MobileNo+" : "+advtId);
-        hmap1.put("userId", MobileNo);
-        hmap1.put("advtId", String.valueOf(advtId));
-
-        try {
-            new BagroundTask(url,hmap1,RespondAvtInfo.this, new IBagroundListener() {
-                @Override
-                public void bagroundData(String json) {
-
-                    JSONArray ja_catsubcat=null;
-                    JSONObject adcatsubcatjo=null;
+                    Log.e("ResponseAvtInfo---",MobileNo+" : "+advtId);
+                    hmap1.put("userId", MobileNo);
+                    hmap1.put("advtId", String.valueOf(advtId));
 
                     try {
-                        Log.e("AdvtInfo------", json);
+                        new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
+                            @Override
+                            public void bagroundData(String json) {
 
-                        JSONObject myObj=new JSONObject(json);
-                        JSONObject jo=null;
-                        String des=null;
-                        String date=null;
+                                JSONArray ja_catsubcat=null;
+                                JSONObject adcatsubcatjo=null;
 
-                        Object obj1=myObj.get("user_interest");
+                                try {
+                                    Log.e("AdvtInfo------", json);
 
-                        if (obj1 instanceof JSONArray)
-                        {
-                            interested.setChecked(true);
-                            interested.setEnabled(false);
-                            tv_interest.setVisibility(View.VISIBLE);
-                            JSONArray ja=myObj.getJSONArray("user_interest");
-                            for(int i=0;i<ja.length();i++){
-                                jo=ja.getJSONObject(i);
-                                des=jo.getString("description");
-                                date=jo.getString("uploadDateTime");
-                            }
-                            if(des.equals("")){
-                                tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
-                            }else{
-                                tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
-                            }
-                            comment.setVisibility(View.GONE);
-                            submit.setVisibility(View.GONE);
-                        }
-                        else {
-                            Log.e("Interest--","No Interest");
-                        }
+                                    JSONObject myObj=new JSONObject(json);
+                                    JSONObject jo=null;
+                                    String des=null;
+                                    String date=null;
 
-                        Object obj2=myObj.get("Advt_CatSubcat");
+                                    Object obj1=myObj.get("user_interest");
 
-                        if (obj2 instanceof JSONArray)
-                        {
-                            ja_catsubcat=myObj.getJSONArray("Advt_CatSubcat");
-                            if(ja_catsubcat.length()>0){
+                                    if (obj1 instanceof JSONArray)
+                                    {
+                                        interested.setChecked(true);
+                                        interested.setEnabled(false);
+                                        tv_interest.setVisibility(View.VISIBLE);
+                                        JSONArray ja=myObj.getJSONArray("user_interest");
+                                        for(int i=0;i<ja.length();i++){
+                                            jo=ja.getJSONObject(i);
+                                            des=jo.getString("description");
+                                            date=jo.getString("uploadDateTime");
+                                        }
+                                        if(des.equals("")){
+                                            tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
+                                        }else{
+                                            tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
+                                        }
+                                        comment.setVisibility(View.GONE);
+                                        submit.setVisibility(View.GONE);
+                                    }
+                                    else {
+                                        Log.e("Interest--","No Interest");
+                                    }
 
-                                Log.e("interestLength---",""+ja_catsubcat.length());
-                                int p=0,q=0;
-                                for(int i=0;i<ja_catsubcat.length();i++){
+                                    Object obj2=myObj.get("Advt_CatSubcat");
 
-                                    adcatsubcatjo=ja_catsubcat.getJSONObject(i);
+                                    if (obj2 instanceof JSONArray)
+                                    {
+                                        ja_catsubcat=myObj.getJSONArray("Advt_CatSubcat");
+                                        if(ja_catsubcat.length()>0){
 
-                                    category=adcatsubcatjo.getString("category");
-                                    String subcat=adcatsubcatjo.getString("subCategory");
-                                    subcatList.add(subcat);
+                                            Log.e("interestLength---",""+ja_catsubcat.length());
+                                            int p=0,q=0;
+                                            for(int i=0;i<ja_catsubcat.length();i++){
 
+                                                adcatsubcatjo=ja_catsubcat.getJSONObject(i);
+
+                                                category=adcatsubcatjo.getString("category");
+                                                String subcat=adcatsubcatjo.getString("subCategory");
+                                                subcatList.add(subcat);
+
+                                            }
+
+                                        }else{
+                                            Log.e("BackGroundTask--","EmptyJsonArray");
+                                        }
+                                    }
+                                    else {
+                                        Log.e("CatSubcat--","No Categories and SubCategories");
+                                    }
+
+                                    setData();
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    Log.e("RespondAvtInfo----",e.toString());
                                 }
-
-                            }else{
-                                Log.e("BackGroundTask--","EmptyJsonArray");
                             }
-                        }
-                        else {
-                            Log.e("CatSubcat--","No Categories and SubCategories");
-                        }
+                        }).execute();
 
-                        setData();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        Log.e("RespondAvtInfo----",e.toString());
                     }
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                 }
-            }).execute();
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            }
+        }).execute();
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String url = URLClass.hosturl+"insertUserIntrest.php";
-                HashMap<String, String> hmap1 = new HashMap<>();
-                String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().getTime());
-                hmap1.put("userId", MobileNo);
-                hmap1.put("advtId", String.valueOf(advtId));
-                hmap1.put("description", comment.getText().toString());
-                hmap1.put("uploadDateTime",timeStamp);
-                hmap1.put("flag", "A");
 
-                try {
-                    BagroundTask task = new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
-                        @Override
-                        public void bagroundData(String json) {
-                            Log.e("AdvtInfo------",json);
-                            if (json.equalsIgnoreCase("Not Inserted")) {
-                                Toast.makeText(getApplicationContext(), "Interest Insertion failed", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Interest Inserted", Toast.LENGTH_SHORT).show();
-                                int interestId=Integer.parseInt(json);
-                                long insertFlag=dbHelper.insertInterest(interestId,MobileNo,advtId,comment.getText().toString(),"A");
-                                if(insertFlag>0){
-                                    Toast.makeText(getApplicationContext(), "Inserted in Local", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
-                                }
+                new AsyncCheckInternet(RespondAvtInfo.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            final String url = URLClass.hosturl+"insertUserIntrest.php";
+                            HashMap<String, String> hmap1 = new HashMap<>();
+                            String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().getTime());
+                            hmap1.put("userId", MobileNo);
+                            hmap1.put("advtId", String.valueOf(advtId));
+                            hmap1.put("description", comment.getText().toString());
+                            hmap1.put("uploadDateTime",timeStamp);
+                            hmap1.put("flag", "A");
 
-                                finish();
-                                Intent i=new Intent(getApplicationContext(),LandingActivity.class);
-                                i.putExtra("mobileNo",MobileNo);
-                                i.putExtra("key","F1");
-                                startActivity(i);
+                            try {
+                                BagroundTask task = new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
+                                    @Override
+                                    public void bagroundData(String json) {
+                                        Log.e("AdvtInfo------",json);
+                                        if (json.equalsIgnoreCase("Not Inserted")) {
+                                            Toast.makeText(getApplicationContext(), "Interest Insertion failed", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Interest Inserted", Toast.LENGTH_SHORT).show();
+                                            int interestId=Integer.parseInt(json);
+                                            long insertFlag=dbHelper.insertInterest(interestId,MobileNo,advtId,comment.getText().toString(),"A");
+                                            if(insertFlag>0){
+                                                Toast.makeText(getApplicationContext(), "Inserted in Local", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            if(checkPermission()){
+                                                configureInterestAds();
+                                            }else{
+                                                requestPermission();
+                                            }
+
+                                        }
+                                    }
+                                });
+                                task.execute();
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                         }
-                    });
-                    task.execute();
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    }
+                }).execute();
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode == RequestPermissionCode){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+//                Intent intent = new Intent(Intent.ACTION_PICK);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, REQUEST_CODE_GALLERY);
+                configureInterestAds();
+            }
+            else {
+                Toast.makeText(RespondAvtInfo.this, "You don't have permission to access file location!", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void configureInterestAds(){
+        if(!cmdownloadUrl.equalsIgnoreCase("")){
+            String[] urlList={cmdownloadUrl};
+            String[] nameList={cmfileName};
+
+            new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList, new IDownloadStatus() {
+                @Override
+                public void downloadStatus(String status) {
+
+                    try{
+                        if(status.equalsIgnoreCase("Completed")){
+
+                            long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+                            if(insertFlag>0){
+                                Toast.makeText(getApplicationContext(),"Interest Inserted",Toast.LENGTH_SHORT).show();
+                                finish();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Interest Not Inserted",Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                        }else{
+
+                        }
+
+                    }catch (Exception e){
+
+                        e.printStackTrace();
+                        Log.e("DownloadFile----",e.toString());
+                    }
+                }
+            }).execute();
+
+        }else{
+            long insertFlag1=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+            if(insertFlag1>0){
+                Toast.makeText(getApplicationContext(),"Interest Inserted in Local",Toast.LENGTH_SHORT).show();
+                finish();
+            }else{
+                Toast.makeText(getApplicationContext(),"Interest Not Inserted in Local",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
+
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED && result1==PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(RespondAvtInfo.this, new
+                String[]{WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE},RequestPermissionCode);
     }
 
     public void setData(){
@@ -254,14 +383,16 @@ public class RespondAvtInfo extends AppCompatActivity {
         }else{
             tv_cat.setText("Category: No Selection");
         }
+
         if(subcatList.size()!=0){
 
+            subcatNames=dbHelper.getSubCatNames(subcatList);
             String subcatstr=null;
-            for(int i=0;i<subcatList.size();i++){
+            for(int i=0;i<subcatNames.size();i++){
                 if(i==0){
-                    subcatstr=""+subcatList.get(i);
+                    subcatstr=""+subcatNames.get(i);
                 }else{
-                    subcatstr=subcatstr+","+subcatList.get(i);
+                    subcatstr=subcatstr+","+subcatNames.get(i);
                 }
             }
             tv_subcat.setText("Sub-Categories: "+subcatstr);

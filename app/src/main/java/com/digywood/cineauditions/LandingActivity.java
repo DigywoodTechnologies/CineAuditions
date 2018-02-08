@@ -20,8 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
+import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
@@ -33,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LandingActivity extends AppCompatActivity {
@@ -49,8 +54,9 @@ public class LandingActivity extends AppCompatActivity {
     SingleProducer user;
     private boolean shouldLoadHomeFragOnBackPress = true;
     boolean openF2;
-    private InterestsFragment interestsFragment;
+    private ItemsFragment itemsFragment;
     DBHelper dbHelper;
+    SetPreferencesFragment obj = new SetPreferencesFragment();
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -58,10 +64,10 @@ public class LandingActivity extends AppCompatActivity {
     private static final String TAG_NOTICE_LIST = "notice list";
     private static final String TAG_POST_ADVT = "post advertisement";
     private static final String TAG_PUBLISH = "publish";
-    private static final String TAG_INTERESTS = "interests";
+    private static final String TAG_ORDERS = "orders";
+    private static final String TAG_ORDERS_DATA = "orders data";
     private static final String TAG_SETTINGS = "settings";
     public static String CURRENT_TAG = TAG_NOTICE_LIST;
-
 
     private Handler mHandler;
 
@@ -77,7 +83,6 @@ public class LandingActivity extends AppCompatActivity {
             key = cmgintent.getStringExtra("key");
 
         }
-        Log.e("Landing--->", phno);
 
         if(key!=null){
 
@@ -85,14 +90,17 @@ public class LandingActivity extends AppCompatActivity {
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
                 tx.replace(R.id.frame, new ItemsFragment());
                 tx.commit();
+                navItemIndex=0;
             }else if(key.equalsIgnoreCase("F2")){
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
                 tx.replace(R.id.frame, new ListOfAdvtsFragment());
                 tx.commit();
+                navItemIndex=1;
             }else{
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
                 tx.replace(R.id.frame, new ItemsFragment());
                 tx.commit();
+                navItemIndex=0;
             }
 
         }else{
@@ -222,8 +230,18 @@ public class LandingActivity extends AppCompatActivity {
                 SetPreferencesFragment setPreferencesFragment = new SetPreferencesFragment();
                 return setPreferencesFragment;
             case 3:
-                InterestsFragment interestsfragment = new InterestsFragment();
-                return interestsfragment;
+                InterestsFragment interestsFragment = new InterestsFragment();
+                return interestsFragment;
+//
+//            case 4:
+//
+//                OrdersdataActivity ordersdataActivity = new OrdersdataActivity();
+//                return ordersdataActivity;
+//
+//            case 5:
+//
+//                SettingsFragment settingsFragment = new SettingsFragment();
+//                return settingsFragment;
             default:
                 return new ItemsFragment();
         }
@@ -249,13 +267,66 @@ public class LandingActivity extends AppCompatActivity {
             dbHelper.deleteProducer(phno);
             return true;
         }
+
         if (id == R.id.action_refresh){
-            syncData();
+
+            if(navItemIndex==0){
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncData();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
+            }else if(navItemIndex==1){
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncOwnAds();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
+            }else if(navItemIndex==2){
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncData();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
+            }else if(navItemIndex==3){
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncInterestedAds();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
+            }else{
+
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
     private void setUpNavigationView() {
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -276,9 +347,9 @@ public class LandingActivity extends AppCompatActivity {
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_PUBLISH;
                         break;
-                    case R.id.nav_intrests:
+                    case R.id.nav_interestedads:
                         navItemIndex = 3;
-                        CURRENT_TAG = TAG_INTERESTS;
+                        CURRENT_TAG = TAG_ORDERS_DATA;
                         break;
 //                    case R.id.nav_settings:
 //                        navItemIndex = 5;
@@ -324,11 +395,210 @@ public class LandingActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
     }
     private void toggleFab() {
-        if (navItemIndex == 0) {//
-
-            //    fab.show();
+        if (navItemIndex == 0) {//    fab.show();
         }else{}
 //            fab.hide();
+    }
+
+    public void syncOwnAds(){
+        HashMap<String,String> hmap=new HashMap<>();
+        hmap.put("userId",phno);
+        new BagroundTask(URLClass.hosturl+"getAdsByUser.php", hmap, LandingActivity.this, new IBagroundListener() {
+            @Override
+            public void bagroundData(String json) throws JSONException {
+
+                JSONArray ja_ownads;
+                JSONObject ownadjo;
+                ArrayList<String> ownadNames=new ArrayList<>();
+                ArrayList<String> finalUrls=new ArrayList<>();
+                ArrayList<String> finalNames=new ArrayList<>();
+                try{
+                    Log.e("OwnAds---","comes: "+json);
+                    if(!json.equalsIgnoreCase("NoData")){
+
+                        long ownaddelcount=dbHelper.deleteAllAdvts();
+                        Log.e("ownaddelcount---",""+ownaddelcount);
+
+                        ja_ownads=new JSONArray(json);
+                        Log.e("OwnAdsLength--",""+ja_ownads.length());
+                        int p=0,q=0;
+                        for(int i=0;i<ja_ownads.length();i++){
+
+                            ownadjo=ja_ownads.getJSONObject(i);
+//                            String url=ownadjo.getString("filePath");
+                            String name=ownadjo.getString("fileName");
+                            if(!name.equalsIgnoreCase("")){
+//                                ownadUrls.add(url);
+                                ownadNames.add(name);
+                            }else{
+
+                            }
+                            long insertFlag=dbHelper.insertNewAdvt(ownadjo.getInt("advtId"),ownadjo.getString("orgId"),ownadjo.getString("userId"),ownadjo.getString("caption"),ownadjo.getString("description"),ownadjo.getString("fileType"),ownadjo.getString("fileName"),ownadjo.getString("filePath"),ownadjo.getString("startDate"),ownadjo.getString("endDate"),ownadjo.getString("contactName"),ownadjo.getString("contactNumber"),ownadjo.getString("emailId"),ownadjo.getString("createdTime"),ownadjo.getString("status"));
+                            if(insertFlag>0){
+                                p++;
+                            }else{
+                                q++;
+                            }
+
+                        }
+                        Log.e("LandingActivity----","Inserted--"+p+" : "+"Not Inserted: "+q);
+                    }else{
+                        Log.e("LandingActivity----","No Interested Ads");
+                    }
+
+                    if(ownadNames.size()!=0){
+                        for(int i=0;i<ownadNames.size();i++){
+
+                            File myFile = new File(URLClass.myadspath+ownadNames.get(i));
+                            if(myFile.exists()){
+
+                            }else{
+                                finalUrls.add(URLClass.imageurl+ownadNames.get(i));
+                                finalNames.add(ownadNames.get(i));
+                            }
+
+                        }
+
+                    }else{
+                        Log.e("LandingActivity----","No Downloaded Images");
+                    }
+
+                    if(finalNames.size()!=0){
+
+                        String[] urlList=new String[finalUrls.size()];
+                        urlList = finalUrls.toArray(urlList);
+                        String[] nameList = new String[finalNames.size()];
+                        nameList = finalNames.toArray(nameList);
+
+                        new DownloadFileAsync(LandingActivity.this,URLClass.myadspath,urlList,nameList,new IDownloadStatus() {
+                            @Override
+                            public void downloadStatus(String status) {
+
+                                try{
+                                    if(status.equalsIgnoreCase("Completed")){
+
+                                    }else{
+
+                                    }
+
+                                }catch (Exception e){
+
+                                    e.printStackTrace();
+                                    Log.e("DownloadFile----",e.toString());
+                                }
+                            }
+                        }).execute();
+                    }else{
+                        Log.e("LandingActivity----","All OwnAd Images Downloaded");
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("LandingActivity----",e.toString());
+                }
+
+            }
+        }).execute();
+    }
+
+    public void syncInterestedAds(){
+
+        HashMap<String,String> hmap=new HashMap<>();
+        hmap.put("userId",phno);
+        new BagroundTask(URLClass.hosturl+"getInterestedAdsofUser.php", hmap, LandingActivity.this,new IBagroundListener() {
+            @Override
+            public void bagroundData(String json) throws JSONException {
+
+                JSONArray ja_interestads;
+                JSONObject interestjo;
+                ArrayList<String> interestadNames=new ArrayList<>();
+                ArrayList<String> interestUrls=new ArrayList<>();
+                ArrayList<String> finalNames=new ArrayList<>();
+
+                try{
+                    if(!json.equalsIgnoreCase("NoData")){
+
+                        long interestaddelcount=dbHelper.deleteAllInterestedAdvts();
+                        Log.e("interestdelcount---",""+interestaddelcount);
+
+                        ja_interestads=new JSONArray(json);
+                        Log.e("InterestedAds Length--",""+ja_interestads.length());
+                        int p=0,q=0;
+                        for(int i=0;i<ja_interestads.length();i++){
+
+                            interestjo=ja_interestads.getJSONObject(i);
+                            String name=interestjo.getString("fileName");
+                            if(!name.equalsIgnoreCase("")){
+                                interestadNames.add(name);
+                            }else{
+
+                            }
+                            long insertFlag=dbHelper.insertInterestedAdvt(interestjo.getInt("advtId"),interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),interestjo.getString("description"),interestjo.getString("fileType"),interestjo.getString("fileName"),interestjo.getString("filePath"),interestjo.getString("startDate"),interestjo.getString("endDate"),interestjo.getString("contactName"),interestjo.getString("contactNumber"),interestjo.getString("emailId"),interestjo.getString("createdTime"),interestjo.getString("status"));
+                               if(insertFlag>0){
+                                   p++;
+                               }else{
+                                   q++;
+                               }
+
+                        }
+                        Log.e("LandingActivity----","Inserted--"+p+" : "+"Not Inserted: "+q);
+                    }else{
+                        Log.e("LandingActivity----","No Interested Ads");
+                    }
+
+                    if(interestadNames.size()!=0){
+                        for(int i=0;i<interestadNames.size();i++){
+
+                            File myFile = new File(URLClass.interestedpath+interestadNames.get(i));
+                            if(myFile.exists()){
+
+                            }else{
+                                interestUrls.add(URLClass.imageurl+interestadNames.get(i));
+                                finalNames.add(interestadNames.get(i));
+                            }
+
+                        }
+
+                    }else{
+                        Log.e("LandingActivity----","No Downloaded Images");
+                    }
+
+                    if(finalNames.size()!=0){
+
+                        String[] urlList=new String[interestUrls.size()];
+                        urlList = interestUrls.toArray(urlList);
+                        String[] nameList = new String[finalNames.size()];
+                        nameList = finalNames.toArray(nameList);
+
+                        new DownloadFileAsync(LandingActivity.this,URLClass.interestedpath,urlList,nameList,new IDownloadStatus() {
+                            @Override
+                            public void downloadStatus(String status) {
+
+                                try{
+                                    if(status.equalsIgnoreCase("Completed")){
+
+                                    }else{
+
+                                    }
+
+                                }catch (Exception e){
+
+                                    e.printStackTrace();
+                                    Log.e("DownloadFile----",e.toString());
+                                }
+                            }
+                        }).execute();
+                    }else{
+                        Log.e("LandingActivity----","All OwnAd Images Downloaded");
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("LandingActivity----",e.toString());
+                }
+
+            }
+        }).execute();
     }
 
     public void syncData(){
@@ -376,75 +646,72 @@ public class LandingActivity extends AppCompatActivity {
                     }
 
 
-                    long advtdelcount=dbHelper.deleteAllAdvts();
-                    Log.e("advtdelcount---",""+advtdelcount);
-
-                    Object obj1=myObj.get("advt_info_table");
-
-                    if (obj1 instanceof JSONArray)
-                    {
-                        ja_advt_info_table=myObj.getJSONArray("advt_info_table");
-                        if(ja_advt_info_table.length()>0){
-
-                            Log.e("advtLength---",""+ja_advt_info_table.length());
-                            int p=0,q=0;
-                            for(int i=0;i<ja_advt_info_table.length();i++){
-
-                                advtjo=ja_advt_info_table.getJSONObject(i);
-
-//                                String image=advtjo.getString("image");
-//                                byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
-
-                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
-                                if(insertFlag>0){
-                                    p++;
-                                }else{
-                                    q++;
-                                }
-                            }
-                            Log.e("BackGroundTask--","Inserted: "+p);
-                        }else{
-                            Log.e("BackGroundTask--","EmptyJsonArray ");
-                        }
-                    }
-                    else {
-                        Log.e("pref--","No Advt: ");
-                    }
-
-                    long interestdelcount=dbHelper.deleteAllInterests();
-                    Log.e("interestdelcount---",""+interestdelcount);
-
-                    Object obj2=myObj.get("user_intrests");
-
-                    if (obj2 instanceof JSONArray)
-                    {
-                        ja_user_interests=myObj.getJSONArray("user_intrests");
-                        if(ja_user_interests.length()>0){
-
-                            Log.e("interestLength---",""+ja_user_interests.length());
-                            int p=0,q=0;
-                            for(int i=0;i<ja_user_interests.length();i++){
-
-                                interestjo=ja_user_interests.getJSONObject(i);
-
-                                long insertFlag=dbHelper.insertInterest(interestjo.getInt("seqId"),interestjo.getString("userId"),interestjo.getInt("advtId"),interestjo.getString("description"),interestjo.getString("flag"));                                if(insertFlag>0){
-                                    p++;
-                                }else{
-                                    q++;
-                                }
-                            }
-                            Log.e("BackGroundTask--","Inserted: "+p);
-                        }else{
-                            Log.e("BackGroundTask--","EmptyJsonArray ");
-                        }
-                    }
-                    else {
-                        Log.e("interest--","No Interests");
-                    }
+//                    long advtdelcount=dbHelper.deleteAllAdvts();
+//                    Log.e("advtdelcount---",""+advtdelcount);
+//
+//                    Object obj1=myObj.get("advt_info_table");
+//
+//                    if (obj1 instanceof JSONArray)
+//                    {
+//                        ja_advt_info_table=myObj.getJSONArray("advt_info_table");
+//                        if(ja_advt_info_table.length()>0){
+//
+//                            Log.e("advtLength---",""+ja_advt_info_table.length());
+//                            int p=0,q=0;
+//                            for(int i=0;i<ja_advt_info_table.length();i++){
+//
+//                                advtjo=ja_advt_info_table.getJSONObject(i);
+//
+//                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("fileType"),advtjo.getString("fileName"),advtjo.getString("filePath"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
+//                                if(insertFlag>0){
+//                                    p++;
+//                                }else{
+//                                    q++;
+//                                }
+//                            }
+//                            Log.e("BackGroundTask--","Inserted: "+p);
+//                        }else{
+//                            Log.e("BackGroundTask--","EmptyJsonArray ");
+//                        }
+//                    }
+//                    else {
+//                        Log.e("pref--","No Advt: ");
+//                    }
+//
+//                    long interestdelcount=dbHelper.deleteAllInterests();
+//                    Log.e("interestdelcount---",""+interestdelcount);
+//
+//                    Object obj2=myObj.get("user_intrests");
+//
+//                    if (obj2 instanceof JSONArray)
+//                    {
+//                        ja_user_interests=myObj.getJSONArray("user_intrests");
+//                        if(ja_user_interests.length()>0){
+//
+//                            Log.e("interestLength---",""+ja_user_interests.length());
+//                            int p=0,q=0;
+//                            for(int i=0;i<ja_user_interests.length();i++){
+//
+//                                interestjo=ja_user_interests.getJSONObject(i);
+//
+//                                long insertFlag=dbHelper.insertInterest(interestjo.getInt("seqId"),interestjo.getString("userId"),interestjo.getInt("advtId"),interestjo.getString("description"),interestjo.getString("flag"));                                if(insertFlag>0){
+//                                    p++;
+//                                }else{
+//                                    q++;
+//                                }
+//                            }
+//                            Log.e("BackGroundTask--","Inserted: "+p);
+//                        }else{
+//                            Log.e("BackGroundTask--","EmptyJsonArray ");
+//                        }
+//                    }
+//                    else {
+//                        Log.e("interest--","No Interests");
+//                    }
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    Log.e("BackGround368--",e.toString());
+                    Log.e("BackGround--",e.toString());
                 }
 
             }

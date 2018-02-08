@@ -10,8 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.digywood.cineauditions.Adapters.CandidateAdapter;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.Pojo.Candidate;
 
@@ -60,7 +62,17 @@ public class ListofInterests extends AppCompatActivity {
         commentList=new ArrayList<>();
         intuserList=new ArrayList<>();
 
-        getData();
+        new AsyncCheckInternet(ListofInterests.this, new INetStatus() {
+            @Override
+            public void inetSatus(Boolean netStatus) {
+                if(netStatus){
+                    getData();
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }).execute();
 
     }
 

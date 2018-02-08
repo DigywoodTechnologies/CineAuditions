@@ -5,9 +5,12 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -17,9 +20,13 @@ import android.media.ImageWriter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -41,36 +48,50 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.Adapters.CustomGrid;
+import com.digywood.cineauditions.AsyncTasks.AdvtBagroundTask;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
+import com.digywood.cineauditions.Pojo.SingleSubcat;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+
 public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
-    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<SingleSubCategory>();
-    final ArrayList<String> CategoryNamesList = new ArrayList<String>();
-    final ArrayList<String> SubCategoryNamesList = new ArrayList<String>();
-    ArrayList<SingleAdvt> AdvtList = new ArrayList<SingleAdvt>();
-    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList<CategoryCheck>();
+    ArrayList<SingleCategory> CategoryList = new ArrayList<>();
+    ArrayList<SingleSubCategory> SubCategoryList = new ArrayList<>();
+    final ArrayList<String> CategoryNamesList = new ArrayList<>();
+    final ArrayList<String> SubCategoryNamesList = new ArrayList<>();
+    ArrayList<SingleAdvt> AdvtList = new ArrayList<>();
+    ArrayList<CategoryCheck> CategoryCheckedList = new ArrayList();
 
     String[] subcatlist;
     int[] _intSubCat,_intCat;
@@ -85,15 +106,22 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     private ProgressDialog dialog;
     BagroundTask task1;
     int advtId;
+    int count=0;
+    String path="",fileType=null;
+    String myfile;
+    ArrayList<String> myList=new ArrayList<>();
+    CustomGrid adapter;
     byte[] imagebyte=null;
     Bitmap bitmap=null;
     HashMap<String, String> hmap = new HashMap<>();
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
+    String fileName=null,fileUrl=null;
     String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,status,url,url1,downloadDate,orgIdSt,encodedImage=null;
 
     final int REQUEST_CODE_GALLERY = 999;
+    public static final int RequestPermissionCode = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -132,7 +160,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         });
 
-        myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
+        myTypeface1 = Typeface.createFromAsset(getAssets(),"fonts/Raleway-Medium.ttf");
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -164,8 +192,8 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         btn_browse.setTypeface(myTypeface1);
         btn_submit.setTypeface(myTypeface1);
 
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, CategoryNamesList);
+        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,CategoryNamesList);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dataAdapter2.notifyDataSetChanged();
         s1.setAdapter(dataAdapter2);
@@ -216,11 +244,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         btn_browse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(
-                        AdvtInfoScreen.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_CODE_GALLERY
-                );
+                if(checkPermission()){
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, REQUEST_CODE_GALLERY);
+                }else{
+                    requestPermission();
+                }
             }
         });
 
@@ -230,90 +260,122 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
                 if (awesomeValidation.validate()) {
 
-                    if (isInternetConnected()) {
 
-                        orgIdSt ="ORG001";
-                        captionSt = captionEt.getText().toString();
-                        descSt = descEt.getText().toString();
-                        startdateSt = startdateEt.getText().toString();
-                        endDateSt = endDateEt.getText().toString();
-                        contactnameSt = contactnameEt.getText().toString();
-                        phnoSt = phnoEt.getText().toString();
-                        emailIdSt = emailIdEt.getText().toString();
-                        status = "created";
+                    new AsyncCheckInternet(AdvtInfoScreen.this, new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
 
-                        Calendar c1 = Calendar.getInstance();
-                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                        downloadDate = sdf1.format(c1.getTime());
+                            if(netStatus){
 
-                        try {
-                            if(imagebyte!=null){
-                                encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
-                            }
-                            else{
-                                encodedImage="";
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            Log.e("AdvtInfoScreen---",e.toString());
-                        }
-                        url = URLClass.hosturl+"insertAdvtInfo.php";
-                        hmap.clear();
-                        hmap.put("orgId",orgIdSt);
-                        hmap.put("userId",MobileNo);
-                        hmap.put("caption",captionSt);
-                        hmap.put("description",descSt);
-                        hmap.put("image",encodedImage);
-                        hmap.put("startDate",startdateSt);
-                        hmap.put("endDate",endDateSt);//
-                        hmap.put("contactName",contactnameSt);
-                        hmap.put("contactNumber",phnoSt);
-                        hmap.put("emailId",emailIdSt);
-                        hmap.put("createdTime",downloadDate);
-                        hmap.put("status",status);
-
-                        final String str = "";
-
-                        try {
-                            //inserting advertisement into server
-                            new BagroundTask(url, hmap, AdvtInfoScreen.this,new IBagroundListener() {
-                                @Override
-                                public void bagroundData(String json) {
-                                    Log.e("ja", "comes:" + json);
-
-                                    if (!json.equalsIgnoreCase("Not Inserted")) {
-                                        advtId = Integer.parseInt(json);
-                                        Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
-                                        //inserting advertisement into local advertisement list
-                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,imagebyte,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-                                        if(insertFlag>0){
-                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-//                                                insertCatSubcat(advtId);
-                                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
-                                            intent.putExtra("mobileNo", MobileNo);
-                                            intent.putExtra("key", "F2");
-                                            overridePendingTransition(0, 0);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                                            finish();
-                                            startActivity(intent);
-                                        }else{
-                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    } else {
-                                        Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
-                                    }
+                                try {
+                                    myList = adapter.getChkList();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    Log.e("AdvtInfoScreen---",e.toString());
                                 }
-                            }).execute();
-                            Log.v("jo", str);
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                                if(myList.size()!=0){
+                                    orgIdSt ="ORG001";
+                                    captionSt = captionEt.getText().toString();
+                                    descSt = descEt.getText().toString();
+                                    startdateSt = startdateEt.getText().toString();
+                                    endDateSt = endDateEt.getText().toString();
+                                    contactnameSt = contactnameEt.getText().toString();
+                                    phnoSt = phnoEt.getText().toString();
+                                    emailIdSt = emailIdEt.getText().toString();
+                                    status ="created";
+
+                                    Calendar c1 = Calendar.getInstance();
+                                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                    downloadDate = sdf1.format(c1.getTime());
+
+//                            try {
+//                                if(imagebyte!=null){
+//                                    encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
+//                                }
+//                                else{
+//                                    encodedImage="";
+//                                }
+//                            }catch (Exception e){
+//                                e.printStackTrace();
+//                                Log.e("AdvtInfoScreen---",e.toString());
+//                            }
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                                    String currentDateandTime = sdf.format(new Date());
+
+                                    if(fileType!=null){
+
+                                        fileName=MobileNo+"_"+currentDateandTime +fileType;
+                                        fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
+
+                                    }else{
+
+                                        fileType="";
+                                        fileName="";
+                                        fileUrl="";
+
+                                    }
+
+                                    url = URLClass.hosturl+"insertAdvtInfo.php";
+                                    hmap.clear();
+                                    hmap.put("orgId",orgIdSt);
+                                    hmap.put("userId",MobileNo);
+                                    hmap.put("caption",captionSt);
+                                    hmap.put("description",descSt);
+                                    hmap.put("fileType",fileType);
+                                    hmap.put("fileName",fileName);
+                                    hmap.put("filePath",fileUrl);
+                                    hmap.put("startDate",startdateSt);
+                                    hmap.put("endDate",endDateSt);
+                                    hmap.put("contactName",contactnameSt);
+                                    hmap.put("contactNumber",phnoSt);
+                                    hmap.put("emailId",emailIdSt);
+                                    hmap.put("createdTime",downloadDate);
+                                    hmap.put("status",status);
+
+                                    final String str = "";
+
+                                    try {
+                                        //inserting advertisement into server
+                                        new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
+                                            @Override
+                                            public void bagroundData(String json) {
+                                                Log.e("ja", "comes:" + json);
+
+                                                if (!json.equalsIgnoreCase("Not Inserted")) {
+                                                    advtId = Integer.parseInt(json);
+                                                    Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
+                                                    //inserting advertisement into local advertisement list
+                                                    long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+                                                    if(insertFlag>0){
+                                                        Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+                                                        insertCatSubcat(advtId);
+                                                    }else{
+                                                        Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                } else {
+                                                    Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }).execute();
+                                        Log.v("jo", str);
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }else{
+                                    Toast.makeText(AdvtInfoScreen.this,"Please Choose Any Services", Toast.LENGTH_LONG).show();
+                                }
+
+                            }else{
+                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                            }
+
                         }
+                    }).execute();
 
-                    } else {
-                        Toast.makeText(AdvtInfoScreen.this, "Please, connect to internet and try again.", Toast.LENGTH_LONG).show();
-                    }
                 }
 
             }
@@ -322,32 +384,26 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
                                long arg3) {
         // TODO Auto-generated method stub
         String sp1= String.valueOf(s1.getSelectedItem());
-        //String[] subcatlist = new String[SubCategoryList.size()];
 
-        SubCategoryNamesList.clear();
-        for(int i = 0;i < CategoryList.size();i++) {
-            if (sp1.equals(CategoryList.get(i).getLongName())) {
-                categoryId = CategoryList.get(i).getCategoryId();
-                Log.d("catlistid", "comes:" + categoryId);
-                for(int j = 0;j < SubCategoryList.size();j++){
-                    if(categoryId.equals(SubCategoryList.get(j).getCategoryId())){
-                        //SubCategoryNamesList.clear();
-                        SubCategoryNamesList.add(SubCategoryList.get(j).getLongName());
-                        //subcatlist.add
-                        //viewHolder.category.setText(CategoryList.get(i).getLongName());
-                        //String[] list = {"Art-Deparment","Casting","Choreographer","Costume-Designer","Lighting-Technician","Media-Production","Photography","Property-Manager"};
-                        CustomGrid adapter = new CustomGrid(AdvtInfoScreen.this, SubCategoryNamesList);
-                        Log.d("selected_list", "comes:" + SubCategoryNamesList);
-                        grid.setAdapter(adapter);
-                    }
-                }
-            }
+        Log.e("SpinItem---",sp1);
+        String CatId=dbHelper.getCatId(sp1);
+        Log.e("CatItem---",CatId);
+        ArrayList<String> subcatList=dbHelper.getSubCategoriesByCat(CatId);
+
+        if(count>0){
+            adapter.updateGrid(subcatList);
+            adapter.notifyDataSetChanged();
+            grid.setAdapter(adapter);
+        }else{
+            count++;
+            adapter = new CustomGrid(AdvtInfoScreen.this,subcatList);
+            Log.d("selected_list", "comes:" + SubCategoryNamesList);
+            grid.setAdapter(adapter);
         }
 
     }
@@ -357,42 +413,17 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-    public boolean isInternetConnected() {
-        boolean iNetFlag = false;
-        try {
-            URL url = new URL("https://www.google.com");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setConnectTimeout(10000);
-            connection.connect();
-            iNetFlag = (connection.getResponseCode() == 200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return iNetFlag;
-    }
-
 
     @Override
     protected void onPause() {
         super.onPause();
     }
 
-    public static byte[] imageViewToByte(ImageView image) {
-        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        long lengthbmp = byteArray.length/1024;
-
-        return byteArray;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if(requestCode == REQUEST_CODE_GALLERY){
-            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if(requestCode == RequestPermissionCode){
+            if(grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, REQUEST_CODE_GALLERY);
@@ -411,6 +442,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         if(requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null){
             Uri uri = data.getData();
+
             int dataSize=0;
             long imgSize=0;
 
@@ -457,6 +489,11 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
             }else{
 
+                path=getPath(AdvtInfoScreen.this,uri);
+                Log.e("AdvtInfoScreen",path);
+                fileType=path.substring(path.lastIndexOf("."));
+                myfile=path;
+
                 try {
                     InputStream inputStream = getContentResolver().openInputStream(uri);
                     bitmap = BitmapFactory.decodeStream(inputStream);
@@ -472,6 +509,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     public  void showAlert(String messege){
         AlertDialog.Builder builder = new AlertDialog.Builder(AdvtInfoScreen.this);
@@ -491,27 +529,54 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
     public void insertCatSubcat(int advtId){
 
-        hmap.clear();
-        url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
-        hmap.put("orgId","ORG001");
-        hmap.put("advtId", String.valueOf(advtId));
-//        hmap.put("category", CategoryCheckedList.get(i).getCategory());
-//        hmap.put("subCategory", CategoryCheckedList.get(i).getSubCategory());
         try {
-            new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
-                @Override
-                public void bagroundData(String json) {
-                    Log.d("ja", "comes:" + json);
-                    if (json.equals("Inserted")) {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).execute();
-
-        } catch (Exception e) {
+            myList= adapter.getChkList();
+        }catch (Exception e){
             e.printStackTrace();
+            Log.e("AdvtInfoScreen---",e.toString());
+        }
+
+        Log.e("AdvtInfoScreen---",""+myList.size());
+
+        if(myList.size()!=0){
+
+            JSONObject myjo=JSONEncode(advtId,myList);
+            hmap.clear();
+            url= URLClass.hosturl+"insertAdvtCategoryInfo.php";
+            hmap.put("CatSubcatData",myjo.toString());
+            try {
+                new BagroundTask(url,hmap,AdvtInfoScreen.this,new IBagroundListener() {
+                    @Override
+                    public void bagroundData(String json) {
+                        Log.d("ja", "comes:" + json);
+                        if (json.equals("Inserted")) {
+                            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+                            intent.putExtra("mobileNo", MobileNo);
+                            intent.putExtra("key", "F2");
+                            overridePendingTransition(0, 0);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            finish();
+                            startActivity(intent);
+                            Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Inserted successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(AdvtInfoScreen.this, "Advt CatSubcat Insertion failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).execute();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }else{
+            Intent intent = new Intent(AdvtInfoScreen.this, LandingActivity.class);
+            intent.putExtra("mobileNo", MobileNo);
+            intent.putExtra("key", "F2");
+            overridePendingTransition(0, 0);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            finish();
+            startActivity(intent);
+            Log.e("AdvtInfoScreen---","Empty Cat and Subcat");
         }
 
     }
@@ -538,6 +603,128 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             e.printStackTrace();
         }
         return data;
+    }
+
+    public static String getPath(final Context context,final Uri uri) {
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{split[1]};
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {column};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public JSONObject JSONEncode(int advtId,ArrayList<String> finalList){
+        JSONObject job=new JSONObject();
+        JSONArray UserCatSubcat = new JSONArray();
+        try{
+            JSONObject CatSubcat;
+            for(int i=0;i<finalList.size();i++){
+                CatSubcat = new JSONObject();
+                CatSubcat.put("orgId","ORG001");
+                CatSubcat.put("advtId",advtId);
+                ArrayList<SingleSubcat> mysubcatList=dbHelper.getCatIdbySubcatid(finalList.get(i));
+                SingleSubcat mysubcat=mysubcatList.get(0);
+
+                CatSubcat.put("category",mysubcat.getCatid());
+                CatSubcat.put("subCategory",mysubcat.getSubcatid());
+                UserCatSubcat.put(CatSubcat);
+            }
+            job.put("CatSubcatData",UserCatSubcat);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return job;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(AdvtInfoScreen.this, new
+                String[]{WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE},RequestPermissionCode);
+    }
+
+
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED && result1==PackageManager.PERMISSION_GRANTED;
     }
 
 }

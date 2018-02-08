@@ -25,9 +25,11 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -53,12 +55,13 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
     IBagroundListener listener;
 
 
-    public AdvtBagroundTask(String url,HashMap<String, String> hmap1,String userId,String path,Context activity, IBagroundListener iListener) {
+    public AdvtBagroundTask(String url,HashMap<String, String> hmap1,String userId,String path,String fileName,Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
         this.urlAddress=url;
         this.hmap=hmap1;
         this.path=path;
-        userid=userId;
+        this.userid=userId;
+        this.fileName=fileName;
         this.listener=iListener;
 
     }
@@ -94,87 +97,90 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
 
         status = "Connecting to server..";
         publishProgress(status);
-
-
-
+        
         try {
 
-            int upload_res=uploadFile(path,userid,hmap);
+            if(path!=null){
+                int upload_res=uploadFile(path,userid,hmap);
+                if(upload_res==200){
+                    Log.e("AdvtBackgroundTask---","image uploaded");
+                }else{
+                    Log.e("AdvtBackgroundTask---","image not uploaded");
+                }
 
-            if(upload_res==200){
+            }else {
 
-                hmap.put("fileName",fileName);
-                hmap.put("filePath",fileUrl);
-                HttpClient httpClient = new DefaultHttpClient();
-                httpPost = new HttpPost(urlAddress);
-                List<? super NameValuePair> nvps = new ArrayList<>();
+            }
+
+            HttpClient httpClient = new DefaultHttpClient();
+            httpPost = new HttpPost(urlAddress);
+            List<? super NameValuePair> nvps = new ArrayList<>();
 
 		/* Adding Arguments to List Of Name value Pairs  */
-                Set<Map.Entry<String, String>> set = hmap.entrySet();
-                Iterator<Map.Entry<String, String>> iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    @SuppressWarnings("rawtypes")
-                    Map.Entry mentry = (Map.Entry) iterator.next();
-                    nvps.add(new BasicNameValuePair(mentry.getKey().toString(),mentry.getValue().toString()));
-                    Log.d("JSON_SERVICE", "result-nvps..."+nvps);
-                }
+            Set<Map.Entry<String, String>> set = hmap.entrySet();
+            Iterator<Map.Entry<String, String>> iterator = set.iterator();
+            while (iterator.hasNext()) {
+                @SuppressWarnings("rawtypes")
+                Map.Entry mentry = (Map.Entry) iterator.next();
+                nvps.add(new BasicNameValuePair(mentry.getKey().toString(),mentry.getValue().toString()));
+                Log.d("JSON_SERVICE", "result-nvps..."+nvps);
+            }
 
-                try {
-                    httpPost.setEntity(new UrlEncodedFormEntity((List<? extends NameValuePair>) nvps));
-                    response = httpClient.execute(httpPost);
-                    int responCode = response.getStatusLine().getStatusCode();
-                    status = getHttpStatusDescription(responCode);
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity((List<? extends NameValuePair>) nvps));
+                response = httpClient.execute(httpPost);
+                int responCode = response.getStatusLine().getStatusCode();
+                status = getHttpStatusDescription(responCode);
+                publishProgress(status);
+
+                HttpEntity entity = response.getEntity();
+                InputStream is = entity.getContent();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    sb.append(line);
+
+                    status = "Loading the data..";
                     publishProgress(status);
-
-                    HttpEntity entity = response.getEntity();
-                    InputStream is = entity.getContent();
-                    BufferedReader reader = new BufferedReader(
-                            new InputStreamReader(is, "UTF-8"), 8);
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-
-                        sb.append(line);
-
-                        status = "Loading the data..";
-                        publishProgress(status);
-                    }
-
-                    System.out.println("JSONArray--" + sb.toString());
-                    is.close();
-                    resultString = sb.toString();
-
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-
                 }
-                finally {
-                    HttpEntity entity  = response.getEntity();
-                    try {
-                        if (entity != null) {
-                            httpPost.abort();
-                        }
-                    }
-                    catch(NullPointerException e){
-                        e.printStackTrace();
+
+                System.out.println("JSONArray--" + sb.toString());
+                is.close();
+                resultString = sb.toString();
+
+                if(!resultString.equalsIgnoreCase("Not Inserted")){
+                    moveFile(path,URLClass.myadspath);
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
+            finally {
+                HttpEntity entity  = response.getEntity();
+                try {
+                    if (entity != null) {
+                        httpPost.abort();
                     }
                 }
-            }else{
-                resultString="Unable Process";
+                catch(NullPointerException e){
+                    e.printStackTrace();
+                }
             }
 
         }  catch (Exception e) {
             e.printStackTrace();
 
         }
-
 
         return resultString;
     }
@@ -299,14 +305,10 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
         String twoHyphens = "--";
         String boundary = "*****";
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        String currentDateandTime = sdf.format(new Date());
-
         int bytesRead,bytesAvailable,bufferSize;
         byte[] buffer;
         int maxBufferSize = 500 * 1024 * 1024;
         File selectedFile = new File(selectedFilePath);
-
 
 //        String[] parts = selectedFilePath.getAbsolutePath().split("/");
 //        final String fileName = parts[parts.length-1];
@@ -338,18 +340,8 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
 //            connection.setRequestProperty("createdTime",hmap.get("createdTime"));
 //            connection.setRequestProperty("status","created");
 
-
-//            /* Adding Arguments to List Of Name value Pairs  */
-//            Set<Map.Entry<String, String>> set = hmap.entrySet();
-//            Iterator<Map.Entry<String, String>> iterator = set.iterator();
-//            while (iterator.hasNext()) {
-//                @SuppressWarnings("rawtypes")
-//                Map.Entry mentry = (Map.Entry) iterator.next();
-//                connection.setRequestProperty(mentry.getKey().toString(),mentry.getValue().toString());
-//            }
-
-            fileName=userId+"_"+currentDateandTime +hmap.get("fileType");
-            fileUrl="http://www.jcbpoint.com/cinesooruAuditions/post_resources/"+userId+"_"+currentDateandTime +hmap.get("fileType");
+//            fileName=userId+"_"+currentDateandTime +hmap.get("fileType");
+//            fileUrl=URLClass.imageurl+userId+"_"+currentDateandTime +hmap.get("fileType");
 //            connection.setRequestProperty("fileName",userId+"_"+currentDateandTime +hmap.get("fileType"));
 //            connection.setRequestProperty("filePath","http://www.jcbpoint.com/cinesooruAuditions/post_resources/"+userId+"_"+currentDateandTime +hmap.get("fileType"));
             //connection.setRequestProperty("uploaded_file_name",deviceId+"_log_"+currentDateandTime);
@@ -367,7 +359,7 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
 
             dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
             dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                    +userId+"_"+currentDateandTime +hmap.get("fileType")+ "\"" + lineEnd);
+                    +fileName+ "\"" + lineEnd);
 
             dataOutputStream.writeBytes(lineEnd);
 
@@ -420,6 +412,53 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
         }
 
         return serverResponseCode;
+    }
+
+    private void moveFile(String inputPath,String outputPath) {
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            //create output directory if it doesn't exist
+            File dir = new File(outputPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            in = new FileInputStream(inputPath);
+            out = new FileOutputStream(outputPath+fileName);
+
+            byte[] buffer = new byte[1024 * 1024];
+            int read;
+            long total = 0;
+            while ((read = in.read(buffer)) != -1) {
+                total += read;
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            in = null;
+
+            // write the output file
+            out.flush();
+            out.close();
+            out = null;
+
+        } catch (FileNotFoundException fnfe1) {
+            Log.e("AdvtInfoScreen---",fnfe1.toString());
+
+        } catch (Exception e) {
+            Log.e("AdvtInfoScreen---",e.toString());
+        } finally {
+            try {
+                if (out != null)
+                    out.close();
+                if (in != null)
+                    in.close();
+            } catch (IOException e) {
+                Log.e("AdvtInfoScreen---",e.toString());
+            }
+        }
+
     }
 
 }
