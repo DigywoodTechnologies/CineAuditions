@@ -35,6 +35,7 @@ public class ListofInterests extends AppCompatActivity {
     int advtid=0;
     CandidateAdapter candiAdp;
     ArrayList<String> nameList;
+    ArrayList<String> timeList;
     ArrayList<String> numberList;
     ArrayList<String> emailList;
     ArrayList<String> commentList;
@@ -57,6 +58,7 @@ public class ListofInterests extends AppCompatActivity {
         tv_emptyview=findViewById(R.id.tv_intrestusersemptydata);
 
         nameList=new ArrayList<>();
+        timeList=new ArrayList<>();
         numberList=new ArrayList<>();
         emailList=new ArrayList<>();
         commentList=new ArrayList<>();
@@ -106,6 +108,9 @@ public class ListofInterests extends AppCompatActivity {
                                 userdesjo=ja_user_des.getJSONObject(i);
 
                                 String comment=userdesjo.getString("description");
+                                String time = userdesjo.getString("uploadDateTime");
+                                Log.e("ListofInterest--->time", time);
+                                timeList.add(time);
                                 commentList.add(comment);
 
                             }
@@ -127,6 +132,7 @@ public class ListofInterests extends AppCompatActivity {
                                 String number=userdesjo.getString("phno");
                                 String email=userdesjo.getString("emailId");
 
+
                                 nameList.add(name);
                                 numberList.add(number);
                                 emailList.add(email);
@@ -145,7 +151,7 @@ public class ListofInterests extends AppCompatActivity {
 
                         for(int i=0;i<numberList.size();i++){
 
-                            intuserList.add(new Candidate(nameList.get(i),numberList.get(i),emailList.get(i),commentList.get(i)));
+                            intuserList.add(new Candidate(nameList.get(i),timeList.get(i),numberList.get(i),emailList.get(i),commentList.get(i)));
 
                         }
 

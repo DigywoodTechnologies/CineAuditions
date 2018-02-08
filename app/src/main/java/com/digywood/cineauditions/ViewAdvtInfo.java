@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class ViewAdvtInfo extends AppCompatActivity {
 
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,view_adId;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,view_adId,view_status;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
@@ -33,6 +33,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
     Typeface myTypeface1;
     Button view_interests;
     LinearLayout linearLayout;
+    FullscreenActivity obj;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
 
@@ -51,6 +52,12 @@ public class ViewAdvtInfo extends AppCompatActivity {
 
         Advtlist = new ArrayList<>();
         InterestList = new ArrayList<>();
+        obj = new FullscreenActivity();
+        if(obj.isInternetConnected()){
+
+        }else{
+            Toast.makeText(ViewAdvtInfo.this,"No Internet Connection detected", Toast.LENGTH_LONG).show();
+        }
 
         linearLayout = findViewById(R.id.layout);
         captionview = findViewById(R.id.view_caption);
@@ -61,6 +68,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
         nameTv = findViewById(R.id.personnameTv);
         numberTv = findViewById(R.id.personnumberTv);
         view_emailTv = findViewById(R.id.view_emailTv);
+        view_status = findViewById(R.id.view_status);
         view_img = findViewById(R.id.view_imgView1);
         view_interests = findViewById(R.id.view_interests);
         mCollapsingToolbarLayout = findViewById(R.id.collapsingToolbar);

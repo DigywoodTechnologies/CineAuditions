@@ -7,15 +7,16 @@
         android:iconTint="#FFFFFF"
         android:title="Search"
         app:showAsAction="always"/>-->
-    <item
+<!--    <item
         android:id="@+id/action_settings"
         android:orderInCategory="1"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
     <item
         android:id="@+id/action_refresh"
-        android:orderInCategory="2"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_sync_24dp"
         android:title="@string/action_refresh"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 
 </menu>
