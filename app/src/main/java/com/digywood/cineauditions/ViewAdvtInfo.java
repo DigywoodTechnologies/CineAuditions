@@ -1,53 +1,40 @@
 package com.digywood.cineauditions;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.icu.util.Calendar;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
-import com.digywood.cineauditions.Pojo.SingleProducer;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ViewAdvtInfo extends AppCompatActivity {
 
-    int[] _intAdvtlist,_intInterestList;
-    SingleInterest ad;
-    SingleProducer pr;
-    PopupWindow pwindo;
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,view_adId;
     ImageView view_img;
     DBHelper dbHelper;
-    String time,MobileNo,key=null;
+    String time,MobileNo;
     int advtId;
-    byte[] lotsImage=null;
     SingleAdvt myad=null;
-    ArrayList<SingleAdvt> Advtlist,Interested;
+    ArrayList<SingleAdvt> Advtlist;
     ArrayList<SingleInterest> InterestList;
     Typeface myTypeface1;
-    Button view_interests,btnClosePopup;
+    Button view_interests;
     LinearLayout linearLayout;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
-    HashMap<String,String> hmap=new HashMap<>();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +54,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
 
         linearLayout = findViewById(R.id.layout);
         captionview = findViewById(R.id.view_caption);
+        view_adId = findViewById(R.id.view_adId);
         view_startTv = findViewById(R.id.view_start_dateTv);
         view_endTv = findViewById(R.id.view_end_dateTv);
         view_description = findViewById(R.id.view_description);
@@ -101,6 +89,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
             }
 
             captionview.setText("" + myad.getCaption() + " ");
+            view_adId.setText("AdvtId: " +advtId);
             view_startTv.setText(myad.getStartDate());
             view_endTv.setText(myad.getEndDate());
             view_description.setText(myad.getDescription());

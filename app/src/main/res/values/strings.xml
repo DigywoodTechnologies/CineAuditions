@@ -13,6 +13,8 @@
     <string name="profile">Profile Picture</string>
     <string name="collapsing_toolbar"></string>
     <string name="userName">Username</string>
+    <string name="submit">Submit</string>
+    <string name="hint">replace</string>
 
     <string name="title_activity_otpentry">OTPEntryActivity</string>
 
