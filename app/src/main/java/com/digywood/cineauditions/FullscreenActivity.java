@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.MyBagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
@@ -197,75 +198,79 @@ public class FullscreenActivity extends AppCompatActivity {
 
                     }
 
-                    if (isInternetConnected()) {
+                    new AsyncCheckInternet(FullscreenActivity.this, new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
+                            if(netStatus){
+                                MobileNo = phno.getText().toString();
+                                int checkFlag = 0;
+                                checkFlag = (int) dbHelper.checkProducerExists(MobileNo);
+                                if (checkFlag == 1) {
+                                    //Toast.makeText(MainFullscreenActivity.this, "Already Exist", Toast.LENGTH_SHORT).show();
+                                    int checkOTPFlag = 0;
+                                    String st = dbHelper.getOTPStatus(MobileNo);
+                                    if (st.equals("verified") || st.equals("skipped")) {
+                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+                                        intent.putExtra("mobileNo", MobileNo);
+                                        intent.putExtra("key", "F1");
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    MobileNo = phno.getText().toString();
+                                    HashMap<String, String> hmap1 = new HashMap<String, String>();
+                                    hmap1.put("phno", MobileNo);
 
-                        MobileNo = phno.getText().toString();
-                        int checkFlag = 0;
-                        checkFlag = (int) dbHelper.checkProducerExists(MobileNo);
-                        if (checkFlag == 1) {
-                            //Toast.makeText(MainFullscreenActivity.this, "Already Exist", Toast.LENGTH_SHORT).show();
-                            int checkOTPFlag = 0;
-                            String st = dbHelper.getOTPStatus(MobileNo);
-                            if (st.equals("verified") || st.equals("skipped")) {
-                                Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                intent.putExtra("mobileNo", MobileNo);
-                                intent.putExtra("key", "F1");
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            MobileNo = phno.getText().toString();
-                            HashMap<String, String> hmap1 = new HashMap<String, String>();
-                            hmap1.put("phno", MobileNo);
+                                    url = URLClass.hosturl+"checkProducerExist.php";
 
-                            url = URLClass.hosturl+"checkProducerExist.php";
+                                    new BagroundTask(url, hmap1, FullscreenActivity.this,new IBagroundListener() {
 
-                            new BagroundTask(url, hmap1, FullscreenActivity.this,new IBagroundListener() {
+                                        @Override
+                                        public void bagroundData(String json) {
+                                            try {
+                                                Log.e("ja", "comes:" + json);
+                                                if (json.equals("User_Not_Exist")) {
 
-                                @Override
-                                public void bagroundData(String json) {
-                                    try {
-                                        Log.e("ja", "comes:" + json);
-                                        if (json.equals("User_Not_Exist")) {
+                                                    Toast.makeText(FullscreenActivity.this, "User_Not_Exist", Toast.LENGTH_SHORT).show();
 
-                                            Toast.makeText(FullscreenActivity.this, "User_Not_Exist", Toast.LENGTH_SHORT).show();
+                                                } else {
 
-                                        } else {
+                                                    JSONArray ja = new JSONArray(json);
+                                                    for(int i =0; i< ja.length();i++) {
+                                                        JSONObject jo = ja.getJSONObject(i);
+                                                        long insertFlag=dbHelper.insertNewProducer(jo.getString("producer_name"), jo.getString("address"), jo.getString("city"), jo.getString("state"), jo.getString("contact_person"),
+                                                                jo.getString("phno"), jo.getString("emailId"), jo.getString("otpNo"), jo.getString("dateofRegistration"), jo.getString("status"));
+                                                        if(insertFlag>0){
+                                                            Toast.makeText(getApplicationContext(),"Interested",Toast.LENGTH_SHORT).show();
+                                                        }else{
+                                                            Toast.makeText(getApplicationContext(),"Not Interested",Toast.LENGTH_SHORT).show();
+                                                        }
 
-                                            JSONArray ja = new JSONArray(json);
-                                            for(int i =0; i< ja.length();i++) {
-                                                JSONObject jo = ja.getJSONObject(i);
-                                                long insertFlag=dbHelper.insertNewProducer(jo.getString("producer_name"), jo.getString("address"), jo.getString("city"), jo.getString("state"), jo.getString("contact_person"),
-                                                        jo.getString("phno"), jo.getString("emailId"), jo.getString("otpNo"), jo.getString("dateofRegistration"), jo.getString("status"));
-                                                if(insertFlag>0){
-                                                    Toast.makeText(getApplicationContext(),"Interested",Toast.LENGTH_SHORT).show();
-                                                }else{
-                                                    Toast.makeText(getApplicationContext(),"Not Interested",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    count=dbHelper.checkCategoryExists();
+                                                    if(count>0){
+                                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+                                                        intent.putExtra("mobileNo", MobileNo);
+                                                        intent.putExtra("key", "F1");
+                                                        startActivity(intent);
+                                                    }else{
+                                                        syncData(MobileNo);
+                                                    }
                                                 }
-
-                                            }
-                                            count=dbHelper.checkCategoryExists();
-                                            if(count>0){
-                                                Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                                intent.putExtra("mobileNo", MobileNo);
-                                                intent.putExtra("key", "F1");
-                                                startActivity(intent);
-                                            }else{
-                                                syncData(MobileNo);
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
                                             }
                                         }
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }
+                                    }).execute();
+
                                 }
-                            }).execute();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                            }
 
                         }
-
-                    } else {
-                        Toast.makeText(FullscreenActivity.this, "Please, connect to internet and try again.", Toast.LENGTH_LONG).show();
-                    }
+                    }).execute();
                 }
             }
         });

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.MyBagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
@@ -92,52 +93,62 @@ public class RegistrationActivity extends AppCompatActivity {
                     SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     regDate = sdf1.format(c1.getTime());
 
-                    HashMap<String, String> hmap = new HashMap<String, String>();
-                    url = URLClass.hosturl+"insertProducerDetails.php";
+                    new AsyncCheckInternet(RegistrationActivity.this, new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
+                            if(netStatus){
+                                HashMap<String, String> hmap = new HashMap<String, String>();
+                                url = URLClass.hosturl+"insertProducerDetails.php";
 
-                    hmap.put("producer_name", nameSt);
-                    hmap.put("address", addressSt);
-                    hmap.put("city", citySt);
-                    hmap.put("state", stateSt);
-                    hmap.put("contact_person", contact_PersonSt);//
-                    hmap.put("phno", phnoSt);
-                    hmap.put("emailId", emailIDSt);
-                    hmap.put("otpNo", otp);
-                    hmap.put("dateOfRegistration", regDate);
-                    hmap.put("status", status);
+                                hmap.put("producer_name", nameSt);
+                                hmap.put("address", addressSt);
+                                hmap.put("city", citySt);
+                                hmap.put("state", stateSt);
+                                hmap.put("contact_person", contact_PersonSt);//
+                                hmap.put("phno", phnoSt);
+                                hmap.put("emailId", emailIDSt);
+                                hmap.put("otpNo", otp);
+                                hmap.put("dateOfRegistration", regDate);
+                                hmap.put("status", status);
 
-                    try {
+                                try {
 
-                        BagroundTask task = new BagroundTask(url, hmap, RegistrationActivity.this, new IBagroundListener() {
-                            @Override
-                            public void bagroundData(String json) {
-                                Log.d("ja", "comes:" + json);
-                                if (json.equals("Inserted")) {
-
-                                    dbHelper.insertNewProducer(nameSt, addressSt, citySt, stateSt, contact_PersonSt, phnoSt, emailIDSt, otp, regDate, status);
-
-                                    //Toast.makeText(RegistrationActivity.this, "MobileNo"+phnoSt, Toast.LENGTH_SHORT).show();
-                                    MyBagroundTask task3 = new MyBagroundTask("http://www.jcbpoint.com/sms/sms.php", otp, phnoSt, RegistrationActivity.this, new IBagroundListener() {
+                                    BagroundTask task = new BagroundTask(url, hmap, RegistrationActivity.this, new IBagroundListener() {
                                         @Override
-                                        public void bagroundData(String json) throws JSONException {
+                                        public void bagroundData(String json) {
+                                            Log.d("ja", "comes:" + json);
+                                            if (json.equals("Inserted")) {
+
+                                                dbHelper.insertNewProducer(nameSt, addressSt, citySt, stateSt, contact_PersonSt, phnoSt, emailIDSt, otp, regDate, status);
+
+                                                //Toast.makeText(RegistrationActivity.this, "MobileNo"+phnoSt, Toast.LENGTH_SHORT).show();
+                                                MyBagroundTask task3 = new MyBagroundTask("http://www.jcbpoint.com/sms/sms.php", otp, phnoSt, RegistrationActivity.this, new IBagroundListener() {
+                                                    @Override
+                                                    public void bagroundData(String json) throws JSONException {
+                                                    }
+                                                });
+                                                task3.execute();
+
+                                                Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
+                                                intent.putExtra("mobileNo",phnoSt);
+                                                startActivity(intent);
+                                                Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     });
-                                    task3.execute();
+                                    task.execute();
 
-                                    Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
-                                    intent.putExtra("mobileNo",phnoSt);
-                                    startActivity(intent);
-                                    Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
+                            }else{
+                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                             }
-                        });
-                        task.execute();
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                        }
+                    }).execute();
 
                 }
             }
