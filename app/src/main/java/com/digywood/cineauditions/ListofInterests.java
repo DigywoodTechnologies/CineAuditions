@@ -82,7 +82,7 @@ public class ListofInterests extends AppCompatActivity {
         Log.e("ListofInterests-----",""+advtid);
         hmap.put("advtId", String.valueOf(advtid));
 
-        new BagroundTask(URLClass.hosturl+"getIntrestedAds.php", hmap, ListofInterests.this, new IBagroundListener() {
+        new BagroundTask(URLClass.hosturl+"getIntrestedAds.php", hmap, ListofInterests.this,new IBagroundListener() {
             @Override
             public void bagroundData(String json) throws JSONException {
 

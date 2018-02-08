@@ -43,6 +43,7 @@ public class ViewInterestAdInfo extends AppCompatActivity {
     byte[] lotsImage=null;
     SingleAdvt myad=null;
     ArrayList<String> subcatList;
+    ArrayList<String> catNameList=new ArrayList<>();
     ArrayList<SingleAdvt> Advtlist,Interested;
     ArrayList<SingleInterest> InterestList;
     TextView tv_interest,tv_cat,tv_subcat;
@@ -188,8 +189,18 @@ public class ViewInterestAdInfo extends AppCompatActivity {
 
                                     adcatsubcatjo=ja_catsubcat.getJSONObject(i);
 
-                                    category=adcatsubcatjo.getString("category");
-                                    String subcat=adcatsubcatjo.getString("subCategory");
+                                    category=adcatsubcatjo.getString("catName");
+
+                                    if(catNameList.size()!=0){
+                                        if(catNameList.contains(category)){
+
+                                        }else{
+                                            catNameList.add(category);
+                                        }
+                                    }else{
+                                        catNameList.add(category);
+                                    }
+                                    String subcat=adcatsubcatjo.getString("subCatName");
                                     subcatList.add(subcat);
 
                                 }
@@ -219,11 +230,28 @@ public class ViewInterestAdInfo extends AppCompatActivity {
 
     public void setData(){
 
-        if(category!=null){
-            tv_cat.setText("Category: "+category);
+//        if(category!=null){
+//            tv_cat.setText("Category: "+category);
+//        }else{
+//            tv_cat.setText("Category: No Selection");
+//        }
+
+        Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
+
+        if(catNameList.size()!=0){
+            String catstr=null;
+            for(int i=0;i<catNameList.size();i++){
+                if(i==0){
+                    catstr=""+catNameList.get(i);
+                }else{
+                    catstr=catstr+","+catNameList.get(i);
+                }
+            }
+            tv_cat.setText("Category: "+catstr);
         }else{
             tv_cat.setText("Category: No Selection");
         }
+
         if(subcatList.size()!=0){
 
             String subcatstr=null;

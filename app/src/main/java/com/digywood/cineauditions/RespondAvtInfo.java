@@ -50,9 +50,9 @@ public class RespondAvtInfo extends AppCompatActivity {
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
+    ArrayList<String> catNameList=new ArrayList<>();
     ArrayList<String> subcatList;
     ArrayList<SingleAdvt> Advtlist;
-    ArrayList<String> catNames=new ArrayList<>();
     ArrayList<String> subcatNames=new ArrayList<>();
     Typeface myTypeface1;
     CheckBox interested;
@@ -206,8 +206,18 @@ public class RespondAvtInfo extends AppCompatActivity {
 
                                                 adcatsubcatjo=ja_catsubcat.getJSONObject(i);
 
-                                                category=adcatsubcatjo.getString("category");
-                                                String subcat=adcatsubcatjo.getString("subCategory");
+                                                category=adcatsubcatjo.getString("catName");
+
+                                                if(catNameList.size()!=0){
+                                                    if(catNameList.contains(category)){
+
+                                                    }else{
+                                                        catNameList.add(category);
+                                                    }
+                                                }else{
+                                                    catNameList.add(category);
+                                                }
+                                                String subcat=adcatsubcatjo.getString("subCatName");
                                                 subcatList.add(subcat);
 
                                             }
@@ -319,11 +329,12 @@ public class RespondAvtInfo extends AppCompatActivity {
     }
 
     public void configureInterestAds(){
+
         if(!cmdownloadUrl.equalsIgnoreCase("")){
             String[] urlList={cmdownloadUrl};
             String[] nameList={cmfileName};
 
-            new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList, new IDownloadStatus() {
+            new DownloadFileAsync(RespondAvtInfo.this,URLClass.interestedpath, urlList, nameList,new IDownloadStatus() {
                 @Override
                 public void downloadStatus(String status) {
 
@@ -378,21 +389,40 @@ public class RespondAvtInfo extends AppCompatActivity {
 
     public void setData(){
 
-        if(category!=null){
-            tv_cat.setText("Category: "+category);
+//        if(category!=null){
+//            tv_cat.setText("Category: "+category);
+//        }else{
+//            tv_cat.setText("Category: No Selection");
+//        }
+
+
+        Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
+
+        if(catNameList.size()!=0){
+            String catstr=null;
+            for(int i=0;i<catNameList.size();i++){
+                if(i==0){
+                    catstr=""+catNameList.get(i);
+                }else{
+                    catstr=catstr+","+catNameList.get(i);
+                }
+            }
+            tv_cat.setText("Category: "+catstr);
         }else{
             tv_cat.setText("Category: No Selection");
         }
 
+
+
         if(subcatList.size()!=0){
 
-            subcatNames=dbHelper.getSubCatNames(subcatList);
+//            subcatNames=dbHelper.getSubCatNames(subcatList);
             String subcatstr=null;
-            for(int i=0;i<subcatNames.size();i++){
+            for(int i=0;i<subcatList.size();i++){
                 if(i==0){
-                    subcatstr=""+subcatNames.get(i);
+                    subcatstr=""+subcatList.get(i);
                 }else{
-                    subcatstr=subcatstr+","+subcatNames.get(i);
+                    subcatstr=subcatstr+","+subcatList.get(i);
                 }
             }
             tv_subcat.setText("Sub-Categories: "+subcatstr);
