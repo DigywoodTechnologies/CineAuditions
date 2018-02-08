@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.IDownloadStatus;
+import com.digywood.cineauditions.URLClass;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +37,7 @@ public class DownloadFileAsync extends AsyncTask<Void,String, String> {
     HttpURLConnection con;
     String status;
     IDownloadStatus listner;
-    String temp_location=android.os.Environment.getExternalStorageDirectory().toString()+ "/CiniAuditions/temp/";
+    String temp_location= URLClass.temppath;
     int original_lenghtOfFile;
     String log_status = null;
     DBHelper helper;
