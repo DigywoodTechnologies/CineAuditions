@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
@@ -270,13 +271,53 @@ public class LandingActivity extends AppCompatActivity {
         if (id == R.id.action_refresh){
 
             if(navItemIndex==0){
-                syncData();
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncData();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
             }else if(navItemIndex==1){
-                syncOwnAds();
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncOwnAds();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
             }else if(navItemIndex==2){
-                syncData();
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncData();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
             }else if(navItemIndex==3){
-                syncInterestedAds();
+                new AsyncCheckInternet(LandingActivity.this, new INetStatus() {
+                    @Override
+                    public void inetSatus(Boolean netStatus) {
+                        if(netStatus){
+                            syncInterestedAds();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }).execute();
             }else{
 
             }
@@ -670,7 +711,7 @@ public class LandingActivity extends AppCompatActivity {
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    Log.e("BackGround368--",e.toString());
+                    Log.e("BackGround--",e.toString());
                 }
 
             }

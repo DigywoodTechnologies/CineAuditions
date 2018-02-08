@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
@@ -84,9 +85,9 @@ public class ViewInterestAdInfo extends AppCompatActivity {
 
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
 
-        Log.e("ViewAdvtInfo---",""+advtId);
+        Log.e("ViewInterestAdInfo---",""+advtId);
 
-        myad = dbHelper.getLocalAd(advtId);
+        myad = dbHelper.getLocalInterestedAd(advtId);
 
         captionview.setTypeface(myTypeface1);
 
@@ -94,7 +95,7 @@ public class ViewInterestAdInfo extends AppCompatActivity {
 
             try {
                 if(!myad.getFilename().equalsIgnoreCase("")){
-                    Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
+                    Bitmap bmp = BitmapFactory.decodeFile(URLClass.interestedpath+myad.getFilename());
                     view_img.setImageBitmap(bmp);
                 }else{
                     Log.e("ViewInterestAdInfo---","No Image for Ad");
@@ -112,7 +113,17 @@ public class ViewInterestAdInfo extends AppCompatActivity {
             nameTv.setText(myad.getContactName());
             numberTv.setText(myad.getContactNumber());
             view_emailTv.setText(myad.getEmailId());
-            getCatSubcatInterestMsg();
+            new AsyncCheckInternet(ViewInterestAdInfo.this,new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        getCatSubcatInterestMsg();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
         }else{
             Toast.makeText(getApplicationContext(),"No Data",Toast.LENGTH_SHORT).show();
         }

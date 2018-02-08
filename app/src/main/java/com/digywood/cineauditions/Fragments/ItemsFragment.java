@@ -32,10 +32,12 @@ import android.widget.Toast;
 
 import com.digywood.cineauditions.Adapters.MyAdapter;
 import com.digywood.cineauditions.AdvtInfoScreen;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.HidingScrollListener;
 import com.digywood.cineauditions.IBagroundListener;
+import com.digywood.cineauditions.INetStatus;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleItem;
@@ -144,8 +146,8 @@ public class ItemsFragment extends Fragment {
             MobileNo = cmgintent.getStringExtra("mobileNo");
             //tv_producer_phno.setText(MobileNo);
         }
-        SetPreferencesFragment obj = new SetPreferencesFragment();
-        obj.setChecked();
+//        SetPreferencesFragment obj = new SetPreferencesFragment();
+//        obj.setChecked();
         //Checking for user preference locally
         int checkFlag = 0;
         checkFlag = (int) dbHelper.checkPreferencesExist(MobileNo);
@@ -156,9 +158,20 @@ public class ItemsFragment extends Fragment {
 //            Advtlist = dbHelper.getPrefAdvtProducer();
 //            Advtlist = dbHelper.getPrefAdvtProducer();
             //contact server to get all the advertisements
-            hmap.put("userId",MobileNo);
-            hmap.put("offset",String.valueOf(0));
-            getAllItemsDetailsFromHost(hmap);
+
+            new AsyncCheckInternet(getActivity(), new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        hmap.put("userId",MobileNo);
+                        hmap.put("offset",String.valueOf(0));
+                        getAllItemsDetailsFromHost(hmap);
+                    }else{
+                        Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
             Log.d("Advtlist.size", "comes:" + Advtlist.size()+"||"+MobileNo);
 
         }else{
@@ -247,11 +260,22 @@ public class ItemsFragment extends Fragment {
             private void isScrollCompleted() {
                 if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
                         && this.currentScrollState == SCROLL_STATE_IDLE) {
-                    hmap.clear();
-                    hmap.put("userId",MobileNo);
-                    hmap.put("offset",String.valueOf(Advtlist.size()));
-                    Log.e("OffSet",""+Advtlist.size());
-                    pgetAllItemsDetailsFromHost(hmap);
+
+                    new AsyncCheckInternet(getActivity(), new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
+                            if(netStatus){
+                                hmap.clear();
+                                hmap.put("userId",MobileNo);
+                                hmap.put("offset",String.valueOf(Advtlist.size()));
+                                Log.e("OffSet",""+Advtlist.size());
+                                pgetAllItemsDetailsFromHost(hmap);
+                            }else{
+                                Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    }).execute();
 
                 }
             }

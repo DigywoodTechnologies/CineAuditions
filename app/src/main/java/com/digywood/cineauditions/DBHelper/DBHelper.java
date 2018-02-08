@@ -132,6 +132,48 @@ public class DBHelper extends SQLiteOpenHelper {
         return cat_name;
     }
 
+    public ArrayList<String> getCatNames(ArrayList<String> catIds){
+        ArrayList<String> catNames=new ArrayList<>();
+        String catName=null;
+        String fullname=null;
+
+        if(catIds.size()!=0){
+            for(int i=0;i<catIds.size();i++){
+                fullname=fullname+catIds.get(i)+",";
+            }
+        }
+
+        Cursor c =db.query("category_table", new String[] {"longName"},"categoryId IN ("+fullname+")", null, null, null,null);
+        while (c.moveToNext()) {
+            catName=c.getString(c.getColumnIndex("longName"));
+            catNames.add(catName);
+        }
+        return catNames;
+    }
+
+    public ArrayList<String> getSubCatNames(ArrayList<String> subCatIds){
+        ArrayList<String> subCatNames=new ArrayList<>();
+        String subcatName=null;
+        String fullname="";
+
+        if(subCatIds.size()!=0){
+            for(int i=0;i<subCatIds.size();i++){
+                if(i==0){
+                    fullname="'"+subCatIds.get(i)+"'";
+                }else{
+                    fullname=fullname+","+"'"+subCatIds.get(i)+"'";
+                }
+            }
+        }
+
+        Cursor c =db.query("sub_category_table", new String[] {"longName"},"subCategoryId IN ("+fullname+")", null, null, null,null);
+        while (c.moveToNext()) {
+            subcatName=c.getString(c.getColumnIndex("longName"));
+            subCatNames.add(subcatName);
+        }
+        return subCatNames;
+    }
+
     public long updateProducer(String phno, String otp, String status, String regDate){
         long updateFlag=0;
         ContentValues cv = new ContentValues();
@@ -315,7 +357,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public SingleAdvt getLocalInterestedAd(int advtid){
         SingleAdvt myad =null;
 
-        Cursor c =db.query("advt_info_producer", new String[] {"advtRefNo","orgId","producer_id","caption","description","fileType","fileName","filePath","startDate","endDate","contactName","contactNumber","emailId","createdTime","status"}, "advtRefNo='"+advtid+"'", null, null, null, null);
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","orgId","producer_id","caption","description","fileType","fileName","filePath","startDate","endDate","contactName","contactNumber","emailId","createdTime","status"}, "advtRefNo='"+advtid+"'", null, null, null, null);
         while (c.moveToNext()) {
 
             myad=new SingleAdvt(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("orgId")),
