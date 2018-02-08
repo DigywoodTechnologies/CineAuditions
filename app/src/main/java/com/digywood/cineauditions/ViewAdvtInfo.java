@@ -15,19 +15,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
+import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
+import com.digywood.cineauditions.Pojo.SingleProducer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ViewAdvtInfo extends AppCompatActivity {
 
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,view_adId,view_status;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_cat,tv_subcat,view_adId,view_status;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId;
+
     SingleAdvt myad=null;
+    ArrayList<String> catNameList=new ArrayList<>();
+    ArrayList<String> subcatList=new ArrayList<>();
     ArrayList<SingleAdvt> Advtlist;
     ArrayList<SingleInterest> InterestList;
     Typeface myTypeface1;
@@ -72,6 +79,8 @@ public class ViewAdvtInfo extends AppCompatActivity {
         view_img = findViewById(R.id.view_imgView1);
         view_interests = findViewById(R.id.view_interests);
         mCollapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
+        tv_cat =findViewById(R.id.tv_ownadrescategory);
+        tv_subcat =findViewById(R.id.tv_ownadressubcategory);
 
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
 
@@ -104,6 +113,19 @@ public class ViewAdvtInfo extends AppCompatActivity {
             nameTv.setText(myad.getContactName());
             numberTv.setText(myad.getContactNumber());
             view_emailTv.setText(myad.getEmailId());
+
+            new AsyncCheckInternet(ViewAdvtInfo.this,new INetStatus() {
+                @Override
+                public void inetSatus(Boolean netStatus) {
+                    if(netStatus){
+                        getInterestData();
+                    }else{
+                        Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }).execute();
+
         }else{
             Toast.makeText(getApplicationContext(),"No Data",Toast.LENGTH_SHORT).show();
         }
@@ -118,6 +140,120 @@ public class ViewAdvtInfo extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+    }
+
+    public void getInterestData(){
+        String url = URLClass.hosturl+"getSingleInterest.php";
+        HashMap<String, String> hmap1 = new HashMap<>();
+
+        Log.e("ResponseAvtInfo---",MobileNo+" : "+advtId);
+        hmap1.put("userId", MobileNo);
+        hmap1.put("advtId", String.valueOf(advtId));
+
+        try {
+            new BagroundTask(url,hmap1,ViewAdvtInfo.this,new IBagroundListener() {
+                @Override
+                public void bagroundData(String json) {
+
+                    JSONArray ja_catsubcat=null;
+                    JSONObject adcatsubcatjo=null;
+
+                    try {
+                        Log.e("AdvtInfo------", json);
+
+                        JSONObject myObj=new JSONObject(json);
+                        JSONObject jo=null;
+                        String des=null;
+                        String date=null;
+
+                        Object obj2=myObj.get("Advt_CatSubcat");
+
+                        if (obj2 instanceof JSONArray)
+                        {
+                            ja_catsubcat=myObj.getJSONArray("Advt_CatSubcat");
+                            if(ja_catsubcat.length()>0){
+
+                                Log.e("interestLength---",""+ja_catsubcat.length());
+                                int p=0,q=0;
+                                for(int i=0;i<ja_catsubcat.length();i++){
+
+                                    adcatsubcatjo=ja_catsubcat.getJSONObject(i);
+
+                                    category=adcatsubcatjo.getString("catName");
+
+                                    if(catNameList.size()!=0){
+                                        if(catNameList.contains(category)){
+
+                                        }else{
+                                            catNameList.add(category);
+                                        }
+                                    }else{
+                                        catNameList.add(category);
+                                    }
+                                    String subcat=adcatsubcatjo.getString("subCatName");
+                                    subcatList.add(subcat);
+
+                                }
+
+                            }else{
+                                Log.e("BackGroundTask--","EmptyJsonArray");
+                            }
+                        }
+                        else {
+                            Log.e("CatSubcat--","No Categories and SubCategories");
+                        }
+
+                        setData();
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        Log.e("RespondAvtInfo----",e.toString());
+                    }
+                }
+            }).execute();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setData(){
+
+        Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
+
+        if(catNameList.size()!=0){
+            String catstr=null;
+            for(int i=0;i<catNameList.size();i++){
+                if(i==0){
+                    catstr=""+catNameList.get(i);
+                }else{
+                    catstr=catstr+","+catNameList.get(i);
+                }
+            }
+            tv_cat.setText("Category: "+catstr);
+        }else{
+            tv_cat.setText("Category: No Selection");
+        }
+
+
+
+        if(subcatList.size()!=0){
+
+//            subcatNames=dbHelper.getSubCatNames(subcatList);
+            String subcatstr=null;
+            for(int i=0;i<subcatList.size();i++){
+                if(i==0){
+                    subcatstr=""+subcatList.get(i);
+                }else{
+                    subcatstr=subcatstr+","+subcatList.get(i);
+                }
+            }
+            tv_subcat.setText("Sub-Categories: "+subcatstr);
+        }else{
+            tv_subcat.setText("Sub-Categories: No Selection");
+        }
 
     }
 
