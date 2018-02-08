@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundAsynkTask;
@@ -34,9 +32,7 @@ import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.IBagroundListener;
 import com.digywood.cineauditions.INetStatus;
-import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleCategory;
-import com.digywood.cineauditions.Pojo.SingleProducer;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import com.digywood.cineauditions.R;
 
@@ -50,20 +46,13 @@ public class SetPreferencesFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    TextView tv_producer_phno;
     int[] _intSubCat,_intCat;
     DBHelper dbHelper;
-    TextView tv_advtlist;
     Typeface myTypeface1,myTypeface2;
-    public ListView AdvtsLv;
-    ArrayList<SingleAdvt> Advtlist;
     String MobileNo,orgId,url,status,subCatName;
     Button submit_pref;
     ListView advt_lv;
     CheckBox checkBox;
-    TextView userName;
-    SingleProducer user;
-    long count=0;
     ArrayList<SingleCategory> CategoryList = new ArrayList<>();
     ArrayList<String> checkedPrefList = new ArrayList<>();
     ArrayList<String> Allpref = new ArrayList<>();
@@ -72,9 +61,6 @@ public class SetPreferencesFragment extends Fragment {
     final ArrayList<String> CategoryNamesList = new ArrayList<>();
     final ArrayList<String> SubCategoryNamesList = new ArrayList<>();
     ArrayList<String> AdvtprefList = new ArrayList<>();
-
-//    Spinner s1;
-//    GridView grid;
 
     final int REQUEST_CODE_GALLERY = 999;
 
@@ -122,49 +108,29 @@ public class SetPreferencesFragment extends Fragment {
         if (bundle != null) {
             MobileNo = bundle.getString("mobileNo");
             orgId = "ORG001";
-            //tv_producer_phno.setText(MobileNo);
         }
-//        setChecked();
         advt_lv=inflate.findViewById(R.id.PreferencesLv);
         submit_pref =inflate.findViewById(R.id.submit_pref);
-        userName = (TextView) inflate.findViewById(R.id.pref_userName);
-//        View convertView = getView();
-//        setChecked();
         dbHelper = new DBHelper(this.getContext());
         CategoryList = dbHelper.getAllCategories();
         SubCategoryList = dbHelper.getAllSubCategories();
 
-        user = dbHelper.getProducer(MobileNo);
-        if(user!=null){
-
-            userName.setText(user.getName());
-            userName.setTypeface(myTypeface1);
-
-        }else{
-            Log.e("SetPreferencesFragment","Empty User");
-        }
 
         _intSubCat= new int[SubCategoryList.size()];
         _intCat= new int[CategoryList.size()];
         AdvtprefList=dbHelper.getActivePref("A",MobileNo);
-//        count=dbHelper.getActivePrefCount("A",MobileNo);
-//        Log.e("SetPreferenceFrag---",""+count);
         Allpref=dbHelper.getAllPref(MobileNo);
         advt_lv.setAdapter(new ContactsBaseAdapter(getActivity()));
         status="Waiting";
-//        AdvtprefList = dbHelper.getAllPreferencesUser(MobileNo);
 
         for(int i=0;i<SubCategoryList.size();i++){
             subCatName = SubCategoryList.get(i).getLongName();
-            //Log.d("1:::AdvtprefList.size()", "" + AdvtprefList.size()+"||subCatName::"+subCatName);
             for(int j=0;j<AdvtprefList.size();j++){
-                //Log.d("2:::AdvtprefList.size()", "" +AdvtprefList.get(j).getCategory()+"||subCatName::"+subCatName);
                 if(AdvtprefList.get(j).equals(subCatName)) {
                     Log.e("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
-//                    checkBox.setChecked(true);
                 }
                 else {
-//                    checkBox.setChecked(false);
+
                 }
             }
         }
@@ -198,10 +164,6 @@ public class SetPreferencesFragment extends Fragment {
                                                 for(int i=0;i<SelectedSubCategoryList.size();i++){
 
                                                     SingleSubCategory ssc=SelectedSubCategoryList.get(i);
-
-//                                        Log.e("If Cond---",ssc.getSubCategoryId());
-
-//                                        String subcatname=dbHelper.getSubCategoryName(ssc.getSubCategoryId());
 
                                                     if(Allpref.contains(ssc.getSubCategoryId())){
 
@@ -272,7 +234,6 @@ public class SetPreferencesFragment extends Fragment {
                                                                                 jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
                                                                                 jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
                                                                                 jo.getString("createdTime"), jo.getString("status"));
-                                                                        //advtId = Integer.parseInt(jo.getString("advtId"));
                                                                         Log.d("ja", "" + jo.getString("advtId")+"Inserted");
                                                                     } catch (Exception e) {
                                                                         e.printStackTrace();
@@ -337,7 +298,7 @@ public class SetPreferencesFragment extends Fragment {
 
         Context context;
 
-        public ContactsBaseAdapter(Context c) {
+        private ContactsBaseAdapter(Context c) {
             context = c;
             checkValues.clear();
 
@@ -417,22 +378,6 @@ public class SetPreferencesFragment extends Fragment {
             if (checkValues.size() != 0) {
                 checkBox.setChecked(checkValues.get(position));
             }
-//            editor = sharedPrefs.edit();
-//            checkBox.setChecked(sharedPrefs.getBoolean("CheckValue" + position, false));
-//            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                    editor.putBoolean("CheckValue" + position, isChecked);
-//                    editor.commit();
-//                    int iPos = (Integer) buttonView.getTag();
-//                    if (isChecked) {
-//                        checkValues.set(iPos, true);
-//                    } else {
-//                        checkValues.set(iPos, false);
-//                    }
-//
-//                }
-//            });
 
             checkBox.setOnClickListener(new View.OnClickListener() {
 
@@ -442,8 +387,6 @@ public class SetPreferencesFragment extends Fragment {
                         checkBoxState[position] = true;
 
                         String subcatname=SubCategoryList.get(position).getSubCategoryId();
-
-//                        String subcatname=dbHelper.getSubCategoryName(SubCategoryList.get(position).getSubCategoryId());
                         if(Allpref.contains(subcatname)){
                             SubCategoryList.get(position).setUploadstatus("U");
                             SubCategoryList.get(position).setStatus("A");
@@ -467,11 +410,7 @@ public class SetPreferencesFragment extends Fragment {
                         checkBoxState[position] = false;
 
                         if(checkedPrefList.size()!=0){
-//                            Log.e("If Cond---",SubCategoryList.get(position).getSubCategoryId());
                             String subcatname=SubCategoryList.get(position).getSubCategoryId();
-//                            String subcatname=dbHelper.getSubCategoryName(SubCategoryList.get(position).getSubCategoryId());
-//                            Log.e("If Cond---",subcatname);
-
                             if(Allpref.contains(subcatname)){
                                 SubCategoryList.get(position).setUploadstatus("U");
                                 SubCategoryList.get(position).setStatus("D");
@@ -549,12 +488,6 @@ public class SetPreferencesFragment extends Fragment {
                                         }
 
                                         Log.d("test",""+dbHelper.checkPreferencesExist(MobileNo));
-                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"), jo.getString("userId"), jo.getString("caption"),
-                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                            jo.getString("createdTime"), jo.getString("status"));
-                                    //advtId = Integer.parseInt(jo.getString("advtId"));
-*/
                                         Log.d("ja", "" + jo.getString("advtId") + "Inserted");
                                     } catch (Exception e) {
                                         e.printStackTrace();

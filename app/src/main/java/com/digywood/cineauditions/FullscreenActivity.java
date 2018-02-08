@@ -15,6 +15,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -187,6 +188,7 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
+                FullscreenActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 if (awesomeValidation.validate()) {
 
                     if(cb_remember.isChecked()){

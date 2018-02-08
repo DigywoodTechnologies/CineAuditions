@@ -26,12 +26,13 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.MyVi
     private ArrayList<String> chknumberList=new ArrayList<>();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tv_name,tv_number,tv_mail,tv_comment;
+        public TextView tv_name,tv_number,tv_mail,tv_comment,tv_time;
         public FloatingActionButton fab_play;
 
         public MyViewHolder(View view) {
             super(view);
             tv_name =view.findViewById(R.id.tv_username);
+            tv_time = view.findViewById(R.id.tv_time);
             tv_number =view.findViewById(R.id.tv_usernumber);
             tv_mail =view.findViewById(R.id.tv_email);
             tv_comment =view.findViewById(R.id.tv_comment);
@@ -61,6 +62,7 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.MyVi
 
         try {
             holder.tv_name.setText("Name: "+singlecandi.getName());
+            holder.tv_time.setText("Time: "+singlecandi.getTime());
             holder.tv_number.setText("Number: "+singlecandi.getNumber());
             holder.tv_mail.setText("Mail: "+singlecandi.getMail());
             holder.tv_comment.setText("Review: "+singlecandi.getComment());
