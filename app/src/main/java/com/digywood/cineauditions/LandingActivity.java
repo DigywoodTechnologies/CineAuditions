@@ -54,17 +54,13 @@ public class LandingActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private FloatingActionButton fab;
     private String[] activityTitles;
-    EditText name_item,price_item,description_item;
     String phno,key=null;
     private Toolbar toolbar;
     TextView userName, userEmail;
     Typeface myTypeface1;
     SingleProducer user;
     private boolean shouldLoadHomeFragOnBackPress = true;
-    boolean openF2;
-    private ItemsFragment itemsFragment;
     DBHelper dbHelper;
-    SetPreferencesFragment obj = new SetPreferencesFragment();
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -159,8 +155,6 @@ public class LandingActivity extends AppCompatActivity {
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
             drawer.closeDrawers();
 
-            // show or hide the fab button
-//            toggleFab();
             return;
         }
 
@@ -240,16 +234,10 @@ public class LandingActivity extends AppCompatActivity {
             case 3:
                 InterestsFragment interestsFragment = new InterestsFragment();
                 return interestsFragment;
-//
-//            case 4:
-//
-//                OrdersdataActivity ordersdataActivity = new OrdersdataActivity();
-//                return ordersdataActivity;
-//
-//            case 5:
-//
-//                SettingsFragment settingsFragment = new SettingsFragment();
-//                return settingsFragment;
+            case 4:
+                Intent intent = new Intent(LandingActivity.this, SettingsActivity.class);
+                intent.putExtra("phno", phno);
+                startActivity(intent);
             default:
                 return new ItemsFragment();
         }
@@ -270,12 +258,6 @@ public class LandingActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, FullscreenActivity.class);
-            dbHelper.deleteProducer(phno);
-            return true;
-        }
-
         if (id == R.id.action_refresh){
 
             if(checkPermission()){
@@ -314,10 +296,10 @@ public class LandingActivity extends AppCompatActivity {
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_ORDERS_DATA;
                         break;
-//                    case R.id.nav_settings:
-//                        navItemIndex = 5;
-//                        CURRENT_TAG = TAG_SETTINGS;
-//                        break;
+                    case R.id.nav_settings:
+                        navItemIndex = 4;
+                        CURRENT_TAG = TAG_SETTINGS;
+                        break;
                     default:
                         navItemIndex = 0;
                 }

@@ -42,10 +42,9 @@ import static com.digywood.cineauditions.AdvtInfoScreen.RequestPermissionCode;
 
 public class RespondAvtInfo extends AppCompatActivity {
 
-    int[] _intAdvtlist;
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat,resp_adId;
     String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
-    String key=null;
+
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
@@ -87,24 +86,25 @@ public class RespondAvtInfo extends AppCompatActivity {
             cmstatus=getextras.getString("status");
         }
 
-        Advtlist = new ArrayList<SingleAdvt>();
+        Advtlist = new ArrayList<>();
         subcatList=new ArrayList<>();
-        captionview = (TextView) findViewById(R.id.view_caption);
-        view_startTv = (TextView) findViewById(R.id.view_start_dateTv);
-        view_startTv = (TextView) findViewById(R.id.view_start_dateTv);
+        captionview =  findViewById(R.id.view_caption);
+        view_startTv =  findViewById(R.id.view_start_dateTv);
+        view_startTv =  findViewById(R.id.view_start_dateTv);
         tv_cat =findViewById(R.id.tv_rescategory);
         tv_subcat =findViewById(R.id.tv_ressubcategory);
         tv_interest=findViewById(R.id.tv_interest);
-        view_endTv = (TextView) findViewById(R.id.view_end_dateTv);
-        view_description = (TextView) findViewById(R.id.view_description);
-        nameTv = (TextView) findViewById(R.id.personnameTv);
-        numberTv = (TextView) findViewById(R.id.personnumberTv);
-        view_emailTv = (TextView) findViewById(R.id.view_emailTv);
-        view_img = (ImageView) findViewById(R.id.view_imgView);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsingToolbar);
-        comment = (EditText) findViewById(R.id.comment);
-        interested = (CheckBox) findViewById(R.id.cb_interested);
-        submit = (Button) findViewById(R.id.submit);
+        view_endTv =  findViewById(R.id.view_end_dateTv);
+        view_description = findViewById(R.id.view_description);
+        nameTv =  findViewById(R.id.personnameTv);
+        numberTv =  findViewById(R.id.personnumberTv);
+        view_emailTv =  findViewById(R.id.view_emailTv);
+        resp_adId = findViewById(R.id.resp_adId);
+        view_img =  findViewById(R.id.view_imgView);
+        mCollapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
+        comment =  findViewById(R.id.comment);
+        interested = findViewById(R.id.cb_interested);
+        submit =  findViewById(R.id.submit);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
@@ -134,6 +134,7 @@ public class RespondAvtInfo extends AppCompatActivity {
         }
 
         captionview.setText("" + cmcaption + " ");
+        resp_adId.setText("AdvtId: " +advtId);
         view_startTv.setText(cmstart);
         view_endTv.setText(cmend);
         view_description.setText(cmdes);
@@ -181,10 +182,14 @@ public class RespondAvtInfo extends AppCompatActivity {
                                             des=jo.getString("description");
                                             date=jo.getString("uploadDateTime");
                                         }
-                                        if(des.equals("")){
-                                            tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
-                                        }else{
-                                            tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
+                                        try {
+                                            if(des.equals("")){
+                                                tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
+                                            }else{
+                                                tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
+                                            }
+                                        } catch (NullPointerException e) {
+                                            e.printStackTrace();
                                         }
                                         comment.setVisibility(View.GONE);
                                         submit.setVisibility(View.GONE);
@@ -201,7 +206,6 @@ public class RespondAvtInfo extends AppCompatActivity {
                                         if(ja_catsubcat.length()>0){
 
                                             Log.e("interestLength---",""+ja_catsubcat.length());
-                                            int p=0,q=0;
                                             for(int i=0;i<ja_catsubcat.length();i++){
 
                                                 adcatsubcatjo=ja_catsubcat.getJSONObject(i);
