@@ -1,5 +1,6 @@
 package com.digywood.cineauditions;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -14,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +36,7 @@ import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
 import com.digywood.cineauditions.Fragments.ListOfAdvtsFragment;
 import com.digywood.cineauditions.Fragments.SetPreferencesFragment ;
+import com.digywood.cineauditions.Fragments.SettingsFragment;
 import com.digywood.cineauditions.Pojo.SingleProducer;
 
 import org.json.JSONArray;
@@ -61,6 +64,7 @@ public class LandingActivity extends AppCompatActivity {
     SingleProducer user;
     private boolean shouldLoadHomeFragOnBackPress = true;
     DBHelper dbHelper;
+
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -68,7 +72,7 @@ public class LandingActivity extends AppCompatActivity {
     private static final String TAG_NOTICE_LIST = "notice list";
     private static final String TAG_POST_ADVT = "post advertisement";
     private static final String TAG_PUBLISH = "publish";
-    private static final String TAG_ORDERS = "orders";
+    private static final String TAG_LOGOUT = "logout";
     private static final String TAG_ORDERS_DATA = "orders data";
     private static final String TAG_SETTINGS = "settings";
     public static String CURRENT_TAG = TAG_NOTICE_LIST;
@@ -235,9 +239,13 @@ public class LandingActivity extends AppCompatActivity {
                 InterestsFragment interestsFragment = new InterestsFragment();
                 return interestsFragment;
             case 4:
-                Intent intent = new Intent(LandingActivity.this, SettingsActivity.class);
+                SettingsFragment settingsFragment = new SettingsFragment();
+                return settingsFragment;
+//                builder.create();
+                /*Intent intent = new Intent(LandingActivity.this, SettingsActivity.class);
                 intent.putExtra("phno", phno);
-                startActivity(intent);
+                startActivity(intent);*/
+
             default:
                 return new ItemsFragment();
         }
@@ -299,6 +307,7 @@ public class LandingActivity extends AppCompatActivity {
                     case R.id.nav_settings:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTINGS;
+                        Log.e("LandingActivity--->","this");
                         break;
                     default:
                         navItemIndex = 0;

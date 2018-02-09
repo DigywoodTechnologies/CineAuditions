@@ -43,9 +43,6 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        myTypeface2 = Typeface.createFromAsset(getAssets(), "fonts/pacifico.ttf");
-        myTypeface3 = Typeface.createFromAsset(getAssets(), "fonts/exolight.otf");
-        myTypeface4 = Typeface.createFromAsset(getAssets(), "fonts/exobold.otf");
 
         RegistrationLbl = (TextView)findViewById(R.id.RegistrationLbl);
         reg_submit = (Button)findViewById(R.id.reg_submit);
