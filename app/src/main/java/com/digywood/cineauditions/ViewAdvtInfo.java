@@ -21,6 +21,10 @@ import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
 import com.digywood.cineauditions.Pojo.SingleProducer;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,7 +33,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_cat,tv_subcat,view_adId,view_status;
     ImageView view_img;
     DBHelper dbHelper;
-    String time,MobileNo;
+    String time,MobileNo,category;
     int advtId;
 
     SingleAdvt myad=null;
