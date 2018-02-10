@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class InterestsFragment extends Fragment {
 
     ArrayList<SingleAd> Advtlist;
-    AdsAdapter adsAdp;
+    public static AdsAdapter adsAdp;
     DBHelper myhelper;
     int count=0;
     String MobileNo="";
