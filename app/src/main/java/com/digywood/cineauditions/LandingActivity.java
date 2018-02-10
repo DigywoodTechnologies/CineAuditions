@@ -505,6 +505,10 @@ public class LandingActivity extends AppCompatActivity {
                     Log.e("LandingActivity----",e.toString());
                 }
 
+                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.frame, new ListOfAdvtsFragment());
+                tx.commit();
+                navItemIndex=1;
             }
         }).execute();
     }
@@ -604,6 +608,10 @@ public class LandingActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Log.e("LandingActivity----",e.toString());
                 }
+                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.frame, new InterestsFragment());
+                tx.commit();
+                navItemIndex=3;
 
             }
         }).execute();
