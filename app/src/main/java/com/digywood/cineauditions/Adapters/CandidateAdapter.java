@@ -65,7 +65,7 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.MyVi
             holder.tv_time.setText("Time: "+singlecandi.getTime());
             holder.tv_number.setText("Number: "+singlecandi.getNumber());
             holder.tv_mail.setText("Mail: "+singlecandi.getMail());
-            holder.tv_comment.setText("Review: "+singlecandi.getComment());
+            holder.tv_comment.setText("Response: "+singlecandi.getComment());
         }catch (Exception e){
             e.printStackTrace();
             Log.e("CandiAdapter-----",e.toString());

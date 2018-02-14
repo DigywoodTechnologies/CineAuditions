@@ -65,6 +65,11 @@
             android:name=".MyFolioActivity"
             android:label="@string/title_activity_my_folio"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FullImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_full_image"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

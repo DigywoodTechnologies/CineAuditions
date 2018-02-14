@@ -82,54 +82,50 @@ public class MyAdapter extends BaseAdapter {
         holder.post_date = rowView.findViewById(R.id.date_notice);
         holder.check = rowView.findViewById(R.id.check);
 
-//        if(allAdIds.size()!=0){
-//
-//            int []_intAdvtlist = new int[Advtlist.size()];
-//            //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);
-//            for (int x = 0; x < _intAdvtlist.length; x++) {
-//
-////                byte[] lotsImage = Advtlist.get(i).getImage();
-////                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
-////                holder.imageView.setImageBitmap(bitmap);
-//
-//                holder.post_date.setText(Advtlist.get(i).getCreatedTime());
-//                holder.caption.setText(Advtlist.get(i).getCaption());
-//                holder.tv_adid.setText("AdvtId: "+String.valueOf(Advtlist.get(i).getAdvtRefNo()));
-//                if(allAdIds.contains(Advtlist.get(i).getAdvtRefNo())){
-//                    holder.check.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//        }else{
-//
-//            int []_intAdvtlist = new int[Advtlist.size()];
-//            //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);
-//            for (int x = 0; x < _intAdvtlist.length; x++) {
-//
-////                byte[] lotsImage = Advtlist.get(i).getImage();
-////                Bitmap bitmap = BitmapFactory.decodeByteArray(lotsImage, 0, lotsImage.length);
-////                holder.imageView.setImageBitmap(bitmap);
-//                holder.post_date.setText(Advtlist.get(i).getCreatedTime());
-//                holder.caption.setText(Advtlist.get(i).getCaption());
-//                holder.tv_adid.setText("AdvtId: "+String.valueOf(Advtlist.get(i).getAdvtRefNo()));
-//            }
-//
-//        }
+        if(allAdIds.size()!=0){
 
-        SingleAdvt singlead=Advtlist.get(position);
+            SingleAdvt singlead=Advtlist.get(position);
 
-        try {
-//            URL url = new URL(singlead.getDownloadUrl());
-////            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-////            holder.imageView.setImageBitmap(bmp);
-//            new AsyncTaskLoadImage(holder.imageView,url).execute();
-            holder.post_date.setText(singlead.getCreatedTime());
-            holder.caption.setText(singlead.getCaption());
-            holder.tv_adid.setText("AdvtId: " + String.valueOf(singlead.getAdvtRefNo()));
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.e("MyAdapter---",e.toString());
+            try {
+                holder.post_date.setText(singlead.getCreatedTime());
+                holder.caption.setText(singlead.getCaption());
+                holder.tv_adid.setText("AdvtId: " +String.valueOf(singlead.getAdvtRefNo()));
+                if(allAdIds.contains(singlead.getAdvtRefNo())){
+                    holder.check.setVisibility(View.VISIBLE);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.e("MyAdapter---",e.toString());
+            }
+
+        }else{
+
+            SingleAdvt singlead=Advtlist.get(position);
+
+            try {
+                holder.post_date.setText(singlead.getCreatedTime());
+                holder.caption.setText(singlead.getCaption());
+                holder.tv_adid.setText("AdvtId: " + String.valueOf(singlead.getAdvtRefNo()));
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.e("MyAdapter---",e.toString());
+            }
         }
+
+//        SingleAdvt singlead=Advtlist.get(position);
+//
+//        try {
+////            URL url = new URL(singlead.getDownloadUrl());
+//////            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//////            holder.imageView.setImageBitmap(bmp);
+////            new AsyncTaskLoadImage(holder.imageView,url).execute();
+//            holder.post_date.setText(singlead.getCreatedTime());
+//            holder.caption.setText(singlead.getCaption());
+//            holder.tv_adid.setText("AdvtId: " + String.valueOf(singlead.getAdvtRefNo()));
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            Log.e("MyAdapter---",e.toString());
+//        }
 
 
         final int final_i = position;

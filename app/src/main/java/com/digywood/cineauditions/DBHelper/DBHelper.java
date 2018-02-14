@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
 import com.digywood.cineauditions.CategoryCheck;
 import com.digywood.cineauditions.Pojo.SingleAd;
 import com.digywood.cineauditions.Pojo.SingleInterest;
@@ -17,7 +15,6 @@ import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleProducer;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import com.digywood.cineauditions.Pojo.SingleSubcat;
-
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -595,6 +592,7 @@ public class DBHelper extends SQLiteOpenHelper {
         insertFlag = db.insert("preferences_table",null, cv);
         return insertFlag;
     }
+
     public boolean checkUserExists(String phno){
         boolean checkFlag = false;
         String countQuery = "select * from preferences_table where userId ='"+phno+"'";

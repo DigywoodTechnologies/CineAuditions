@@ -117,8 +117,7 @@ public class ItemsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.fragment_items, container, false);
 
         ItemLv = (ListView) inflate.findViewById(R.id.ItemsLv);
@@ -142,7 +141,7 @@ public class ItemsFragment extends Fragment {
 //            Advtlist = dbHelper.getPrefAdvtProducer();
             //contact server to get all the advertisements
 
-            new AsyncCheckInternet(getActivity(), new INetStatus() {
+            new AsyncCheckInternet(getActivity(),new INetStatus() {
                 @Override
                 public void inetSatus(Boolean netStatus) {
                     if(netStatus){
@@ -239,21 +238,27 @@ public class ItemsFragment extends Fragment {
                 if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
                         && this.currentScrollState == SCROLL_STATE_IDLE) {
 
-                    new AsyncCheckInternet(getActivity(), new INetStatus() {
-                        @Override
-                        public void inetSatus(Boolean netStatus) {
-                            if(netStatus){
-                                hmap.clear();
-                                hmap.put("userId",MobileNo);
-                                hmap.put("offset",String.valueOf(Advtlist.size()));
-                                Log.e("OffSet",""+Advtlist.size());
-                                pgetAllItemsDetailsFromHost(hmap);
-                            }else{
-                                Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                            }
+                    if(flag_loading){
 
-                        }
-                    }).execute();
+                    }else{
+                        flag_loading=true;
+                        new AsyncCheckInternet(getActivity(), new INetStatus() {
+                            @Override
+                            public void inetSatus(Boolean netStatus) {
+                                if(netStatus){
+                                    hmap.clear();
+                                    hmap.put("userId",MobileNo);
+                                    hmap.put("offset",String.valueOf(Advtlist.size()));
+                                    Log.e("OffSet",""+Advtlist.size());
+                                    pgetAllItemsDetailsFromHost(hmap);
+                                }else{
+                                    Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }).execute();
+
+                    }
 
                 }
             }

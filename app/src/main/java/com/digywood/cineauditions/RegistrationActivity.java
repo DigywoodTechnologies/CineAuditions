@@ -57,7 +57,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         awesomeValidation.addValidation(this, R.id.userNameET_ForReg, "^[a-zA-Z0-9_ ]*$", R.string.nameerror);
-        awesomeValidation.addValidation(this, R.id.addressET_ForReg, "^[A-Za-z\\\\s]{1,}[\\\\.]{0,1}[A-Za-z\\\\s]{0,}$", R.string.addresserror);
+        awesomeValidation.addValidation(this, R.id.addressET_ForReg, "^[a-zA-Z0-9_ ]*$", R.string.addresserror);
         awesomeValidation.addValidation(this, R.id.cityET_ForReg, "^[A-Za-z\\\\s]{1,}[\\\\.]{0,1}[A-Za-z\\\\s]{0,}$", R.string.cityerror);
         awesomeValidation.addValidation(this, R.id.stateET_ForReg, "^[A-Za-z\\\\s]{1,}[\\\\.]{0,1}[A-Za-z\\\\s]{0,}$", R.string.stateerror);
         awesomeValidation.addValidation(this, R.id.emailET_ForReg, Patterns.EMAIL_ADDRESS, R.string.emailerror);
@@ -90,12 +90,12 @@ public class RegistrationActivity extends AppCompatActivity {
                     SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     regDate = sdf1.format(c1.getTime());
 
-                    new AsyncCheckInternet(RegistrationActivity.this, new INetStatus() {
+                    new AsyncCheckInternet(RegistrationActivity.this,new INetStatus() {
                         @Override
                         public void inetSatus(Boolean netStatus) {
                             if(netStatus){
                                 HashMap<String, String> hmap = new HashMap<String, String>();
-                                url = URLClass.hosturl+"insertProducerDetails.php";
+                                url =URLClass.hosturl+"insertProducerDetails.php";
 
                                 hmap.put("producer_name", nameSt);
                                 hmap.put("address", addressSt);
