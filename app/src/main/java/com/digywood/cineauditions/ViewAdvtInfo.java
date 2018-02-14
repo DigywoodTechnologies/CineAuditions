@@ -21,6 +21,10 @@ import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
 import com.digywood.cineauditions.Pojo.SingleProducer;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,7 +35,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId;
-
+    String category;
     SingleAdvt myad=null;
     ArrayList<String> catNameList=new ArrayList<>();
     ArrayList<String> subcatList=new ArrayList<>();

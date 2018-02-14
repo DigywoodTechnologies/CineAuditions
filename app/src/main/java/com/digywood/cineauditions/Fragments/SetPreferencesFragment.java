@@ -48,7 +48,6 @@ public class SetPreferencesFragment extends Fragment {
 
     int[] _intSubCat,_intCat;
     DBHelper dbHelper;
-    Typeface myTypeface1,myTypeface2;
     String MobileNo,orgId,url,status,subCatName;
     Button submit_pref;
     ListView advt_lv;
@@ -279,9 +278,6 @@ public class SetPreferencesFragment extends Fragment {
             }
         });
 
-
-        myTypeface1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sans.ttf");
-        myTypeface2 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/sansbold.ttf");
         return inflate;
     }
 

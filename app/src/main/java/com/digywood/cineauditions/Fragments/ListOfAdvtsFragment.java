@@ -41,7 +41,7 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
     TextView tv_producer_phno;
     int[] _intAdvtlist;
     DBHelper dbHelper;
-    AdsAdapter adsAdp;
+    public static AdsAdapter adsAdp;
     int count=0;
     FloatingActionButton fab_new;
     RecyclerView.LayoutManager myLayoutManager;
