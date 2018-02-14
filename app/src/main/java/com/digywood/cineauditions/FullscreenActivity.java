@@ -212,10 +212,15 @@ public class FullscreenActivity extends AppCompatActivity {
                                     int checkOTPFlag = 0;
                                     String st = dbHelper.getOTPStatus(MobileNo);
                                     if (st.equals("verified") || st.equals("skipped")) {
-                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                        intent.putExtra("mobileNo", MobileNo);
-                                        intent.putExtra("key", "F1");
-                                        startActivity(intent);
+                                        count=dbHelper.checkCategoryExists();
+                                        if(count>0){
+                                            Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+                                            intent.putExtra("mobileNo", MobileNo);
+                                            intent.putExtra("key", "F1");
+                                            startActivity(intent);
+                                        }else{
+                                            syncData(MobileNo);
+                                        }
                                     } else {
                                         Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();
                                     }
