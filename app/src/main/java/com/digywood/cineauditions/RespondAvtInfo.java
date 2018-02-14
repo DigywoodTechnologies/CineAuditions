@@ -254,6 +254,17 @@ public class RespondAvtInfo extends AppCompatActivity {
             }
         }).execute();
 
+        view_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                Intent i=new Intent(getApplicationContext(),FullImageActivity.class);
+//                i.putExtra("imageurl",cmdownloadUrl);
+//                startActivity(i);
+
+            }
+        });
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -269,7 +280,7 @@ public class RespondAvtInfo extends AppCompatActivity {
                             hmap1.put("advtId", String.valueOf(advtId));
                             hmap1.put("description", comment.getText().toString());
                             hmap1.put("uploadDateTime",timeStamp);
-                            hmap1.put("flag", "A");
+                            hmap1.put("flag","A");
 
                             try {
                                 BagroundTask task = new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {

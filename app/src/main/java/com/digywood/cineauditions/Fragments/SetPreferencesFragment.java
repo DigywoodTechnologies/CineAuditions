@@ -35,6 +35,7 @@ import com.digywood.cineauditions.INetStatus;
 import com.digywood.cineauditions.Pojo.SingleCategory;
 import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import com.digywood.cineauditions.R;
+import com.digywood.cineauditions.URLClass;
 
 public class SetPreferencesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -122,28 +123,28 @@ public class SetPreferencesFragment extends Fragment {
         advt_lv.setAdapter(new ContactsBaseAdapter(getActivity()));
         status="Waiting";
 
-        for(int i=0;i<SubCategoryList.size();i++){
-            subCatName = SubCategoryList.get(i).getLongName();
-            for(int j=0;j<AdvtprefList.size();j++){
-                if(AdvtprefList.get(j).equals(subCatName)) {
-                    Log.e("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
-                }
-                else {
-
-                }
-            }
-        }
+//        for(int i=0;i<SubCategoryList.size();i++){
+//            subCatName = SubCategoryList.get(i).getLongName();
+//            for(int j=0;j<AdvtprefList.size();j++){
+//                if(AdvtprefList.get(j).equals(subCatName)) {
+//                    Log.e("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
+//                }
+//                else {
+//
+//                }
+//            }
+//        }
 
         submit_pref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                new AsyncCheckInternet(getActivity(), new INetStatus() {
+                new AsyncCheckInternet(getActivity(),new INetStatus() {
                     @Override
                     public void inetSatus(Boolean netStatus) {
                         if(netStatus){
                             Log.d("insertDetails:", "" + SelectedSubCategoryList.size());
-                            url = "http://www.digywood.com/phpfiles/cinesooruProducer/insertPreferencesofUser.php";
+                            url = URLClass.hosturl+"insertPreferencesofUser.php";
                             try {
                                 BagroundAsynkTask task = new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
                                     @Override
@@ -152,7 +153,7 @@ public class SetPreferencesFragment extends Fragment {
                                         if (json.equals("Inserted")) {
 //                                dbHelper.deleteAllPrefAdvts();
                                             HashMap<String, String> hmap1 = new HashMap<>();
-                                            url = "http://www.digywood.com/phpfiles/cinesooruProducer/getUserPrefAdvtDetails.php";
+//                                            url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
                                             hmap1.put("userId", MobileNo);
                                             try {
 
@@ -216,42 +217,15 @@ public class SetPreferencesFragment extends Fragment {
 
                                                 Log.e("ExistUpdate----","Data: "+x+" : "+y);
 
-                                                BagroundTask task1 = new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
-                                                    @Override
-                                                    public void bagroundData(String json) {
-                                                        try {
-                                                            JSONArray ja = new JSONArray(json);
-                                                            Log.d("ja", "comes:" + ja);
-                                                            if (ja.length() != 0) {
-                                                                JSONObject jo = null;
-                                                                for (int j = 0; j < ja.length(); j++) {
-                                                                    try {
-                                                                        jo = ja.getJSONObject(j);
 
-                                                                        byte[] imageByte = Base64.decode(jo.getString("image"),Base64.DEFAULT);
-                                                                        dbHelper.insertPrefAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-                                                                                jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-                                                                                jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-                                                                                jo.getString("createdTime"), jo.getString("status"));
-                                                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
-                                                                    } catch (Exception e) {
-                                                                        e.printStackTrace();
-                                                                    }
-                                                                }
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                });
-                                                task1.execute();
-                                                submit_pref.setVisibility(View.INVISIBLE);
-                                                Fragment fragment = new ItemsFragment();
-                                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                fragmentTransaction.replace(R.id.framelayout_items, fragment);
-                                                fragmentTransaction.addToBackStack(null);
-                                                fragmentTransaction.commit();
+//                                                Fragment fragment = new ItemsFragment();
+//                                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                                                fragmentTransaction.replace(R.id.framelayout_items, fragment);
+//                                                fragmentTransaction.addToBackStack(null);
+//                                                fragmentTransaction.commit();
+
+                                                reloadFragment();
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -357,7 +331,7 @@ public class SetPreferencesFragment extends Fragment {
 
             viewHolder.category = convertView.findViewById(R.id.cat_list);
             viewHolder.subcategory = convertView.findViewById(R.id.subcat_list);
-            checkBox=convertView.findViewById(R.id.checkbox_list);
+            viewHolder.checkBox=convertView.findViewById(R.id.checkbox_list);
 
 
             String categoryId = SubCategoryList.get(position).getCategoryId();
@@ -370,18 +344,22 @@ public class SetPreferencesFragment extends Fragment {
                 }
             }
 
-            checkBox.setTag(position);
+            viewHolder.checkBox.setTag(position);
             if (checkValues.size() != 0) {
-                checkBox.setChecked(checkValues.get(position));
+                viewHolder.checkBox.setChecked(checkValues.get(position));
             }
 
-            checkBox.setOnClickListener(new View.OnClickListener() {
+            viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
 
-                    if (((CheckBox) v).isChecked()) {
+                    CheckBox ctv = (CheckBox) v;
+                    if (ctv.isChecked()) {
                         checkBoxState[position] = true;
+                        Toast.makeText(context,"pos:  "+position,Toast.LENGTH_SHORT).show();
 
+//                        ctv.setChecked(true);
+//                        viewHolder.checkBox.setChecked(true);
                         String subcatname=SubCategoryList.get(position).getSubCategoryId();
                         if(Allpref.contains(subcatname)){
                             SubCategoryList.get(position).setUploadstatus("U");
@@ -404,7 +382,7 @@ public class SetPreferencesFragment extends Fragment {
                         Log.d("last check", "" + CategoryNamesList.size() + ":" + CategoryNamesList);
                     } else {
                         checkBoxState[position] = false;
-
+//                        viewHolder.checkBox.setChecked(false);
                         if(checkedPrefList.size()!=0){
                             String subcatname=SubCategoryList.get(position).getSubCategoryId();
                             if(Allpref.contains(subcatname)){
@@ -453,6 +431,7 @@ public class SetPreferencesFragment extends Fragment {
 
         public class ViewHolder {
             public TextView category, subcategory;
+            public CheckBox checkBox;
         }
 
     }
@@ -500,6 +479,11 @@ public class SetPreferencesFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+
+        public void reloadFragment(){
+
+        }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
