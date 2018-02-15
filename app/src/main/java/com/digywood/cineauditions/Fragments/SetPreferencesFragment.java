@@ -5,9 +5,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -143,7 +141,7 @@ public class SetPreferencesFragment extends Fragment {
                     @Override
                     public void inetSatus(Boolean netStatus) {
                         if(netStatus){
-                            Log.d("insertDetails:", "" + SelectedSubCategoryList.size());
+                            Log.e("insertDetails:", "" + SelectedSubCategoryList.size());
                             url = URLClass.hosturl+"insertPreferencesofUser.php";
                             try {
                                 BagroundAsynkTask task = new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
@@ -151,9 +149,7 @@ public class SetPreferencesFragment extends Fragment {
                                     public void bagroundData(String json) {
                                         Log.e("PrefFragment-------", json);
                                         if (json.equals("Inserted")) {
-//                                dbHelper.deleteAllPrefAdvts();
                                             HashMap<String, String> hmap1 = new HashMap<>();
-//                                            url = URLClass.hosturl+"getUserPrefAdvtDetails.php";
                                             hmap1.put("userId", MobileNo);
                                             try {
 
@@ -217,14 +213,6 @@ public class SetPreferencesFragment extends Fragment {
 
                                                 Log.e("ExistUpdate----","Data: "+x+" : "+y);
 
-
-//                                                Fragment fragment = new ItemsFragment();
-//                                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                                                fragmentTransaction.replace(R.id.framelayout_items, fragment);
-//                                                fragmentTransaction.addToBackStack(null);
-//                                                fragmentTransaction.commit();
-
                                                 reloadFragment();
 
                                             } catch (Exception e) {
@@ -287,6 +275,7 @@ public class SetPreferencesFragment extends Fragment {
                             checkedPrefList.add(AdvtprefList.get(j));
 //                            SubCategoryList.get(x).
 //                            SelectedSubCategoryList.add(SubCategoryList.get(x));
+                            SubCategoryList.get(x).setSelection(true);
                             checkValues.add(true);
                             a = 1;
                         }
@@ -345,17 +334,29 @@ public class SetPreferencesFragment extends Fragment {
             }
 
             viewHolder.checkBox.setTag(position);
-            if (checkValues.size() != 0) {
-                viewHolder.checkBox.setChecked(checkValues.get(position));
+//            if (checkValues.size() != 0) {
+//                viewHolder.checkBox.setChecked(checkValues.get(position));
+//            }
+
+            if(SubCategoryList.get(position).isSelection()){
+                viewHolder.checkBox.setChecked(true);
+            }else{
+                viewHolder.checkBox.setChecked(false);
             }
+
 
             viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
 
-                    CheckBox ctv = (CheckBox) v;
-                    if (ctv.isChecked()) {
-                        checkBoxState[position] = true;
+                    CheckBox cb = (CheckBox) v;
+
+                    SingleSubCategory singlesubcat =SubCategoryList.get(position);
+                    singlesubcat.setSelection(cb.isChecked());
+                    SubCategoryList.get(position).setSelection(cb.isChecked());
+
+                    if (cb.isChecked()) {
+//                        checkBoxState[position] = true;
                         Toast.makeText(context,"pos:  "+position,Toast.LENGTH_SHORT).show();
 
 //                        ctv.setChecked(true);
@@ -381,7 +382,7 @@ public class SetPreferencesFragment extends Fragment {
                         Log.d("last check", "" + SubCategoryNamesList.size() + ":"+ SubCategoryNamesList);
                         Log.d("last check", "" + CategoryNamesList.size() + ":" + CategoryNamesList);
                     } else {
-                        checkBoxState[position] = false;
+//                        checkBoxState[position] = false;
 //                        viewHolder.checkBox.setChecked(false);
                         if(checkedPrefList.size()!=0){
                             String subcatname=SubCategoryList.get(position).getSubCategoryId();
@@ -481,7 +482,9 @@ public class SetPreferencesFragment extends Fragment {
         }
 
         public void reloadFragment(){
-
+            FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.frame, new SetPreferencesFragment());
+            tx.commit();
         }
 
     public interface OnFragmentInteractionListener {

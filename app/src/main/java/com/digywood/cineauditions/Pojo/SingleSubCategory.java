@@ -2,9 +2,10 @@ package com.digywood.cineauditions.Pojo;
 
 public class SingleSubCategory {
     private int keyId;
+    private boolean selection;
     private String uploadstatus,orgId, categoryId, subCategoryId, longName, shortName, createdBy, createdDate, modifiedBy, modifiedDate, status;
 
-    public SingleSubCategory(int keyId, String orgId, String categoryId, String subCategoryId, String longName, String shortName, String createdBy, String createdDate, String modifiedBy, String modifiedDate, String status,String uploadstatus) {
+    public SingleSubCategory(int keyId, String orgId, String categoryId, String subCategoryId, String longName, String shortName, String createdBy, String createdDate, String modifiedBy, String modifiedDate, String status,String uploadstatus,boolean selection) {
         this.keyId = keyId;
         this.orgId = orgId;
         this.categoryId=categoryId;
@@ -16,6 +17,7 @@ public class SingleSubCategory {
         this.modifiedBy=modifiedBy;
         this.modifiedDate = modifiedDate;
         this.status = status;
+        this.selection=selection;
         this.uploadstatus=uploadstatus;
     }
 
@@ -119,5 +121,13 @@ public class SingleSubCategory {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean isSelection() {
+        return selection;
+    }
+
+    public void setSelection(boolean selection) {
+        this.selection = selection;
     }
 }

@@ -235,14 +235,14 @@ public class ItemsFragment extends Fragment {
             }
 
             private void isScrollCompleted() {
-                if (totalItem - currentFirstVisibleItem == currentVisibleItemCount
-                        && this.currentScrollState == SCROLL_STATE_IDLE) {
+
+                if (totalItem - currentFirstVisibleItem == currentVisibleItemCount && this.currentScrollState == SCROLL_STATE_IDLE) {
 
                     if(flag_loading){
 
                     }else{
                         flag_loading=true;
-                        new AsyncCheckInternet(getActivity(), new INetStatus() {
+                        new AsyncCheckInternet(getActivity(),new INetStatus() {
                             @Override
                             public void inetSatus(Boolean netStatus) {
                                 if(netStatus){
@@ -268,63 +268,6 @@ public class ItemsFragment extends Fragment {
         return inflate;
     }
 
-//    public void addItems(){
-//
-//        int value=Advtlist.size();
-//        SingleAdvt myad=Advtlist.get(value-1);
-//
-//        HashMap<String, String> hmap1 = new HashMap<>();
-//        url = URLClass.hosturl+"sample.php";
-//        hmap1.put("userId", MobileNo);
-//        hmap1.put("advtId",String.valueOf(myad.getAdvtRefNo()));
-//
-//        try {
-//            new BagroundTask(url,hmap1,getActivity(),new IBagroundListener() {
-//                @Override
-//                public void bagroundData(String json) {
-//                    try {
-//                        Log.e("output",json);
-//                        if(json!=null){
-//
-//                        }else{
-//
-//                        }
-//                        JSONArray ja = new JSONArray(json);
-//                        Log.d("ja", "comes:" + ja);
-//                        if (ja.length() != 0) {
-//                            JSONObject jo = null;
-//                            for (int j = 0; j < ja.length(); j++) {
-//                                try {
-//                                    jo = ja.getJSONObject(j);
-//                                    byte[] imageByte = Base64.decode(jo.getString("image"), Base64.DEFAULT);
-//                                    /*dbHelper.insertPrefAdvt(jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-//                                            jo.getString("description"), imageByte, jo.getString("startDate"), jo.getString("endDate"),
-//                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-//                                            jo.getString("createdTime"), jo.getString("status"));*/
-//                                    SingleAdvt newadvt=new SingleAdvt(jo.getInt("advtId"),jo.getString("orgId"),jo.getString("userId"),jo.getString("caption"),
-//                                            jo.getString("description"),imageByte, jo.getString("startDate"), jo.getString("endDate"),
-//                                            jo.getString("contactName"), jo.getString("contactNumber"), jo.getString("emailId"),
-//                                            jo.getString("createdTime"), jo.getString("status"));
-//                                    Advtlist.add(newadvt);
-//                                    //advtId = Integer.parseInt(jo.getString("advtId"));
-//                                    Log.d("ja", "" + jo.getString("advtId")+"Inserted");
-//                                } catch (Exception e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-////                            mAdapter.updateList(Advtlist);
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }).execute();
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        flag_loading=false;
-//
-//    }
 
     public void getAllItemsDetailsFromHost(HashMap<String,String> hmap)
     {

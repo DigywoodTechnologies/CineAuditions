@@ -32,7 +32,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="false"
             android:label="@string/title_activity_otpentry"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
         <activity
