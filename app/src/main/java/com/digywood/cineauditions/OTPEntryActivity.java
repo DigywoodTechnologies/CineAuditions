@@ -125,8 +125,6 @@ public class OTPEntryActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-
-
         mVisible = true;
         mContentView = findViewById(R.id.fullscreen_content);
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/MontserratAlternates-Medium.ttf");
@@ -291,7 +289,7 @@ public class OTPEntryActivity extends AppCompatActivity {
 //                intent.putExtra("mobileNo", MobileNo);
 //                startActivity(intent);
 
-                new AsyncCheckInternet(OTPEntryActivity.this, new INetStatus() {
+                new AsyncCheckInternet(OTPEntryActivity.this,new INetStatus() {
                     @Override
                     public void inetSatus(Boolean netStatus) {
                         if(netStatus){
@@ -367,7 +365,7 @@ public class OTPEntryActivity extends AppCompatActivity {
                                                         }
 
                                                         //Toast.makeText(OTPEntry.this, "OTP Successfull", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(OTPEntryActivity.this, LandingActivity.class);
+                                                        Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
                                                         intent.putExtra("mobileNo", MobileNo);
                                                         startActivity(intent);
                                                         //}else {

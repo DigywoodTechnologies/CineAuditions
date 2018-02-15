@@ -56,10 +56,10 @@ public class RegistrationActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
-        awesomeValidation.addValidation(this, R.id.userNameET_ForReg, "^[a-zA-Z0-9_ ]*$", R.string.nameerror);
-        awesomeValidation.addValidation(this, R.id.addressET_ForReg, "^[a-zA-Z0-9_ ]*$", R.string.addresserror);
-        awesomeValidation.addValidation(this, R.id.cityET_ForReg, "^[A-Za-z\\\\s]{1,}[\\\\.]{0,1}[A-Za-z\\\\s]{0,}$", R.string.cityerror);
-        awesomeValidation.addValidation(this, R.id.stateET_ForReg, "^[A-Za-z\\\\s]{1,}[\\\\.]{0,1}[A-Za-z\\\\s]{0,}$", R.string.stateerror);
+        awesomeValidation.addValidation(this, R.id.userNameET_ForReg, "^[a-zA-Z0-9_ ]*$",R.string.nameerror);
+//        awesomeValidation.addValidation(this, R.id.addressET_ForReg, "^[a-zA-Z0-9_# ]*$",R.string.addresserror);
+        awesomeValidation.addValidation(this, R.id.cityET_ForReg, "^[a-zA-Z_ ]*$", R.string.cityerror);
+        awesomeValidation.addValidation(this, R.id.stateET_ForReg, "^[a-zA-Z_ ]*$", R.string.stateerror);
         awesomeValidation.addValidation(this, R.id.emailET_ForReg, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         awesomeValidation.addValidation(this, R.id.phnoET_ForReg, "^([0-9]{1})([0-9]{9})$", R.string.mobileerror);
 
@@ -113,25 +113,33 @@ public class RegistrationActivity extends AppCompatActivity {
                                     BagroundTask task = new BagroundTask(url, hmap, RegistrationActivity.this, new IBagroundListener() {
                                         @Override
                                         public void bagroundData(String json) {
-                                            Log.d("ja", "comes:" + json);
-                                            if (json.equals("Inserted")) {
+                                            Log.e("ja", "comes:" + json);
+                                            if (json.equals("User_Exist")) {
 
-                                                dbHelper.insertNewProducer(nameSt, addressSt, citySt, stateSt, contact_PersonSt, phnoSt, emailIDSt, otp, regDate, status);
-
-                                                //Toast.makeText(RegistrationActivity.this, "MobileNo"+phnoSt, Toast.LENGTH_SHORT).show();
-                                                MyBagroundTask task3 = new MyBagroundTask("http://www.jcbpoint.com/sms/sms.php", otp, phnoSt, RegistrationActivity.this, new IBagroundListener() {
-                                                    @Override
-                                                    public void bagroundData(String json) throws JSONException {
-                                                    }
-                                                });
-                                                task3.execute();
-
-                                                Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
-                                                intent.putExtra("mobileNo",phnoSt);
+                                                Toast.makeText(RegistrationActivity.this,"User Already Exist,Please Login",Toast.LENGTH_SHORT).show();
+                                                finish();
+                                                Intent intent = new Intent(RegistrationActivity.this,FullscreenActivity.class);
                                                 startActivity(intent);
-                                                Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
+
                                             } else {
-                                                Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+
+                                                if(json.equalsIgnoreCase("Inserted")){
+                                                    dbHelper.insertNewProducer(nameSt, addressSt, citySt, stateSt, contact_PersonSt, phnoSt, emailIDSt, otp, regDate, status);
+
+                                                    //Toast.makeText(RegistrationActivity.this, "MobileNo"+phnoSt, Toast.LENGTH_SHORT).show();
+                                                    new MyBagroundTask("http://www.jcbpoint.com/sms/sms.php", otp, phnoSt, RegistrationActivity.this, new IBagroundListener() {
+                                                        @Override
+                                                        public void bagroundData(String json) throws JSONException {
+                                                        }
+                                                    }).execute();
+
+                                                    Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
+                                                    intent.putExtra("mobileNo",phnoSt);
+                                                    startActivity(intent);
+                                                    Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
+                                                }else{
+                                                    Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         }
                                     });

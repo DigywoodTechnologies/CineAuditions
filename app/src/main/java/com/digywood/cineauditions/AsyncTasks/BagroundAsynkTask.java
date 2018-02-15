@@ -52,7 +52,7 @@ public class BagroundAsynkTask extends AsyncTask<Void, String, String> {
     DBHelper dbHelper;
 
 
-    public BagroundAsynkTask(String url, ArrayList<SingleCategory> list1, ArrayList<SingleSubCategory> list2, String MobileNo,String orgId,DBHelper dbHelper, Context activity, IBagroundListener iListener) {
+    public BagroundAsynkTask(String url, ArrayList<SingleCategory> list1,ArrayList<SingleSubCategory> list2, String MobileNo,String orgId,DBHelper dbHelper, Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
         this.urlAddress=url;
         this.list1 = list1;
@@ -185,6 +185,7 @@ public class BagroundAsynkTask extends AsyncTask<Void, String, String> {
                 UserPreferences.put(preference);
             }
             job.put("PreferenceData",UserPreferences);
+            Log.e("PrefJsonObj---",job.toString());
         }catch (Exception e){
             e.printStackTrace();
         }

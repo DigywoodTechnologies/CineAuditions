@@ -517,7 +517,7 @@ public class LandingActivity extends AppCompatActivity {
 
         HashMap<String,String> hmap=new HashMap<>();
         hmap.put("userId",phno);
-        new BagroundTask(URLClass.hosturl+"getInterestedAdsofUser.php", hmap, LandingActivity.this,new IBagroundListener() {
+        new BagroundTask(URLClass.hosturl+"getInterestedAdsofUser.php",hmap,LandingActivity.this,new IBagroundListener() {
             @Override
             public void bagroundData(String json) throws JSONException {
 
@@ -621,7 +621,7 @@ public class LandingActivity extends AppCompatActivity {
 
         HashMap<String,String> hmap=new HashMap<>();
         hmap.put("userId",phno);
-        new BagroundTask(URLClass.hosturl+"getAllData.php", hmap, LandingActivity.this, new IBagroundListener() {
+        new BagroundTask(URLClass.hosturl+"getAllData.php", hmap, LandingActivity.this,new IBagroundListener() {
             @Override
             public void bagroundData(String json) throws JSONException {
 
@@ -660,70 +660,6 @@ public class LandingActivity extends AppCompatActivity {
                     else {
                         Log.e("pref--","No Preferences: ");
                     }
-
-
-//                    long advtdelcount=dbHelper.deleteAllAdvts();
-//                    Log.e("advtdelcount---",""+advtdelcount);
-//
-//                    Object obj1=myObj.get("advt_info_table");
-//
-//                    if (obj1 instanceof JSONArray)
-//                    {
-//                        ja_advt_info_table=myObj.getJSONArray("advt_info_table");
-//                        if(ja_advt_info_table.length()>0){
-//
-//                            Log.e("advtLength---",""+ja_advt_info_table.length());
-//                            int p=0,q=0;
-//                            for(int i=0;i<ja_advt_info_table.length();i++){
-//
-//                                advtjo=ja_advt_info_table.getJSONObject(i);
-//
-//                                long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("fileType"),advtjo.getString("fileName"),advtjo.getString("filePath"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
-//                                if(insertFlag>0){
-//                                    p++;
-//                                }else{
-//                                    q++;
-//                                }
-//                            }
-//                            Log.e("BackGroundTask--","Inserted: "+p);
-//                        }else{
-//                            Log.e("BackGroundTask--","EmptyJsonArray ");
-//                        }
-//                    }
-//                    else {
-//                        Log.e("pref--","No Advt: ");
-//                    }
-//
-//                    long interestdelcount=dbHelper.deleteAllInterests();
-//                    Log.e("interestdelcount---",""+interestdelcount);
-//
-//                    Object obj2=myObj.get("user_intrests");
-//
-//                    if (obj2 instanceof JSONArray)
-//                    {
-//                        ja_user_interests=myObj.getJSONArray("user_intrests");
-//                        if(ja_user_interests.length()>0){
-//
-//                            Log.e("interestLength---",""+ja_user_interests.length());
-//                            int p=0,q=0;
-//                            for(int i=0;i<ja_user_interests.length();i++){
-//
-//                                interestjo=ja_user_interests.getJSONObject(i);
-//
-//                                long insertFlag=dbHelper.insertInterest(interestjo.getInt("seqId"),interestjo.getString("userId"),interestjo.getInt("advtId"),interestjo.getString("description"),interestjo.getString("flag"));                                if(insertFlag>0){
-//                                    p++;
-//                                }else{
-//                                    q++;
-//                                }
-//                            }
-//                            Log.e("BackGroundTask--","Inserted: "+p);
-//                        }else{
-//                            Log.e("BackGroundTask--","EmptyJsonArray ");
-//                        }
-//                    }
-//                    else {
-//                        Log.e("interest--","No Interests");
-//                    }
 
                 }catch (Exception e){
                     e.printStackTrace();

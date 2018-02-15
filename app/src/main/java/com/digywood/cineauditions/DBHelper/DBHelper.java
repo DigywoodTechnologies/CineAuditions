@@ -804,7 +804,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     c.getString(c.getColumnIndex("categoryId")), c.getString(c.getColumnIndex("subCategoryId")),
                     c.getString(c.getColumnIndex("longName")),c.getString(c.getColumnIndex("shortName")), c.getString(c.getColumnIndex("createdBy")),
                     c.getString(c.getColumnIndex("createdDate")), c.getString(c.getColumnIndex("modifiedBy")),
-                    c.getString(c.getColumnIndex("modifiedDate")), c.getString(c.getColumnIndex("status")),null
+                    c.getString(c.getColumnIndex("modifiedDate")), c.getString(c.getColumnIndex("status")),null,false
             ));
         }
 //        c.getString(c.getColumnIndex("longName")), c.getString(c.getColumnIndex("shortName"))
