@@ -273,7 +273,6 @@ public class LandingActivity extends AppCompatActivity {
             }else{
                 requestPermission();
             }
-
             return true;
         }
 
@@ -424,7 +423,7 @@ public class LandingActivity extends AppCompatActivity {
                     Log.e("OwnAds---","comes: "+json);
                     if(!json.equalsIgnoreCase("NoData")){
 
-                        long ownaddelcount=dbHelper.deleteAllAdvts();
+                        long ownaddelcount=dbHelper.deleteAllAdvts(phno);
                         Log.e("ownaddelcount---",""+ownaddelcount);
 
                         ja_ownads=new JSONArray(json);
@@ -530,10 +529,11 @@ public class LandingActivity extends AppCompatActivity {
                 try{
                     if(!json.equalsIgnoreCase("NoData")){
 
-                        long interestaddelcount=dbHelper.deleteAllInterestedAdvts();
+                        long interestaddelcount=dbHelper.deleteAllInterestedAdvts(phno);
                         Log.e("interestdelcount---",""+interestaddelcount);
 
                         ja_interestads=new JSONArray(json);
+                        Log.e("InterestedAds Json--",""+ja_interestads.toString());
                         Log.e("InterestedAds Length--",""+ja_interestads.length());
                         int p=0,q=0;
                         for(int i=0;i<ja_interestads.length();i++){
@@ -545,7 +545,8 @@ public class LandingActivity extends AppCompatActivity {
                             }else{
 
                             }
-                            long insertFlag=dbHelper.insertInterestedAdvt(interestjo.getInt("advtId"),interestjo.getString("orgId"),interestjo.getString("userId"),interestjo.getString("caption"),interestjo.getString("description"),interestjo.getString("fileType"),interestjo.getString("fileName"),interestjo.getString("filePath"),interestjo.getString("startDate"),interestjo.getString("endDate"),interestjo.getString("contactName"),interestjo.getString("contactNumber"),interestjo.getString("emailId"),interestjo.getString("createdTime"),interestjo.getString("status"));
+                            Log.e("LandInterestAdId:---- ",""+interestjo.getInt("advtId"));
+                            long insertFlag=dbHelper.insertInterestedAdvt(interestjo.getInt("advtId"),interestjo.getString("orgId"),interestjo.getString("userId"),phno,interestjo.getString("caption"),interestjo.getString("description"),interestjo.getString("fileType"),interestjo.getString("fileName"),interestjo.getString("filePath"),interestjo.getString("startDate"),interestjo.getString("endDate"),interestjo.getString("contactName"),interestjo.getString("contactNumber"),interestjo.getString("emailId"),interestjo.getString("createdTime"),interestjo.getString("status"));
                                if(insertFlag>0){
                                    p++;
                                }else{
@@ -621,7 +622,7 @@ public class LandingActivity extends AppCompatActivity {
 
         HashMap<String,String> hmap=new HashMap<>();
         hmap.put("userId",phno);
-        new BagroundTask(URLClass.hosturl+"getAllData.php", hmap, LandingActivity.this,new IBagroundListener() {
+        new BagroundTask(URLClass.hosturl+"getAllData.php", hmap,LandingActivity.this,new IBagroundListener() {
             @Override
             public void bagroundData(String json) throws JSONException {
 
@@ -630,7 +631,7 @@ public class LandingActivity extends AppCompatActivity {
                 try{
                     JSONObject myObj=new JSONObject(json);
 
-                    long prefdelcount=dbHelper.deleteAllPreferences();
+                    long prefdelcount=dbHelper.deleteAllPreferences(phno);
                     Log.e("prefdelcount---",""+prefdelcount);
 
                     Object obj=myObj.get("preferences_table");

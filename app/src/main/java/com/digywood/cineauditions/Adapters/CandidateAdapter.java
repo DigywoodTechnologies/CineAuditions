@@ -61,11 +61,11 @@ public class CandidateAdapter extends RecyclerView.Adapter<CandidateAdapter.MyVi
         final Candidate singlecandi = candidateList.get(position);
 
         try {
-            holder.tv_name.setText("Name: "+singlecandi.getName());
-            holder.tv_time.setText("Time: "+singlecandi.getTime());
-            holder.tv_number.setText("Number: "+singlecandi.getNumber());
-            holder.tv_mail.setText("Mail: "+singlecandi.getMail());
-            holder.tv_comment.setText("Response: "+singlecandi.getComment());
+            holder.tv_name.setText(singlecandi.getName());
+            holder.tv_time.setText(singlecandi.getTime());
+            holder.tv_number.setText(singlecandi.getNumber());
+            holder.tv_mail.setText(singlecandi.getMail());
+            holder.tv_comment.setText(singlecandi.getComment());
         }catch (Exception e){
             e.printStackTrace();
             Log.e("CandiAdapter-----",e.toString());

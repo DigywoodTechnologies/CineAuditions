@@ -57,10 +57,6 @@
             android:label="@string/title_activity_respond_avt_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InterestedUsersActivity"
-            android:label="@string/title_activity_interested_users"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".MyFolioActivity"
             android:label="@string/title_activity_my_folio"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -68,7 +64,9 @@
             android:name=".FullImageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_full_image"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".ImageActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

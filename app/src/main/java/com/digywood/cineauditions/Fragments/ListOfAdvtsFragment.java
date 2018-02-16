@@ -19,9 +19,7 @@ import android.widget.Toast;
 import com.digywood.cineauditions.Adapters.AdsAdapter;
 import com.digywood.cineauditions.AdvtInfoScreen;
 import com.digywood.cineauditions.DBHelper.DBHelper;
-import com.digywood.cineauditions.HidingScrollListener;
 import com.digywood.cineauditions.Pojo.SingleAd;
-import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.ViewAdvtInfo;
 import com.digywood.cineauditions.R;
 import com.digywood.cineauditions.RecyclerTouchListener;
@@ -119,18 +117,6 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
         Log.e("MobileNo1",""+MobileNo);
         Advtlist = dbHelper.getAllAdvts(MobileNo);
         count = dbHelper.getAdvtCount(MobileNo);
-        Log.d("MobileNo)", "comes:" +MobileNo);
-
-//        AdvtsLv.setAdapter(new ContactsBaseAdapter(getContext()));
-
-//        newadvt.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), AdvtInfoScreen.class);
-//                intent.putExtra("mobileNo", MobileNo);
-//                startActivity(intent);
-//            }
-//        });
 
         fab_new.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +138,7 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
             rv_ads.setAdapter(adsAdp);
         } else {
             rv_ads.setVisibility(View.GONE);
-            tv_emptydata.setText("No Posted Ads \n tap '+' to create Profile");
+            tv_emptydata.setText("No Posted Ads \n tap '+' to create Ad");
             tv_emptydata.setVisibility(View.VISIBLE);
         }
 
@@ -174,29 +160,6 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
 
             }
         }));
-
-//        HidingScrollListener scrollListener = new HidingScrollListener(getActivity(),new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false)) {
-//            @Override
-//            public void onMoved(int distance) {
-//
-//            }
-//
-//            @Override
-//            public void onShow() {
-//
-//            }
-//
-//            @Override
-//            public void onHide() {
-//
-//            }
-//
-//            @Override
-//            public void onLoadMore() {
-//                // you can do your pagination here.
-//            }
-//        };
-//        rv_ads.addOnScrollListener(scrollListener);
 
         return inflate;
     }

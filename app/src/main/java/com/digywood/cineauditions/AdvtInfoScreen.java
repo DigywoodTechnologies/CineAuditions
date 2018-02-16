@@ -130,7 +130,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         awesomeValidation.addValidation(this, R.id.contactnameET, "^[a-zA-Z0-9_ ]*$",R.string.nameerror);
-        awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$",R.string.mobileerror);
+        awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS,R.string.emailerror);
 
         title_newAdvt = (TextView)findViewById(R.id.title_newAdvt);
@@ -182,9 +182,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             CategoryNamesList.add(CategoryList.get(i).getLongName());
             Log.d("CategoryNamesList", "comes:" + CategoryNamesList);
         }
-//        for(int i = 0;i < SubCategoryList.size();i++){
-//            SubCategoryNamesList.add(SubCategoryList.get(i).getLongName());
-//        }
 
         title_newAdvt.setText(Html.fromHtml("<u>Advertisement Details</u> "));
 
@@ -288,18 +285,6 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                     Calendar c1 = Calendar.getInstance();
                                     SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     downloadDate = sdf1.format(c1.getTime());
-
-//                            try {
-//                                if(imagebyte!=null){
-//                                    encodedImage = Base64.encodeToString(imagebyte, Base64.DEFAULT);
-//                                }
-//                                else{
-//                                    encodedImage="";
-//                                }
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                                Log.e("AdvtInfoScreen---",e.toString());
-//                            }
 
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
                                     String currentDateandTime = sdf.format(new Date());

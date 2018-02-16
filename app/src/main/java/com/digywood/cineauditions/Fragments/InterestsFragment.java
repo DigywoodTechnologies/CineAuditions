@@ -66,8 +66,8 @@ public class InterestsFragment extends Fragment {
         count = myhelper.getInterestedAdvtCount(MobileNo);
 
         if (Advtlist.size() != 0) {
-            Log.e("Advtlist.size()", "comes:" + Advtlist.size());
-            Log.e("Advtlist.size()", "hii"+count);
+            Log.e("InterestAdDetCount----",""+Advtlist.size());
+            Log.e("InterestAdCount----",""+count);
             tv_empty.setVisibility(View.GONE);
             adsAdp = new AdsAdapter(Advtlist,getActivity());
             RecyclerView.LayoutManager myLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);

@@ -277,7 +277,7 @@ public class OTPEntryActivity extends AppCompatActivity {
         otp_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(OTPEntryActivity.this, FullscreenActivity.class);
+                Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
                 startActivity(intent);
             }
         });
@@ -285,9 +285,6 @@ public class OTPEntryActivity extends AppCompatActivity {
         skip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(OTPEntryActivity.this, ListOfAdvts.class);
-//                intent.putExtra("mobileNo", MobileNo);
-//                startActivity(intent);
 
                 new AsyncCheckInternet(OTPEntryActivity.this,new INetStatus() {
                     @Override

@@ -1,60 +1,37 @@
 package com.digywood.cineauditions.Fragments;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.digywood.cineauditions.Adapters.MyAdapter;
-import com.digywood.cineauditions.AdvtInfoScreen;
 import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
-import com.digywood.cineauditions.HidingScrollListener;
 import com.digywood.cineauditions.IBagroundListener;
 import com.digywood.cineauditions.INetStatus;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
-import com.digywood.cineauditions.Pojo.SingleCategory;
-import com.digywood.cineauditions.Pojo.SingleItem;
 import com.digywood.cineauditions.Pojo.SinglePreference;
-import com.digywood.cineauditions.Pojo.SingleSubCategory;
 import com.digywood.cineauditions.R;
-import com.digywood.cineauditions.RespondAvtInfo;
-import com.digywood.cineauditions.Fragments.SetPreferencesFragment;
 import com.digywood.cineauditions.URLClass;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -180,34 +157,6 @@ public class ItemsFragment extends Fragment {
             alert1.show();
         }
 
-        //_intRadio= new int[ItemsList.size()];
-        //ItemLv.setAdapter(new LsAdapter())
-
-//        ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//                Log.e("ItemsFragment----","first: "+firstVisibleItem+" : visibleCount: "+visibleItemCount+" : totalItemCount: "+totalItemCount);
-//                if(firstVisibleItem+visibleItemCount==totalItemCount && totalItemCount!=0){
-//
-//                    if(flag_loading == false){
-//
-//                        flag_loading=true;
-//                        hmap.clear();
-//                        hmap.put("userId",MobileNo);
-//                        hmap.put("offset",String.valueOf(Advtlist.size()));
-//                        Log.e("OffSet",""+Advtlist.size());
-//                        pgetAllItemsDetailsFromHost(hmap);
-//                    }
-//                }
-//            }
-//        });
-
         ItemLv.setOnScrollListener(new AbsListView.OnScrollListener() {
             private int currentVisibleItemCount;
             private int currentScrollState;
@@ -295,7 +244,7 @@ public class ItemsFragment extends Fragment {
                                                 jo.getString("createdTime"), jo.getString("status"));
                                         Advtlist.add(newadvt);
                                         //advtId = Integer.parseInt(jo.getString("advtId"));
-                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+                                        Log.d("ja","" + jo.getString("advtId")+"Inserted");
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -304,12 +253,13 @@ public class ItemsFragment extends Fragment {
                                 ItemLv.setAdapter(mAdapter);
                             }
                         }else{
+                            ItemLv.setVisibility(View.GONE);
                             tv_emptydata.setVisibility(View.VISIBLE);
-                            ItemLv.setSystemUiVisibility(View.GONE);
                             tv_emptydata.setText("No Recent Posts Found");
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
