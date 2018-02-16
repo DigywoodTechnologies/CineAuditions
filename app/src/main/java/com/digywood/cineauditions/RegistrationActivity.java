@@ -110,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                 try {
 
-                                    BagroundTask task = new BagroundTask(url, hmap, RegistrationActivity.this, new IBagroundListener() {
+                                    new BagroundTask(url, hmap, RegistrationActivity.this, new IBagroundListener() {
                                         @Override
                                         public void bagroundData(String json) {
                                             Log.e("ja", "comes:" + json);
@@ -142,8 +142,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                 }
                                             }
                                         }
-                                    });
-                                    task.execute();
+                                    }).execute();
 
                                 } catch (Exception e) {
                                     e.printStackTrace();

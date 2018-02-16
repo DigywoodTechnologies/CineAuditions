@@ -57,10 +57,6 @@
             android:label="@string/title_activity_respond_avt_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".InterestedUsersActivity"
-            android:label="@string/title_activity_interested_users"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".MyFolioActivity"
             android:label="@string/title_activity_my_folio"
             android:theme="@style/AppTheme.NoActionBar" />

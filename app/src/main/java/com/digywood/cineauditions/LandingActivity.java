@@ -273,7 +273,6 @@ public class LandingActivity extends AppCompatActivity {
             }else{
                 requestPermission();
             }
-
             return true;
         }
 

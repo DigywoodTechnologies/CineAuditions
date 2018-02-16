@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,13 +43,14 @@ import static com.digywood.cineauditions.AdvtInfoScreen.RequestPermissionCode;
 
 public class RespondAvtInfo extends AppCompatActivity {
 
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat,resp_adId;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_interestdate,tv_cat,tv_subcat,resp_adId;
     String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
     String cmproducerid;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
+    LinearLayout ll_interest;
     ArrayList<String> catNameList=new ArrayList<>();
     ArrayList<String> subcatList;
     ArrayList<SingleAdvt> Advtlist;
@@ -93,8 +95,10 @@ public class RespondAvtInfo extends AppCompatActivity {
         view_startTv =  findViewById(R.id.view_start_dateTv);
         view_startTv =  findViewById(R.id.view_start_dateTv);
         tv_cat =findViewById(R.id.tv_rescategory);
+        ll_interest =findViewById(R.id.interest_ll);
         tv_subcat =findViewById(R.id.tv_ressubcategory);
         tv_interest=findViewById(R.id.tv_interest);
+        tv_interestdate=findViewById(R.id.tv_interestdate);
         view_endTv =  findViewById(R.id.view_end_dateTv);
         view_description = findViewById(R.id.view_description);
         nameTv =  findViewById(R.id.personnameTv);
@@ -175,7 +179,8 @@ public class RespondAvtInfo extends AppCompatActivity {
                                     {
                                         interested.setChecked(true);
                                         interested.setEnabled(false);
-                                        tv_interest.setVisibility(View.VISIBLE);
+                                        interested.setVisibility(View.GONE);
+                                        ll_interest.setVisibility(View.VISIBLE);
                                         JSONArray ja=myObj.getJSONArray("user_interest");
                                         for(int i=0;i<ja.length();i++){
                                             jo=ja.getJSONObject(i);
@@ -184,9 +189,10 @@ public class RespondAvtInfo extends AppCompatActivity {
                                         }
                                         try {
                                             if(des.equals("")){
-                                                tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
+                                                tv_interestdate.setText(date);
                                             }else{
-                                                tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
+                                                tv_interest.setText(des);
+                                                tv_interestdate.setText(date);
                                             }
                                         } catch (NullPointerException e) {
                                             e.printStackTrace();
@@ -381,7 +387,6 @@ public class RespondAvtInfo extends AppCompatActivity {
                         }
 
                     }catch (Exception e){
-
                         e.printStackTrace();
                         Log.e("DownloadFile----",e.toString());
                     }
@@ -415,13 +420,6 @@ public class RespondAvtInfo extends AppCompatActivity {
 
     public void setData(){
 
-//        if(category!=null){
-//            tv_cat.setText("Category: "+category);
-//        }else{
-//            tv_cat.setText("Category: No Selection");
-//        }
-
-
         Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
 
         if(catNameList.size()!=0){
@@ -433,9 +431,9 @@ public class RespondAvtInfo extends AppCompatActivity {
                     catstr=catstr+","+catNameList.get(i);
                 }
             }
-            tv_cat.setText("Category: "+catstr);
+            tv_cat.setText(catstr);
         }else{
-            tv_cat.setText("Category: No Selection");
+            tv_cat.setText("No Selection");
         }
 
 
@@ -451,9 +449,9 @@ public class RespondAvtInfo extends AppCompatActivity {
                     subcatstr=subcatstr+","+subcatList.get(i);
                 }
             }
-            tv_subcat.setText("Sub-Categories: "+subcatstr);
+            tv_subcat.setText(subcatstr);
         }else{
-            tv_subcat.setText("Sub-Categories: No Selection");
+            tv_subcat.setText("No Selection");
         }
 
     }

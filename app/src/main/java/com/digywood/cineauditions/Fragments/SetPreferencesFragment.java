@@ -121,18 +121,6 @@ public class SetPreferencesFragment extends Fragment {
         advt_lv.setAdapter(new ContactsBaseAdapter(getActivity()));
         status="Waiting";
 
-//        for(int i=0;i<SubCategoryList.size();i++){
-//            subCatName = SubCategoryList.get(i).getLongName();
-//            for(int j=0;j<AdvtprefList.size();j++){
-//                if(AdvtprefList.get(j).equals(subCatName)) {
-//                    Log.e("advtlist", "" + AdvtprefList.size()+"||Advtprefsubcat::"+AdvtprefList.get(j)+"||subCatName::"+subCatName);
-//                }
-//                else {
-//
-//                }
-//            }
-//        }
-
         submit_pref.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,13 +132,13 @@ public class SetPreferencesFragment extends Fragment {
                             Log.e("insertDetails:", "" + SelectedSubCategoryList.size());
                             url = URLClass.hosturl+"insertPreferencesofUser.php";
                             try {
-                                BagroundAsynkTask task = new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
+                                new BagroundAsynkTask(url, CategoryList, SelectedSubCategoryList,  MobileNo, orgId, dbHelper, getActivity(), new IBagroundListener() {
                                     @Override
                                     public void bagroundData(String json) {
                                         Log.e("PrefFragment-------", json);
                                         if (json.equals("Inserted")) {
                                             HashMap<String, String> hmap1 = new HashMap<>();
-                                            hmap1.put("userId", MobileNo);
+                                            hmap1.put("userId",MobileNo);
                                             try {
 
                                                 Log.e("InnerBackSelectList---",""+SelectedSubCategoryList.size());
@@ -223,8 +211,7 @@ public class SetPreferencesFragment extends Fragment {
                                             Toast.makeText(getActivity(), "Preferences Updation to Server failed", Toast.LENGTH_SHORT).show();
                                         }
                                     }
-                                });
-                                task.execute();
+                                }).execute();
 
 
                             } catch (Exception e) {
@@ -352,11 +339,6 @@ public class SetPreferencesFragment extends Fragment {
                     SubCategoryList.get(position).setSelection(cb.isChecked());
 
                     if (cb.isChecked()) {
-//                        checkBoxState[position] = true;
-//                        Toast.makeText(context,"pos:  "+position,Toast.LENGTH_SHORT).show();
-
-//                        ctv.setChecked(true);
-//                        viewHolder.checkBox.setChecked(true);
                         String subcatname=SubCategoryList.get(position).getSubCategoryId();
                         if(Allpref.contains(subcatname)){
                             SubCategoryList.get(position).setUploadstatus("U");
@@ -378,8 +360,6 @@ public class SetPreferencesFragment extends Fragment {
                         Log.d("last check", "" + SubCategoryNamesList.size() + ":"+ SubCategoryNamesList);
                         Log.d("last check", "" + CategoryNamesList.size() + ":" + CategoryNamesList);
                     } else {
-//                        checkBoxState[position] = false;
-//                        viewHolder.checkBox.setChecked(false);
                         if(checkedPrefList.size()!=0){
                             String subcatname=SubCategoryList.get(position).getSubCategoryId();
                             if(Allpref.contains(subcatname)){
@@ -434,7 +414,7 @@ public class SetPreferencesFragment extends Fragment {
     }
         public void setChecked() {
             HashMap<String, String> hmap1 = new HashMap<>();
-            url = "http://www.digywood.com/phpfiles/cinesooruProducer/getUserPreferences.php";
+            url =URLClass.hosturl+"getUserPreferences.php";
             hmap1.put("userId", MobileNo);
             try {
                 BagroundTask task1 = new BagroundTask(url, hmap1, getActivity(),new IBagroundListener() {

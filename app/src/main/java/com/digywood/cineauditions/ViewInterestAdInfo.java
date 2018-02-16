@@ -46,7 +46,7 @@ public class ViewInterestAdInfo extends AppCompatActivity {
     ArrayList<String> catNameList=new ArrayList<>();
     ArrayList<SingleAdvt> Advtlist,Interested;
     ArrayList<SingleInterest> InterestList;
-    TextView tv_interest,tv_cat,tv_subcat;
+    TextView tv_interest,tv_interestdate,tv_cat,tv_subcat;
     Typeface myTypeface1;
     Button view_interests,btnClosePopup;
     LinearLayout linearLayout;
@@ -82,6 +82,7 @@ public class ViewInterestAdInfo extends AppCompatActivity {
         tv_cat =findViewById(R.id.interest_tv_rescategory);
         tv_subcat =findViewById(R.id.interest_tv_ressubcategory);
         tv_interest=findViewById(R.id.interest_tv_interest);
+        tv_interestdate=findViewById(R.id.interest_tv_interestdate);
         mCollapsingToolbarLayout = findViewById(R.id.interest_collapsingToolbar);
 
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
@@ -187,9 +188,10 @@ public class ViewInterestAdInfo extends AppCompatActivity {
                                 date=jo.getString("uploadDateTime");
                             }
                             if(des.equals("")){
-                                tv_interest.setText("Interested,No comment"+"\n"+"Date :"+date);
+                                tv_interestdate.setText(date);
                             }else{
-                                tv_interest.setText("Des: "+des+"\n"+"Date :"+date);
+                                tv_interest.setText(des);
+                                tv_interestdate.setText(date);
                             }
 
                         }
@@ -251,12 +253,6 @@ public class ViewInterestAdInfo extends AppCompatActivity {
 
     public void setData(){
 
-//        if(category!=null){
-//            tv_cat.setText("Category: "+category);
-//        }else{
-//            tv_cat.setText("Category: No Selection");
-//        }
-
         Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
 
         if(catNameList.size()!=0){
@@ -268,9 +264,9 @@ public class ViewInterestAdInfo extends AppCompatActivity {
                     catstr=catstr+","+catNameList.get(i);
                 }
             }
-            tv_cat.setText("Category: "+catstr);
+            tv_cat.setText(catstr);
         }else{
-            tv_cat.setText("Category: No Selection");
+            tv_cat.setText("No Selection");
         }
 
         if(subcatList.size()!=0){
@@ -283,9 +279,9 @@ public class ViewInterestAdInfo extends AppCompatActivity {
                     subcatstr=subcatstr+","+subcatList.get(i);
                 }
             }
-            tv_subcat.setText("Sub-Categories: "+subcatstr);
+            tv_subcat.setText(subcatstr);
         }else{
-            tv_subcat.setText("Sub-Categories: No Selection");
+            tv_subcat.setText("No Selection");
         }
 
     }

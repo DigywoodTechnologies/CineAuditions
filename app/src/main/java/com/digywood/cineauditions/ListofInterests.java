@@ -11,16 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.digywood.cineauditions.Adapters.CandidateAdapter;
 import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.Pojo.Candidate;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -81,7 +78,6 @@ public class ListofInterests extends AppCompatActivity {
     public void getData(){
 
         hmap.clear();
-        Log.e("ListofInterests-----",""+advtid);
         hmap.put("advtId", String.valueOf(advtid));
 
         new BagroundTask(URLClass.hosturl+"getIntrestedAds.php", hmap, ListofInterests.this,new IBagroundListener() {
@@ -147,9 +143,9 @@ public class ListofInterests extends AppCompatActivity {
                         Log.e("pref--","No Intrestes");
                     }
 
-                    if(numberList.size()!=0){
+                    if(timeList.size()!=0){
 
-                        for(int i=0;i<numberList.size();i++){
+                        for(int i=0;i<timeList.size();i++){
 
                             intuserList.add(new Candidate(nameList.get(i),timeList.get(i),numberList.get(i),emailList.get(i),commentList.get(i)));
 
