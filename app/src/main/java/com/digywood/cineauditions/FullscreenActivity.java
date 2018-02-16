@@ -206,7 +206,7 @@ public class FullscreenActivity extends AppCompatActivity {
                             if(netStatus){
                                 MobileNo = phno.getText().toString();
                                 int checkFlag = 0;
-                                checkFlag = (int) dbHelper.checkProducerExists(MobileNo);
+                                checkFlag =dbHelper.checkProducerExists(MobileNo);
                                 if (checkFlag == 1) {
                                     //Toast.makeText(MainFullscreenActivity.this, "Already Exist", Toast.LENGTH_SHORT).show();
                                     int checkOTPFlag = 0;
@@ -226,12 +226,12 @@ public class FullscreenActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     MobileNo = phno.getText().toString();
-                                    HashMap<String, String> hmap1 = new HashMap<String, String>();
+                                    HashMap<String, String> hmap1 = new HashMap<>();
                                     hmap1.put("phno", MobileNo);
 
                                     url = URLClass.hosturl+"checkProducerExist.php";
 
-                                    new BagroundTask(url, hmap1, FullscreenActivity.this,new IBagroundListener() {
+                                    new BagroundTask(url,hmap1,FullscreenActivity.this,new IBagroundListener() {
 
                                         @Override
                                         public void bagroundData(String json) {
@@ -255,15 +255,18 @@ public class FullscreenActivity extends AppCompatActivity {
                                                         }
 
                                                     }
-                                                    count=dbHelper.checkCategoryExists();
-                                                    if(count>0){
-                                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                                        intent.putExtra("mobileNo", MobileNo);
-                                                        intent.putExtra("key", "F1");
-                                                        startActivity(intent);
-                                                    }else{
-                                                        syncData(MobileNo);
-                                                    }
+
+                                                    syncData(MobileNo);
+
+//                                                    count=dbHelper.checkCategoryExists();
+//                                                    if(count>0){
+//                                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+//                                                        intent.putExtra("mobileNo", MobileNo);
+//                                                        intent.putExtra("key", "F1");
+//                                                        startActivity(intent);
+//                                                    }else{
+//                                                        syncData(MobileNo);
+//                                                    }
                                                 }
                                             } catch (Exception e1) {
                                                 e1.printStackTrace();
@@ -333,7 +336,7 @@ public class FullscreenActivity extends AppCompatActivity {
        HashMap<String,String> hmap=new HashMap<>();
        Log.e("FullScreen---",""+number);
        hmap.put("userId",number);
-       new BagroundTask(URLClass.hosturl+"getAllData.php", hmap, FullscreenActivity.this, new IBagroundListener() {
+       new BagroundTask(URLClass.hosturl+"getAllData.php", hmap, FullscreenActivity.this,new IBagroundListener() {
            @Override
            public void bagroundData(String json) throws JSONException {
 
@@ -395,7 +398,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
                    }
 
-                   long prefdelcount=dbHelper.deleteAllPreferences();
+                   long prefdelcount=dbHelper.deleteAllPreferences(MobileNo);
                    Log.e("prefdelcount---",""+prefdelcount);
 
                    Object obj=myObj.get("preferences_table");
@@ -426,43 +429,7 @@ public class FullscreenActivity extends AppCompatActivity {
                    }
 
 
-//                   long advtdelcount=dbHelper.deleteAllAdvts();
-//                   Log.e("advtdelcount---",""+advtdelcount);
-//
-//                   Object obj1=myObj.get("advt_info_table");
-//
-//                   if (obj1 instanceof JSONArray)
-//                   {
-//                       ja_advt_info_table=myObj.getJSONArray("advt_info_table");
-//                       if(ja_advt_info_table.length()>0){
-//
-//                           Log.e("advtLength---",""+ja_advt_info_table.length());
-//                           int p=0,q=0;
-//                           for(int i=0;i<ja_advt_info_table.length();i++){
-//
-//                               advtjo=ja_advt_info_table.getJSONObject(i);
-//
-////                               String image=advtjo.getString("image");
-////                               byte[] imgbyte = Base64.decode(image, Base64.DEFAULT);
-//
-//                               Log.e("FullScreenActivity----",""+advtjo.getInt("advtId"));
-//                               long insertFlag=dbHelper.insertNewAdvt(advtjo.getInt("advtId"),advtjo.getString("orgId"),advtjo.getString("userId"),advtjo.getString("caption"),advtjo.getString("description"),advtjo.getString("fileType"),advtjo.getString("fileName"),advtjo.getString("filePath"),advtjo.getString("startDate"),advtjo.getString("endDate"),advtjo.getString("contactName"),advtjo.getString("contactNumber"),advtjo.getString("emailId"),advtjo.getString("createdTime"),advtjo.getString("status"));
-//                               if(insertFlag>0){
-//                                   p++;
-//                               }else{
-//                                   q++;
-//                               }
-//                           }
-//                           Log.e("BackGroundTask--","Inserted: "+p);
-//                       }else{
-//                           Log.e("BackGroundTask--","EmptyJsonArray ");
-//                       }
-//                   }
-//                   else {
-//                       Log.e("pref--","No Advt");
-//                   }
-
-                   long interestdelcount=dbHelper.deleteAllInterests();
+                   long interestdelcount=dbHelper.deleteAllInterests(MobileNo);
                    Log.e("interestdelcount---",""+interestdelcount);
 
                    Object obj2=myObj.get("user_intrests");
@@ -492,50 +459,6 @@ public class FullscreenActivity extends AppCompatActivity {
                    else {
                        Log.e("interest--","No Interests");
                    }
-
-
-                   /*
-                   long interestaddelcount=dbHelper.deleteAllInterestedAdvts();
-                   Log.e("interestdelcount---",""+interestaddelcount);
-
-                   ArrayList<SingleAdvt> interestAdList=new ArrayList<>();
-                   Object obj3=myObj.get("intrestsad_details");
-
-                   if (obj3 instanceof JSONArray)
-                   {
-                       ja_interestedaads=myObj.getJSONArray("intrestsad_details");
-                       if(ja_interestedaads.length()>0){
-
-                           Log.e("interestLength---",""+ja_interestedaads.length());
-                           int p=0,q=0;
-                           SingleAdvt interestad;
-                           for(int i=0;i<ja_interestedaads.length();i++){
-
-                               interestedadsjo=ja_interestedaads.getJSONObject(i);
-
-                               interestad=new SingleAdvt(interestedadsjo.getInt("advtId"),interestedadsjo.getString("orgId"),
-                                       interestedadsjo.getString("userId"),interestedadsjo.getString("caption"),interestedadsjo.getString("description"),
-                                       interestedadsjo.getString("fileType"),interestedadsjo.getString("fileName"),interestedadsjo.getString("filePath"),
-                                       interestedadsjo.getString("startDate"),interestedadsjo.getString("endDate"),interestedadsjo.getString("contactName"),
-                                       interestedadsjo.getString("contactNumber"),interestedadsjo.getString("emailId"),
-                                       interestedadsjo.getString("createdTime"),interestedadsjo.getString("status"));
-                               interestAdList.add(interestad);
-//                               long insertFlag=dbHelper.insertInterestedAdvt(interestedadsjo.getInt("advtId"),interestedadsjo.getString("orgId"),interestedadsjo.getString("userId"),interestedadsjo.getString("caption"),interestedadsjo.getString("description"),interestedadsjo.getString("fileType"),interestedadsjo.getString("fileName"),interestedadsjo.getString("filePath"),interestedadsjo.getString("startDate"),interestedadsjo.getString("endDate"),interestedadsjo.getString("contactName"),interestedadsjo.getString("contactNumber"),interestedadsjo.getString("emailId"),interestedadsjo.getString("createdTime"),interestedadsjo.getString("status"));
-//                               if(insertFlag>0){
-//                                   p++;
-//                               }else{
-//                                   q++;
-//                               }
-                           }
-                           Log.e("BackGroundTask--","Inserted: "+p+"Not Inserted: "+q);
-                       }else{
-                           Log.e("BackGroundTask--","EmptyJsonArray");
-                       }
-                   }
-                   else {
-                       Log.e("interest--","No Interests");
-                   }
-                   */
 
 
                    Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);

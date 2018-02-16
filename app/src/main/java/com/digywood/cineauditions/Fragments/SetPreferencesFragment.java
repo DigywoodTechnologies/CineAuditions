@@ -269,12 +269,8 @@ public class SetPreferencesFragment extends Fragment {
                     int a = 0;
                     String l = SubCategoryList.get(x).getSubCategoryId();
                     for (int j = 0; j < AdvtprefList.size(); j++) {
-//                        String subcatname=dbHelper.getSubCategoryName(AdvtprefList.get(j));
                         if (AdvtprefList.get(j).equals(l)) {
-//                            checkedPrefList.add(AdvtprefList.get(x).getSubCategory());
                             checkedPrefList.add(AdvtprefList.get(j));
-//                            SubCategoryList.get(x).
-//                            SelectedSubCategoryList.add(SubCategoryList.get(x));
                             SubCategoryList.get(x).setSelection(true);
                             checkValues.add(true);
                             a = 1;
@@ -357,7 +353,7 @@ public class SetPreferencesFragment extends Fragment {
 
                     if (cb.isChecked()) {
 //                        checkBoxState[position] = true;
-                        Toast.makeText(context,"pos:  "+position,Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context,"pos:  "+position,Toast.LENGTH_SHORT).show();
 
 //                        ctv.setChecked(true);
 //                        viewHolder.checkBox.setChecked(true);

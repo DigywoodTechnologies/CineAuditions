@@ -295,7 +295,7 @@ public class ItemsFragment extends Fragment {
                                                 jo.getString("createdTime"), jo.getString("status"));
                                         Advtlist.add(newadvt);
                                         //advtId = Integer.parseInt(jo.getString("advtId"));
-                                        Log.d("ja", "" + jo.getString("advtId")+"Inserted");
+                                        Log.d("ja","" + jo.getString("advtId")+"Inserted");
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -304,12 +304,13 @@ public class ItemsFragment extends Fragment {
                                 ItemLv.setAdapter(mAdapter);
                             }
                         }else{
+                            ItemLv.setVisibility(View.GONE);
                             tv_emptydata.setVisibility(View.VISIBLE);
-                            ItemLv.setSystemUiVisibility(View.GONE);
                             tv_emptydata.setText("No Recent Posts Found");
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

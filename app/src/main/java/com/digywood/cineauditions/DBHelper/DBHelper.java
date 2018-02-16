@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     Context context;
     SQLiteDatabase db;
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DBHelper(Context c)
     {
@@ -40,7 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblItemTable);
 
-        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text, caption text, description text," +
+        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
                 "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblAdvtPrefTable);
 
@@ -73,6 +73,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_pref_producer(advtId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, producer_id text, caption text, description text," +
                         " image BLOB, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(tblAdvtPrefTable);
+                String tblAdvtInterestTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(tblAdvtInterestTable);
+
+            case 2:
+                // upgrade logic from version 2 to 3
+                String tblAdvtInterestTable1="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(tblAdvtInterestTable1);
+
                 break;
             default:
                 throw new IllegalStateException("onUpgrade() with unknown old version "+oldVersion);
@@ -264,12 +274,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return insertFlag;
     }
 
-    public long insertInterestedAdvt(int keyId,String orgId,String producer_id,String caption, String description,String fileType,String fileName,String filePath,String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
+    public long insertInterestedAdvt(int keyId,String orgId,String producer_id,String currentuser,String caption, String description,String fileType,String fileName,String filePath,String startDate, String endDate,String contactName, String contactNumber, String emailId,String createdTime, String status){
         long insertFlag=0;
         ContentValues cv = new ContentValues();
         cv.put("advtRefNo",keyId);
         cv.put("orgId", orgId);
         cv.put("producer_id", producer_id);
+        cv.put("currentuserid", currentuser);
         cv.put("caption", caption);
         cv.put("description", description);
         cv.put("fileType", fileType);
@@ -306,16 +317,16 @@ public class DBHelper extends SQLiteOpenHelper {
         return  updateFlag;
     }
 
-    public long deleteAllAdvts(){
+    public long deleteAllAdvts(String userid){
         long deleteFlag=0;
-        deleteFlag=db.delete("advt_info_producer", null, null);
+        deleteFlag=db.delete("advt_info_producer","producer_id='"+userid+"'", null);
         //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
         return  deleteFlag;
     }
 
-    public long deleteAllInterestedAdvts(){
+    public long deleteAllInterestedAdvts(String userid){
         long deleteFlag=0;
-        deleteFlag=db.delete("advt_interest_producer", null, null);
+        deleteFlag=db.delete("advt_interest_producer","producer_id='"+userid+"'", null);
         //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
         return  deleteFlag;
     }
@@ -420,7 +431,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<SingleAd> getInterestedAdvts(String phno) {
         ArrayList<SingleAd> AdvtList = new ArrayList<>();
 
-        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"producer_id='"+phno+"'", null, null, null, "createdTime DESC");
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"currentuserid='"+phno+"'", null, null, null, "createdTime DESC");
         while (c.moveToNext()) {
 
             AdvtList.add(new SingleAd(c.getInt(c.getColumnIndex("advtRefNo")),c.getString(c.getColumnIndex("createdTime")),
@@ -429,6 +440,14 @@ public class DBHelper extends SQLiteOpenHelper {
             ));
         }
         return AdvtList;
+    }
+
+    public int getInterestedAdCount(String phno) {
+        int count=0;
+
+        Cursor c =db.query("advt_interest_producer", new String[] {"advtRefNo","caption","startDate","endDate","createdTime","status"},"producer_id='"+phno+"'", null, null, null, "createdTime DESC");
+        count=c.getCount();
+        return count;
     }
 
     public int getAdvtCount(String phno) {
@@ -502,9 +521,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return insertFlag;
     }
 
-    public long deleteAllInterests(){
+    public long deleteAllInterests(String userid){
         long deleteFlag=0;
-        deleteFlag=db.delete("user_interests", null, null);
+        deleteFlag=db.delete("user_interests","userId='"+userid+"'" , null);
         //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
         return  deleteFlag;
     }
@@ -638,9 +657,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return checkFlag;
     }
 
-    public long deleteAllPreferences(){
+    public long deleteAllPreferences(String userid){
         long deleteFlag=0;
-        deleteFlag=db.delete("preferences_table", null, null);
+        deleteFlag=db.delete("preferences_table","userId='"+userid+"'", null);
         return  deleteFlag;
     }
 

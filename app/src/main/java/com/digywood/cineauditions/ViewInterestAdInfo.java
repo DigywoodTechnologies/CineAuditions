@@ -129,6 +129,27 @@ public class ViewInterestAdInfo extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"No Data",Toast.LENGTH_SHORT).show();
         }
 
+        view_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    if(!myad.getFilename().equalsIgnoreCase("")){
+                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
+                        i.putExtra("imageurl",myad.getFilename());
+                        i.putExtra("key","interest");
+                        startActivity(i);
+                    }else{
+                        Log.e("ViewAdvtInfo---","No image for Ad");
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("ViewAdvtInfo---",e.toString());
+                }
+            }
+        });
+
     }
 
     public void getCatSubcatInterestMsg(){

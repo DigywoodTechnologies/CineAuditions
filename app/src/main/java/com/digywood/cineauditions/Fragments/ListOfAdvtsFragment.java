@@ -152,7 +152,7 @@ public class ListOfAdvtsFragment extends android.support.v4.app.Fragment {
             rv_ads.setAdapter(adsAdp);
         } else {
             rv_ads.setVisibility(View.GONE);
-            tv_emptydata.setText("No Posted Ads \n tap '+' to create Profile");
+            tv_emptydata.setText("No Posted Ads \n tap '+' to create Ad");
             tv_emptydata.setVisibility(View.VISIBLE);
         }
 

@@ -144,6 +144,7 @@ public class MyAdapter extends BaseAdapter {
                 intent.putExtra("advtId",singlead.getAdvtRefNo());
                 intent.putExtra("key","notice");
                 Bundle extras=new Bundle();
+                extras.putString("producerid",singlead.getProducer_id());
                 extras.putString("url",singlead.getDownloadUrl());
                 extras.putString("filename",singlead.getFilename());
                 extras.putString("caption",singlead.getCaption());

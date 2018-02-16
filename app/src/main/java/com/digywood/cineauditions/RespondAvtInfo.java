@@ -44,7 +44,7 @@ public class RespondAvtInfo extends AppCompatActivity {
 
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_cat,tv_subcat,resp_adId;
     String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
-
+    String cmproducerid;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
@@ -72,6 +72,7 @@ public class RespondAvtInfo extends AppCompatActivity {
             advtId = cmgintent.getIntExtra("advtId",0);
             Log.e("ViewAdvtInfo-----",""+advtId);
             Bundle getextras=cmgintent.getExtras();
+            cmproducerid=getextras.getString("producerid");
             cmdownloadUrl=getextras.getString("url");
             cmfileType=getextras.getString("filetype");
             cmfileName=getextras.getString("filename");
@@ -120,12 +121,11 @@ public class RespondAvtInfo extends AppCompatActivity {
         try{
             Log.e("RespondAdvtInfo---",cmdownloadUrl);
             if(!cmdownloadUrl.equalsIgnoreCase("")){
-                Log.e("RespondAvtInfo---","not null");
                 URL url = new URL(cmdownloadUrl);
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 view_img.setImageBitmap(bmp);
             }else{
-                Log.e("RespondAvtInfo---","null");
+                Log.e("RespondAvtInfo---","No image for Ad");
             }
 
         }catch (Exception e){
@@ -258,9 +258,20 @@ public class RespondAvtInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                Intent i=new Intent(getApplicationContext(),FullImageActivity.class);
-//                i.putExtra("imageurl",cmdownloadUrl);
-//                startActivity(i);
+                try{
+                    if(!cmdownloadUrl.equalsIgnoreCase("")){
+                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
+                        i.putExtra("imageurl",cmdownloadUrl);
+                        i.putExtra("key","notice");
+                        startActivity(i);
+                    }else{
+                        Log.e("RespondAvtInfo---","No image for Ad");
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("RespondAdvtInfo---",e.toString());
+                }
 
             }
         });
@@ -269,7 +280,7 @@ public class RespondAvtInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new AsyncCheckInternet(RespondAvtInfo.this, new INetStatus() {
+                new AsyncCheckInternet(RespondAvtInfo.this,new INetStatus() {
                     @Override
                     public void inetSatus(Boolean netStatus) {
                         if(netStatus){
@@ -356,7 +367,7 @@ public class RespondAvtInfo extends AppCompatActivity {
                     try{
                         if(status.equalsIgnoreCase("Completed")){
 
-                            long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+                            long insertFlag=dbHelper.insertInterestedAdvt(advtId,"ORG0001",cmproducerid,MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
                             if(insertFlag>0){
                                 Toast.makeText(getApplicationContext(),"Interest Inserted",Toast.LENGTH_SHORT).show();
                                 finish();
@@ -378,7 +389,7 @@ public class RespondAvtInfo extends AppCompatActivity {
             }).execute();
 
         }else{
-            long insertFlag1=dbHelper.insertInterestedAdvt(advtId,"ORG0001",MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
+            long insertFlag1=dbHelper.insertInterestedAdvt(advtId,"ORG0001",cmproducerid,MobileNo,cmcaption,cmdes,cmfileType,cmfileName,cmdownloadUrl,cmstart,cmend,cmname,cmnumber,cmemail,cmcreatetime,cmstatus);
             if(insertFlag1>0){
                 Toast.makeText(getApplicationContext(),"Interest Inserted in Local",Toast.LENGTH_SHORT).show();
                 finish();
