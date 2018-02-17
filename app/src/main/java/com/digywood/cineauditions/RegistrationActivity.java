@@ -136,6 +136,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                                     Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
                                                     intent.putExtra("mobileNo",phnoSt);
                                                     startActivity(intent);
+                                                    finish();
                                                     Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
                                                 }else{
                                                     Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
@@ -157,6 +158,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+
         reg_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

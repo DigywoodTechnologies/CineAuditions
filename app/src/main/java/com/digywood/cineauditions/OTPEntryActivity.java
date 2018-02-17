@@ -239,6 +239,7 @@ public class OTPEntryActivity extends AppCompatActivity {
                                                                             Intent intent = new Intent(OTPEntryActivity.this, FullscreenActivity.class);
                                                                             intent.putExtra("mobileNo",MobileNo);
                                                                             startActivity(intent);
+                                                                            finish();
                                                                         }
                                                                         else {
                                                                             Toast.makeText(OTPEntryActivity.this, "OTP Status updation failed", Toast.LENGTH_SHORT).show();
@@ -279,6 +280,7 @@ public class OTPEntryActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -365,6 +367,7 @@ public class OTPEntryActivity extends AppCompatActivity {
                                                         Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
                                                         intent.putExtra("mobileNo", MobileNo);
                                                         startActivity(intent);
+                                                        finish();
                                                         //}else {
                                                         // Toast.makeText(OTPEntry.this, "OTP not Successfull", Toast.LENGTH_SHORT).show();
                                                         //}

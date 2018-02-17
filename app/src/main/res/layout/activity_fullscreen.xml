@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="100dp"
         android:text="CineAuditions"
         android:textSize="40dp" />
 
@@ -73,7 +73,18 @@
             android:layout_marginTop="45dp"
             android:layout_marginLeft="0dp"
             android:layout_gravity="center"/>
+
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"/>
 
 </RelativeLayout>
 

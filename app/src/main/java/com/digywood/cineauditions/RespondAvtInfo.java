@@ -1,5 +1,6 @@
 package com.digywood.cineauditions;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
@@ -59,6 +60,7 @@ public class RespondAvtInfo extends AppCompatActivity {
     CheckBox interested;
     EditText comment;
     Button submit;
+    Dialog mydialog;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @Override
@@ -263,13 +265,13 @@ public class RespondAvtInfo extends AppCompatActivity {
         view_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try{
                     if(!cmdownloadUrl.equalsIgnoreCase("")){
-                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
-                        i.putExtra("imageurl",cmdownloadUrl);
-                        i.putExtra("key","notice");
-                        startActivity(i);
+//                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
+//                        i.putExtra("imageurl",cmdownloadUrl);
+//                        i.putExtra("key","notice");
+//                        startActivity(i);
+                        popUp();
                     }else{
                         Log.e("RespondAvtInfo---","No image for Ad");
                     }
@@ -278,7 +280,6 @@ public class RespondAvtInfo extends AppCompatActivity {
                     e.printStackTrace();
                     Log.e("RespondAdvtInfo---",e.toString());
                 }
-
             }
         });
 
@@ -456,4 +457,40 @@ public class RespondAvtInfo extends AppCompatActivity {
 
     }
 
+    public void popUp(){
+        mydialog = new Dialog(RespondAvtInfo.this);
+        mydialog.getWindow();
+        mydialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mydialog.setContentView(R.layout.activity_ivdialouge);
+        mydialog.show();
+        mydialog.setCanceledOnTouchOutside(false);
+
+        ImageView iv_img = mydialog.findViewById(R.id.iv_dialougimg);
+        ImageView iv_close =mydialog.findViewById(R.id.iv_close);
+
+        try{
+            URL url=new URL(cmdownloadUrl);
+            new AsyncTaskLoadImage(iv_img,url).execute();
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("FullImageScreen---",e.toString());
+        }
+
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mydialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mydialog!=null && mydialog.isShowing()){
+            mydialog.cancel();
+        }else{
+            finish();
+        }
+        super.onBackPressed();
+    }
 }

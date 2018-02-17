@@ -45,6 +45,7 @@ public class BagroundTask extends AsyncTask<Void, String, String> {
 
     public BagroundTask(String url, HashMap<String, String> hmap1, Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
+        dialog.setCanceledOnTouchOutside(false);
         this.urlAddress=url;
         this.hmap=hmap1;
         this.listener=iListener;
