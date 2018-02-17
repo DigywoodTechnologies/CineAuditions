@@ -19,6 +19,8 @@
 
     <string name="title_activity_otpentry">OTPEntryActivity</string>
 
+    <string name="title">Developed By Digywood Technologies in collaboration with Cinesooru</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="openDrawer">open_drawer</string>

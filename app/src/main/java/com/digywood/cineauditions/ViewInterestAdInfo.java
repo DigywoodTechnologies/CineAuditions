@@ -1,5 +1,6 @@
 package com.digywood.cineauditions;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,8 +50,8 @@ public class ViewInterestAdInfo extends AppCompatActivity {
     ArrayList<SingleInterest> InterestList;
     TextView tv_interest,tv_interestdate,tv_cat,tv_subcat;
     Typeface myTypeface1;
-    Button view_interests,btnClosePopup;
     LinearLayout linearLayout;
+    Dialog mydialog;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     HashMap<String,String> hmap=new HashMap<>();
 
@@ -133,13 +135,13 @@ public class ViewInterestAdInfo extends AppCompatActivity {
         view_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     if(!myad.getFilename().equalsIgnoreCase("")){
-                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
-                        i.putExtra("imageurl",myad.getFilename());
-                        i.putExtra("key","interest");
-                        startActivity(i);
+//                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
+//                        i.putExtra("imageurl",myad.getFilename());
+//                        i.putExtra("key","interest");
+//                        startActivity(i);
+                        popUp();
                     }else{
                         Log.e("ViewAdvtInfo---","No image for Ad");
                     }
@@ -284,6 +286,43 @@ public class ViewInterestAdInfo extends AppCompatActivity {
             tv_subcat.setText("No Selection");
         }
 
+    }
+
+    public void popUp(){
+        mydialog = new Dialog(ViewInterestAdInfo.this);
+        mydialog.getWindow();
+        mydialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mydialog.setContentView(R.layout.activity_ivdialouge);
+        mydialog.show();
+        mydialog.setCanceledOnTouchOutside(false);
+
+        ImageView iv_img = mydialog.findViewById(R.id.iv_dialougimg);
+        ImageView iv_close =mydialog.findViewById(R.id.iv_close);
+
+        try{
+            Bitmap bmp = BitmapFactory.decodeFile(URLClass.interestedpath+myad.getFilename());
+            iv_img.setImageBitmap(bmp);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("ViewAdvtInfo---",e.toString());
+        }
+
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mydialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mydialog!=null && mydialog.isShowing()){
+            mydialog.cancel();
+        }else{
+            finish();
+        }
+        super.onBackPressed();
     }
 
 }

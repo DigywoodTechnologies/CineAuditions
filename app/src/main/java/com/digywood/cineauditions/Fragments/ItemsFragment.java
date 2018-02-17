@@ -50,7 +50,7 @@ public class ItemsFragment extends Fragment {
     public ListView ItemLv;
     HashMap<String,String> hmap=new HashMap<>();
     TextView tv_emptydata;
-    boolean flag_loading=false;
+    boolean flag_loading=false,data_flag=false;
     MyAdapter mAdapter;
     DBHelper dbHelper;
     String MobileNo,url;
@@ -109,7 +109,7 @@ public class ItemsFragment extends Fragment {
         obj.setChecked();
         //Checking for user preference locally
         int checkFlag = 0;
-        checkFlag = (int) dbHelper.checkPreferencesExist(MobileNo);
+        checkFlag =dbHelper.checkPreferencesExist(MobileNo);
         if (checkFlag!=0) {
             //dbHelper.deleteAllPreferences();
             AdvtprefList = dbHelper.getAllPreferencesUser(MobileNo);
@@ -138,7 +138,7 @@ public class ItemsFragment extends Fragment {
             android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
             builder.setTitle("");
             builder.setMessage("Please Select Preferences");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
                     // TODO Auto-generated method stub
                     Fragment fragment = new SetPreferencesFragment();
@@ -190,23 +190,28 @@ public class ItemsFragment extends Fragment {
                     if(flag_loading){
 
                     }else{
-                        flag_loading=true;
-                        new AsyncCheckInternet(getActivity(),new INetStatus() {
-                            @Override
-                            public void inetSatus(Boolean netStatus) {
-                                if(netStatus){
-                                    hmap.clear();
-                                    hmap.put("userId",MobileNo);
-                                    hmap.put("offset",String.valueOf(Advtlist.size()));
-                                    Log.e("OffSet",""+Advtlist.size());
-                                    pgetAllItemsDetailsFromHost(hmap);
-                                }else{
-                                    Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                        if(data_flag){
+                            Toast.makeText(getActivity(),"No Records Found",Toast.LENGTH_SHORT).show();
+                        }else{
+
+                            flag_loading=true;
+                            new AsyncCheckInternet(getActivity(),new INetStatus() {
+                                @Override
+                                public void inetSatus(Boolean netStatus) {
+                                    if(netStatus){
+                                        hmap.clear();
+                                        hmap.put("userId",MobileNo);
+                                        hmap.put("offset",String.valueOf(Advtlist.size()));
+                                        Log.e("OffSet",""+Advtlist.size());
+                                        pgetAllItemsDetailsFromHost(hmap);
+                                    }else{
+                                        Toast.makeText(getActivity(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                                    }
+
                                 }
+                            }).execute();
 
-                            }
-                        }).execute();
-
+                        }
                     }
 
                 }
@@ -312,9 +317,8 @@ public class ItemsFragment extends Fragment {
                                 mAdapter.updateList(Advtlist);
                             }
                         }else{
-//                            tv_emptydata.setVisibility(View.VISIBLE);
-//                            ItemLv.setSystemUiVisibility(View.GONE);
-//                            tv_emptydata.setText("No Recent Posts Found");
+                            data_flag=true;
+                            Toast.makeText(getActivity(),"No Records Found",Toast.LENGTH_SHORT).show();
                             Log.e("ItemsFragment----","Empty Advt List");
 
                         }

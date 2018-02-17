@@ -700,7 +700,7 @@ public class LandingActivity extends AppCompatActivity {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-    ///
+
 }
 
 

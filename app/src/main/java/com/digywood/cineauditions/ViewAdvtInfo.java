@@ -1,5 +1,6 @@
 package com.digywood.cineauditions;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,11 +22,8 @@ import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.Pojo.SingleAdvt;
 import com.digywood.cineauditions.Pojo.SingleInterest;
-import com.digywood.cineauditions.Pojo.SingleProducer;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,6 +44,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
     Button view_interests;
     LinearLayout linearLayout;
     FullscreenActivity obj;
+    Dialog mydialog;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
 
@@ -137,13 +137,13 @@ public class ViewAdvtInfo extends AppCompatActivity {
         view_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     if(!myad.getFilename().equalsIgnoreCase("")){
-                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
-                        i.putExtra("imageurl",myad.getFilename());
-                        i.putExtra("key","ownad");
-                        startActivity(i);
+//                        Intent i=new Intent(getApplicationContext(),ImageActivity.class);
+//                        i.putExtra("imageurl",myad.getFilename());
+//                        i.putExtra("key","ownad");
+//                        startActivity(i);
+                        popUp();
                     }else{
                         Log.e("ViewAdvtInfo---","No image for Ad");
                     }
@@ -243,6 +243,33 @@ public class ViewAdvtInfo extends AppCompatActivity {
         }
     }
 
+    public void popUp(){
+        mydialog = new Dialog(ViewAdvtInfo.this);
+        mydialog.getWindow();
+        mydialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mydialog.setContentView(R.layout.activity_ivdialouge);
+        mydialog.show();
+        mydialog.setCanceledOnTouchOutside(false);
+
+        ImageView iv_img = mydialog.findViewById(R.id.iv_dialougimg);
+        ImageView iv_close =mydialog.findViewById(R.id.iv_close);
+
+        try{
+            Bitmap bmp = BitmapFactory.decodeFile(URLClass.myadspath+myad.getFilename());
+            iv_img.setImageBitmap(bmp);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("ViewAdvtInfo---",e.toString());
+        }
+
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mydialog.dismiss();
+            }
+        });
+    }
+
     public void setData(){
 
         Log.e("RespondAvtInfo--","catListSize--"+catNameList.size());
@@ -279,6 +306,16 @@ public class ViewAdvtInfo extends AppCompatActivity {
             tv_subcat.setText("Sub-Categories: No Selection");
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mydialog!=null && mydialog.isShowing()){
+            mydialog.cancel();
+        }else{
+            finish();
+        }
+        super.onBackPressed();
     }
 
 }
