@@ -32,6 +32,7 @@ import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
+import com.digywood.cineauditions.Fragments.HelpFragment;
 import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
 import com.digywood.cineauditions.Fragments.ListOfAdvtsFragment;
@@ -69,12 +70,13 @@ public class LandingActivity extends AppCompatActivity {
     public static int navItemIndex = 0;
 
     // tags used to attach the fragments
-    private static final String TAG_NOTICE_LIST = "notice list";
-    private static final String TAG_POST_ADVT = "post advertisement";
-    private static final String TAG_PUBLISH = "publish";
-    private static final String TAG_LOGOUT = "logout";
-    private static final String TAG_ORDERS_DATA = "orders data";
-    private static final String TAG_SETTINGS = "settings";
+    private static final String TAG_NOTICE_LIST = "Notice List";
+    private static final String TAG_POST_ADVT = "Post Advertisement";
+    private static final String TAG_PUBLISH = "Publish";
+    private static final String TAG_LOGOUT = "Logout";
+    private static final String TAG_ORDERS_DATA = "Orders Data";
+    private static final String TAG_SETTINGS = "Settings";
+    private static final String TAG_HELP = "Help";
     public static String CURRENT_TAG = TAG_NOTICE_LIST;
 
     private Handler mHandler;
@@ -116,15 +118,15 @@ public class LandingActivity extends AppCompatActivity {
         }
 
         dbHelper = new DBHelper(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mHandler = new Handler();
-        drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
         myTypeface1 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
-        userName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_userName);
-        userEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_userEmail);
+        userName = navigationView.getHeaderView(0).findViewById(R.id.nav_userName);
+        userEmail = navigationView.getHeaderView(0).findViewById(R.id.nav_userEmail);
 
         user= dbHelper.getProducer(phno);
         if(user!=null){
@@ -241,6 +243,9 @@ public class LandingActivity extends AppCompatActivity {
             case 4:
                 SettingsFragment settingsFragment = new SettingsFragment();
                 return settingsFragment;
+            case 5:
+                HelpFragment helpFragment= new HelpFragment();
+                return helpFragment;
 //                builder.create();
                 /*Intent intent = new Intent(LandingActivity.this, SettingsActivity.class);
                 intent.putExtra("phno", phno);
@@ -306,7 +311,10 @@ public class LandingActivity extends AppCompatActivity {
                     case R.id.nav_settings:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTINGS;
-                        Log.e("LandingActivity--->","this");
+                        break;
+                    case R.id.nav_help:
+                        navItemIndex = 5;
+                        CURRENT_TAG = TAG_HELP;
                         break;
                     default:
                         navItemIndex = 0;

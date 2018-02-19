@@ -18,7 +18,7 @@
 
         <item
             android:id="@+id/nav_interestedads"
-            android:icon="@drawable/ic_suggestion"
+            android:icon="@drawable/interestedicon"
             android:title="Interested Ads" />
 
         <item
@@ -26,10 +26,10 @@
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/nav_settings" />
 
-<!--        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_power_settings_new_black_24dp"
-            android:title="Logout"/>-->
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/faq"
+            android:title="FAQ"/>
     </group>
 
 </menu>

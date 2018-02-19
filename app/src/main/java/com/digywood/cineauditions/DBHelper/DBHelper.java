@@ -746,9 +746,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<SingleCategory> getAllCategories() {
-        ArrayList<SingleCategory> CategoryList = new ArrayList<SingleCategory>();
+        ArrayList<SingleCategory> CategoryList = new ArrayList<>();
 
-        Cursor c =db.query("category_table", new String[] {"keyId","orgId","categoryId","longName","shortName","createdBy","createdDate","modifiedBy","modifiedDate","status"}, null, null, null, null, "keyId ASC");
+        Cursor c =db.query("category_table", new String[] {"keyId","orgId","categoryId","longName","shortName","createdBy","createdDate","modifiedBy","modifiedDate","status"}, null, null, null, null, null);
         while (c.moveToNext()) {
 
             CategoryList.add(new SingleCategory(c.getInt(c.getColumnIndex("keyId")),c.getString(c.getColumnIndex("orgId")),
@@ -814,9 +814,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<SingleSubCategory> getAllSubCategories() {
-        ArrayList<SingleSubCategory> CategoryList = new ArrayList<SingleSubCategory>();
+        ArrayList<SingleSubCategory> CategoryList = new ArrayList<>();
 
-        Cursor c =db.query("sub_category_table", new String[] {"keyId","orgId","categoryId","subCategoryId","longName","shortName","createdBy","createdDate","modifiedBy","modifiedDate","status"}, null, null, null, null, "keyId ASC");
+        Cursor c =db.query("sub_category_table", new String[] {"keyId","orgId","categoryId","subCategoryId","longName","shortName","createdBy","createdDate","modifiedBy","modifiedDate","status"}, null, null, null, null, "categoryId ASC,longName ASC");
         while (c.moveToNext()) {
 
             CategoryList.add(new SingleSubCategory(c.getInt(c.getColumnIndex("keyId")),c.getString(c.getColumnIndex("orgId")),
