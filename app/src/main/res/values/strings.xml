@@ -31,6 +31,29 @@
     <string name="dialog_title">Logout</string>
     <string name="dialog_message">Are you sure?</string>
 
+    <string name="Note">Note: Without Setting Any Preferences You will not get Ad-Notice List.</string>
+
+    <string name="Q1">How to Set Preferences?</string>
+    <string name="Q2">How to Post Advertisement?</string>
+    <string name="Q3">How to Add interest to Advertisement?</string>
+    <string name="Q4">How to View Posted Advertisements?</string>
+    <string name="Q5">How to View that How many People Ineterested My Advertisement?</string>
+    <string name="Q6">How to View Image in FullView?</string>
+    <string name="Q7">How to View All my Interested Advertisements?</string>
+    <string name="Q8">How to Synchronize Own Adverisements?</string>
+    <string name="Q9">How to Synchronize Interested Adverisements?</string>
+    <string name="Q10">How to Synchronize User Preferences?</string>
+
+    <string name="A1">Navigate to Set Preferences Screen Check Your Preferred Categories and Click on Submit. Once you Set Your Preferences You will get Ad Notices based on Your Preferences</string>
+    <string name="A2">Navigate to Post Advertisment Screen Tap "'+'" to Post Your Advertisement</string>
+    <string name="A3">View Advertisement from List of Notices and Check Interested CheckBox,and Add Comment and Submit</string>
+    <string name="A4">Navigate to Post Advertisment Screen,You can see posted Ads And also Sync All post by using Sync Button on the Top-Right Corner</string>
+    <string name="A5">Click on Advertisement from List of OwnAds and Click ViewInterested Button</string>
+    <string name="A6">Navigate to Advertisement View,Click on Image</string>
+    <string name="A7">Navigate to Ineterested Ads Screen,You can see Interested Ads And also Sync All post by using Sync Button on the Top-Right Corner</string>
+    <string name="A8">Navigate to Set Preferences Screen and Synchronize using Sync Button on the Top-Right Corner</string>
+    <string name="A9">Navigate to Post Advertisment Screen and Synchronize using Sync Button on the Top-Right Corner</string>
+    <string name="A10">Navigate to Ineterested Ads Screen and Synchronize using Sync Button on the Top-Right Corner</string>
 
     <string name="gps_link"><u>Get location throw GPS Link</u></string>
 
@@ -50,8 +73,47 @@
         <item>Set Preferences</item>
         <item>InterestedAds</item>
         <item>Settings</item>
-        <!--<item>Logout</item>-->
+        <item>Help</item>
         <!--<item>Orders Data</item>-->
+    </string-array>
+
+    <string-array name="Questions">
+        <item>How to Set Preferences?</item>
+        <item>How to Post Advertisement?</item>
+        <item>How to Add interest to Advertisement?</item>
+        <item>How to View Posted Advertisements?</item>
+        <item>How to View that How many People Ineterested My Advertisement?</item>
+        <item>How to View Image in FullView?</item>
+        <item>How to View All my Interested Advertisements?</item>
+        <item>How to Synchronize Own Adverisements?</item>
+        <item>How to Synchronize Interested Adverisements?</item>
+        <item>How to Synchronize User Preferences?</item>
+    </string-array>
+
+    <string-array name="Questions20">
+        <item>How to Set Preferences?</item>
+        <item>How to Post Advertisement?</item>
+        <item>How to Add interest to Advertisement?</item>
+        <item>How to View Posted Advertisements?</item>
+        <item>How to View that How many People Ineterested My Advertisement?</item>
+        <item>How to View Image in FullView?</item>
+        <item>How to View All my Interested Advertisements?</item>
+        <item>How to Synchronize Own Adverisements?</item>
+        <item>How to Synchronize Interested Adverisements?</item>
+        <item>How to Synchronize User Preferences?</item>
+    </string-array>
+
+    <string-array name="Answers">
+        <item>Navigate to Set Preferences Screen Check Your Preferred Categories and Click on Submit. \n Once you Set Your Preferences You will get Ad Notices based on Your Preferences</item>
+        <item>Navigate to Post Advertisment Screen Tap "'+'" to Post Your Advertisement</item>
+        <item>View Advertisement from List of Notices and Check Interested CheckBox,and Add Comment and Submit</item>
+        <item>Navigate to Post Advertisment Screen,You can see posted Ads And also Sync All post by using Sync Button on the Top-Right Corner</item>
+        <item>Click on Advertisement from List of OwnAds and Click ViewInterested Button</item>
+        <item>Navigate to Advertisement View,Click on Image</item>
+        <item>Navigate to Ineterested Ads Screen,You can see Interested Ads And also Sync All post by using Sync Button on the Top-Right Corner</item>
+        <item>Navigate to Set Preferences Screen and Synchronize using Sync Button on the Top-Right Corner</item>
+        <item>Navigate to Post Advertisment Screen and Synchronize using Sync Button on the Top-Right Corner</item>
+        <item>Navigate to Ineterested Ads Screen and Synchronize using Sync Button on the Top-Right Corner</item>
     </string-array>
 
     <string name="title_activity_main2">Main2Activity</string>

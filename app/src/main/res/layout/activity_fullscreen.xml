@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/iv_logo"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/audition"/>
 
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appName"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true"
         android:orientation="vertical">
 
