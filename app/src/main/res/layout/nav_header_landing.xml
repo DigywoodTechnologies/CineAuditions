@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/userName"
         android:textStyle="bold"
         android:id="@+id/nav_userName"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -32,7 +31,6 @@
     <TextView
         android:id="@+id/nav_userEmail"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="user@android.com" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

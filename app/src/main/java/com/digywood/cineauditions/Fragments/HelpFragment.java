@@ -101,10 +101,10 @@ public class HelpFragment extends Fragment{
 
         for (int i=0;i<quesList.size();i++){
 
-            faqList.add(new SingleFAQ(quesList.get(i),ansList.get(i)));
+            faqList.add(new SingleFAQ(quesList.get(i),ansList.get(i),false));
         }
 
-        faqAdp = new FAQAdapter(faqList,getActivity(),animationUp,animationDown);
+        faqAdp = new FAQAdapter(faqList,getActivity());
         final RecyclerView.LayoutManager myLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         rv_listoffaqs.setLayoutManager(myLayoutManager);
         rv_listoffaqs.setItemAnimator(new DefaultItemAnimator());

@@ -73,20 +73,26 @@
         <item>Set Preferences</item>
         <item>InterestedAds</item>
         <item>Settings</item>
-        <item>Help</item>
+        <item>FAQ</item>
+        <item>FeedBack</item>
+        <item>Logout</item>
         <!--<item>Orders Data</item>-->
     </string-array>
 
     <string-array name="Questions">
-        <item>How to Set Preferences?</item>
-        <item>How to Post Advertisement?</item>
-        <item>How to Add interest to Advertisement?</item>
-        <item>How to View Posted Advertisements?</item>
-        <item>How to View that How many People Ineterested My Advertisement?</item>
+        <item>Basic Functionalities of the Auditions APP</item>
+        <item>Who are the seekers ?</item>
+        <item>Who are the Aspirants ?</item>
+        <item>Is the posting of advertisements or notices  can be only for Auditions ?</item>
+        <item>What is the importance of setting preferences ?</item>
+        <item>How to set the preferences ?</item>
+        <item>How to view details of the Notices or Advertisements received and mark Interested ?</item>
+        <item>What is Interested Ads ?</item>
+        <item>How to post advertisement ?</item>
+        <item>How to view MARKED INTERESTED information by the ad posted by me ?</item>
         <item>How to View Image in FullView?</item>
-        <item>How to View All my Interested Advertisements?</item>
-        <item>How to Synchronize Own Adverisements?</item>
-        <item>How to Synchronize Interested Adverisements?</item>
+        <item>How to Synchronize Own Advertisements? </item>
+        <item>How to Synchronize Interested Advertisements ?</item>
         <item>How to Synchronize User Preferences?</item>
     </string-array>
 
@@ -104,16 +110,45 @@
     </string-array>
 
     <string-array name="Answers">
-        <item>Navigate to Set Preferences Screen Check Your Preferred Categories and Click on Submit. \n Once you Set Your Preferences You will get Ad Notices based on Your Preferences</item>
-        <item>Navigate to Post Advertisment Screen Tap "'+'" to Post Your Advertisement</item>
-        <item>View Advertisement from List of Notices and Check Interested CheckBox,and Add Comment and Submit</item>
-        <item>Navigate to Post Advertisment Screen,You can see posted Ads And also Sync All post by using Sync Button on the Top-Right Corner</item>
-        <item>Click on Advertisement from List of OwnAds and Click ViewInterested Button</item>
-        <item>Navigate to Advertisement View,Click on Image</item>
-        <item>Navigate to Ineterested Ads Screen,You can see Interested Ads And also Sync All post by using Sync Button on the Top-Right Corner</item>
+        <item>1.Seekers can post the advertisements or needs. \n2.Aspirants can receive the advertisement notices from the seekers and can notify his or her interest. \nMain purpose of the app is to connect the seekers and aspirants. With this app  , aim is  Connect the File Fraternity easily.</item>
+        <item>Producers , Directors , Production Managers and Distributors can post the advertisement using this APP.</item>
+        <item>Aspirants such as Actors , Artists , Suppliers are the aspirants. Aspirants can receive the ad and respond to it , if it is suitable.</item>
+        <item>Posting of advertisement or notice includes Auditions. This application provides wider options. But the posting of advertisement needs to be related to Film Industry. This can be for Auditions for aspiring artists , can be for dubbing artists , can be for supply of items related to the film production.</item>
+        <item>Based your preferences , posted advertisements or notices would be received. Hence please set your preferences according to the openings you are looking for. If you are looking for writer , opt for Story Writing , Script and Dialogue Writers. This is based on your aspirations and needs.</item>
+        <item>Step 1 : Login \nStep 2 : Click on Menu Icon \nStep 3 : Select Set Preferences Menu Item \nStep 4 : Select Areas of Interest ( as many as you want ) \nStep 5 : Click on Submit</item>
+        <item>Once you login , you get list of Notices ( advertisements ) applicable to you based on your preferences. If you are in another screen , you can click on Menu icon and select Notices List.
+              \nClick on the Notice line item. You can see the Start date , description , Contact Person , Contact number , email id.
+              \nIf notice or advertisement is applicable to you , click on the check box for Interested and write your comments in the comments box.
+              \nThis information would go to the person who has posted notice or advertisement.
+        </item>
+        <item>These are the Notices or Advertisements you have MARKED INTERESTED. This provides you facility to view and can connect to the concern. Contact details are available in the detailed view.
+              \nStep 1 : Click on Menu Icon
+              \nStep 2 : Select Interested Ads
+              \nStep 3 : Click on the Notice Item you wish to view.
+              \nIn the bottom of the advertisement , you can see the comments you had provided and date on which you had MARKED INTERESTED.
+        </item>
+        <item>Post Advertisement is an important function of this app. This function is not applicable for all the users.
+              \nPosting advertisements is generally needed for Producers , Directors , Production Managers.
+              \nClick on Menu Icon and click on Post Advertisements menu item.
+              \nList of advertisements posted by you would get displayed. First time a blank screen would get displayed.
+              \nClick on the this button Plus. This is to post new ad.
+              \nScreen would get displayed to accept the information for the new advertisement.
+              \nEnter Caption for the advertisement. For example if you need Dubbing artists , Enter looking for the Dubbing artists. Then enter details.  For example Dubbing artist for which language you  require
+              \nEnter start date , end date of the requirements.  Enter Name of the contact person , mobile number and email of the contact person.
+              \nNext important section is to whom this is applicable ? There are set of services.  under each Services there are set of categories. You can chose any number of Services and categories. This is dependent on your requirement.
+              \nAnother important section is providing support image. This will provide an additional information to the aspirants.  Make sure you have the image on your device before clicking on the browse button. Pleases note the image size needs to be less then 2 MB.
+              \nThen click on submit. On clicking , ad gets posted for approval.  This needs to be approved by Cine Sooru or Digywood , Posted  ad should be related to Film field and does not contain any objectionable content.
+              \nOn approval , information would be provided to all the aspirants as per their preferences.
+        </item>
+        <item>Another important function is to view the interested notices. Once seeker posts advertisement and this is provided to the relevant aspirants. Once Aspirant marks interested , Seeker would get the information.
+              \nClick on the post advertisements.
+              \nClick on the ad posted by you.
+              \nDetailed view of the ad posted will be displayed.
+        </item>
+        <item>Tap on the image. To close ,click on Close Button</item>
         <item>Navigate to Set Preferences Screen and Synchronize using Sync Button on the Top-Right Corner</item>
-        <item>Navigate to Post Advertisment Screen and Synchronize using Sync Button on the Top-Right Corner</item>
-        <item>Navigate to Ineterested Ads Screen and Synchronize using Sync Button on the Top-Right Corner</item>
+        <item>Navigate to Post Advertisement Screen and Synchronize using Sync Button on the Top-Right Corner</item>
+        <item>Navigate to Interested Ads Screen and Synchronize using Sync Button on the Top-Right Corner</item>
     </string-array>
 
     <string name="title_activity_main2">Main2Activity</string>

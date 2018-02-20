@@ -80,6 +80,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -134,7 +135,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS,R.string.emailerror);
 
         title_newAdvt = (TextView)findViewById(R.id.title_newAdvt);
-        start_date = (Button)findViewById(R.id.btn_startDate);
+//        start_date = (Button)findViewById(R.id.btn_startDate);
         end_date = (Button)findViewById(R.id.btn_endDate);
         btn_submit = (Button)findViewById(R.id.submit_Info);
         btn_browse = (Button)findViewById(R.id.upload_Image);
@@ -195,25 +196,9 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         dataAdapter2.notifyDataSetChanged();
         s1.setAdapter(dataAdapter2);
 
-        start_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AdvtInfoScreen.this,
-                        new DatePickerDialog.OnDateSetListener() {
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance(TimeZone.getDefault()).getTime());
 
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                startdateEt.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-            }
-        });
+        startdateEt.setText(timeStamp);
 
         end_date.setOnClickListener(new View.OnClickListener() {
             @Override

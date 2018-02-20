@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.digywood.cineauditions.DBHelper.DBHelper;
 import com.digywood.cineauditions.FullscreenActivity;
 import com.digywood.cineauditions.LandingActivity;
 import com.digywood.cineauditions.R;
+import com.digywood.cineauditions.URLClass;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +33,7 @@ public class SettingsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    TextView logout;
+    TextView tv_termsandconditions;
     AlertDialog.Builder builder;
     String phno;
     DBHelper dbHelper;
@@ -83,28 +85,14 @@ public class SettingsFragment extends Fragment {
         phno = getActivity().getIntent().getStringExtra("mobileNo");
         dbHelper = new DBHelper(getActivity());
 
-        logout = view.findViewById(R.id.settings_logout);
-        logout.setOnClickListener(new View.OnClickListener() {
+        tv_termsandconditions = view.findViewById(R.id.tv_termcondition);
+        tv_termsandconditions.setText(Html.fromHtml("<u>Terms and Conditions</u> "));
+        tv_termsandconditions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Settings--->","this");
-                builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.dialog_message)
-                        .setTitle(R.string.dialog_title);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        dbHelper.deleteProducer(phno);
-                        Intent in = new Intent(getActivity(), FullscreenActivity.class);
-                        startActivity(in);
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-                builder.create().show();
+                Intent i=new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(URLClass.feedbackurl));
+                startActivity(i);
             }
         });
 

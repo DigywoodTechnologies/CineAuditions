@@ -44,6 +44,7 @@ public class MyBagroundTask extends AsyncTask<Void, String, String> {
 
     public MyBagroundTask(String url, String otpNo, String phonenumber, Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
+        dialog.setCanceledOnTouchOutside(false);
         this.urlAddress=url;
         mycontext=activity;
 		this.otpNo=otpNo;
@@ -81,15 +82,8 @@ public class MyBagroundTask extends AsyncTask<Void, String, String> {
         status = "Connecting ..";
         publishProgress(status);
 
-        
             mymap.clear();
             mymap.put("to", phoneNumber);
-            Log.e("ListofCustomers-----",phoneNumber);
-
-            Resources res=mycontext.getResources();
-            //String mymsg=res.getString(R.string.referalmsg);
-
-//            mymap.put("message","Welcome To Melyana Seeds.Your OTP:"+otpNo);
             mymap.put("message","Welcome+To+Cine-Auditions.Your+OTP+for+"+phoneNumber+"+is+:"+otpNo);
 
             HttpClient httpClient = new DefaultHttpClient();
@@ -126,7 +120,7 @@ public class MyBagroundTask extends AsyncTask<Void, String, String> {
                     publishProgress(status);
                 }
 
-                Log.e("RegistrationActivity---", sb.toString());
+                Log.e("SMSActivity---", sb.toString());
                 System.out.println("JSONArray--" + sb.toString());
                 is.close();
                 resultString = sb.toString();

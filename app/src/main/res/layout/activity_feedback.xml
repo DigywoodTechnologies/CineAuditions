@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical|center_horizontal|center"
+    android:background="@drawable/layout_shape"
+    android:layout_margin="8dp"
+    tools:context="com.digywood.cineauditions.Fragments.FeedbackFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:text="Send us Yours Feedback"
+        android:background="@color/colorPrimaryDark"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:layout_margin="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="User: "
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_weight="7"/>
+
+        <TextView
+            android:id="@+id/tv_feedusername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:layout_weight="3"/>
+    </LinearLayout>
+
+    <EditText android:id="@+id/et_feedsubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditTextTheme"
+        android:maxLength="100"
+        android:layout_margin="10dp"
+        android:background="@drawable/custom_edittext"
+        android:inputType="text"
+        android:hint="Subject" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="right|end"
+        android:text="(max:100)"/>
+
+    <EditText android:id="@+id/et_feedcomment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/EditTextTheme"
+        android:lines="4"
+        android:minLines="3"
+        android:gravity="top|left"
+        android:maxLines="4"
+        android:maxLength="500"
+        android:layout_margin="10dp"
+        android:scrollbars="vertical"
+        android:background="@drawable/custom_edittext"
+        android:inputType="textMultiLine"
+        android:hint="Comment" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:layout_marginRight="8dp"
+        android:layout_gravity="right|end"
+        android:text="(max:500)"/>
+
+    <Button
+        android:id="@+id/btn_feedsubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/custom_button"
+        android:textColor="@drawable/custom_text"
+        android:layout_gravity="center_vertical|center_horizontal|center"/>
+
+</LinearLayout>

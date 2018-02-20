@@ -19,12 +19,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +30,7 @@ import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
 import com.digywood.cineauditions.DBHelper.DBHelper;
+import com.digywood.cineauditions.Fragments.FeedbackFragment;
 import com.digywood.cineauditions.Fragments.HelpFragment;
 import com.digywood.cineauditions.Fragments.InterestsFragment;
 import com.digywood.cineauditions.Fragments.ItemsFragment;
@@ -63,6 +62,7 @@ public class LandingActivity extends AppCompatActivity {
     TextView userName, userEmail;
     Typeface myTypeface1;
     SingleProducer user;
+    AlertDialog.Builder builder;
     private boolean shouldLoadHomeFragOnBackPress = true;
     DBHelper dbHelper;
 
@@ -73,10 +73,10 @@ public class LandingActivity extends AppCompatActivity {
     private static final String TAG_NOTICE_LIST = "Notice List";
     private static final String TAG_POST_ADVT = "Post Advertisement";
     private static final String TAG_PUBLISH = "Publish";
-    private static final String TAG_LOGOUT = "Logout";
     private static final String TAG_ORDERS_DATA = "Orders Data";
     private static final String TAG_SETTINGS = "Settings";
-    private static final String TAG_HELP = "Help";
+    private static final String TAG_HELP = "FAQ";
+    private static final String TAG_FEEDBACK = "FeedBack";
     public static String CURRENT_TAG = TAG_NOTICE_LIST;
 
     private Handler mHandler;
@@ -175,7 +175,7 @@ public class LandingActivity extends AppCompatActivity {
                 Fragment fragment = getHomeFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+                fragmentTransaction.replace(R.id.frame, fragment,CURRENT_TAG);
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };
@@ -246,11 +246,9 @@ public class LandingActivity extends AppCompatActivity {
             case 5:
                 HelpFragment helpFragment= new HelpFragment();
                 return helpFragment;
-//                builder.create();
-                /*Intent intent = new Intent(LandingActivity.this, SettingsActivity.class);
-                intent.putExtra("phno", phno);
-                startActivity(intent);*/
-
+            case 6:
+                FeedbackFragment feedFragment= new FeedbackFragment();
+                return feedFragment;
             default:
                 return new ItemsFragment();
         }
@@ -295,26 +293,57 @@ public class LandingActivity extends AppCompatActivity {
                     case R.id.nav_items:
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_NOTICE_LIST;
+                        loadHomeFragment();
                         break;
                     case R.id.nav_dev_points:
                         navItemIndex = 1;
                         CURRENT_TAG = TAG_POST_ADVT;
+                        loadHomeFragment();
                         break;
                     case R.id.nav_publish:
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_PUBLISH;
+                        loadHomeFragment();
                         break;
                     case R.id.nav_interestedads:
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_ORDERS_DATA;
+                        loadHomeFragment();
                         break;
                     case R.id.nav_settings:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTINGS;
+                        loadHomeFragment();
                         break;
                     case R.id.nav_help:
                         navItemIndex = 5;
                         CURRENT_TAG = TAG_HELP;
+                        loadHomeFragment();
+                        break;
+                    case R.id.nav_report:
+                        navItemIndex = 6;
+                        CURRENT_TAG = TAG_FEEDBACK;
+                        loadHomeFragment();
+                        break;
+                    case R.id.nav_logout:
+                        builder = new AlertDialog.Builder(LandingActivity.this);
+                        builder.setMessage(R.string.dialog_message)
+                                .setTitle(R.string.dialog_title);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button
+                                dbHelper.deleteProducer(phno);
+                                Intent in = new Intent(LandingActivity.this,FullscreenActivity.class);
+                                startActivity(in);
+                                finish();
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                        builder.create().show();
                         break;
                     default:
                         navItemIndex = 0;
@@ -328,13 +357,11 @@ public class LandingActivity extends AppCompatActivity {
                 }
                 menuItem.setChecked(true);
 
-                loadHomeFragment();
-
                 return true;
             }
         });
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,R.string.openDrawer, R.string.closeDrawer) {
 
             @Override
             public void onDrawerClosed(View drawerView) {

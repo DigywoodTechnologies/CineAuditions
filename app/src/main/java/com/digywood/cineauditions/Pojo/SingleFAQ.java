@@ -7,14 +7,16 @@ package com.digywood.cineauditions.Pojo;
 public class SingleFAQ {
 
     private String ques,anws;
+    private boolean click;
 
     public SingleFAQ(){
 
     }
 
-    public SingleFAQ(String ques,String ans){
+    public SingleFAQ(String ques,String ans,boolean click){
         this.ques=ques;
         this.anws=ans;
+        this.click=click;
 
     }
 
@@ -32,5 +34,13 @@ public class SingleFAQ {
 
     public void setAnws(String anws) {
         this.anws = anws;
+    }
+
+    public boolean isClick() {
+        return click;
+    }
+
+    public void setClick(boolean click) {
+        this.click = click;
     }
 }

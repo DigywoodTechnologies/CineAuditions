@@ -11,9 +11,6 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 import com.digywood.cineauditions.Pojo.SingleFAQ;
 import com.digywood.cineauditions.R;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +38,9 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.MyViewHolder>{
     }
 
 
-    public FAQAdapter(List<SingleFAQ> qaList,Context c,Animation animup,Animation animdown) {
+    public FAQAdapter(List<SingleFAQ> qaList,Context c) {
         this.faqList = qaList;
         this.mycontext=c;
-        this.animationUp=animup;
-        this.animationDown=animdown;
     }
 
 
@@ -66,29 +61,37 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.MyViewHolder>{
         try {
             holder.tv_ques.setText(singleFAQ.getQues());
             holder.tv_answ.setText(singleFAQ.getAnws());
+            if(singleFAQ.isClick()){
+                holder.tv_answ.setVisibility(View.VISIBLE);
+            }else{
+                holder.tv_answ.setVisibility(View.GONE);
+            }
 
             holder.tv_ques.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if (holder.tv_answ.isShown()) {
-                        holder.tv_answ.startAnimation(animationUp);
-
-                        CountDownTimer countDownTimerStatic = new CountDownTimer(COUNTDOWN_RUNNING_TIME,16) {
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                holder.tv_answ.setVisibility(View.GONE);
-                            }
-                        };
-                        countDownTimerStatic.start();
+//                        holder.tv_answ.startAnimation(animationUp);
+//
+//                        CountDownTimer countDownTimerStatic = new CountDownTimer(COUNTDOWN_RUNNING_TIME,16) {
+//                            @Override
+//                            public void onTick(long millisUntilFinished) {
+//                            }
+//
+//                            @Override
+//                            public void onFinish() {
+//                                holder.tv_answ.setVisibility(View.GONE);
+//                            }
+//                        };
+//                        countDownTimerStatic.start();
+                        singleFAQ.setClick(false);
+                        holder.tv_answ.setVisibility(View.GONE);
 
                     } else {
+                        singleFAQ.setClick(true);
                         holder.tv_answ.setVisibility(View.VISIBLE);
-                        holder.tv_answ.startAnimation(animationDown);
+//                        holder.tv_answ.startAnimation(animationDown);
 
                     }
 

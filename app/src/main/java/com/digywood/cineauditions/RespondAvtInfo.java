@@ -47,7 +47,7 @@ public class RespondAvtInfo extends AppCompatActivity {
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_interestdate,tv_cat,tv_subcat,resp_adId;
     String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
     String cmproducerid;
-    ImageView view_img;
+    ImageView view_img,iv_full;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
@@ -108,6 +108,7 @@ public class RespondAvtInfo extends AppCompatActivity {
         view_emailTv =  findViewById(R.id.view_emailTv);
         resp_adId = findViewById(R.id.resp_adId);
         view_img =  findViewById(R.id.view_imgView);
+//        iv_full=findViewById(R.id.iv_full);
         mCollapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
         comment =  findViewById(R.id.comment);
         interested = findViewById(R.id.cb_interested);
@@ -282,6 +283,23 @@ public class RespondAvtInfo extends AppCompatActivity {
                 }
             }
         });
+
+//        iv_full.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try{
+//                    if(!cmdownloadUrl.equalsIgnoreCase("")){
+//                        popUp();
+//                    }else{
+//                        Log.e("RespondAvtInfo---","No image for Ad");
+//                    }
+//
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    Log.e("RespondAdvtInfo---",e.toString());
+//                }
+//            }
+//        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

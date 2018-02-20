@@ -208,21 +208,14 @@ public class FullscreenActivity extends AppCompatActivity {
                                 int checkFlag = 0;
                                 checkFlag =dbHelper.checkProducerExists(MobileNo);
                                 if (checkFlag == 1) {
-                                    //Toast.makeText(MainFullscreenActivity.this, "Already Exist", Toast.LENGTH_SHORT).show();
-                                    int checkOTPFlag = 0;
-                                    String st = dbHelper.getOTPStatus(MobileNo);
-                                    if (st.equals("verified") || st.equals("skipped")) {
-                                        count=dbHelper.checkCategoryExists();
-                                        if(count>0){
-                                            Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                            intent.putExtra("mobileNo", MobileNo);
-                                            intent.putExtra("key", "F1");
-                                            startActivity(intent);
-                                        }else{
-                                            syncData(MobileNo);
-                                        }
-                                    } else {
-                                        Toast.makeText(FullscreenActivity.this, "User Does not exist", Toast.LENGTH_SHORT).show();
+                                    count=dbHelper.checkCategoryExists();
+                                    if(count>0){
+                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+                                        intent.putExtra("mobileNo", MobileNo);
+                                        intent.putExtra("key", "F1");
+                                        startActivity(intent);
+                                    }else{
+                                        syncData(MobileNo);
                                     }
                                 } else {
                                     MobileNo = phno.getText().toString();
