@@ -12,8 +12,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="125dp"
-        android:text="CineAuditions"
-        android:textSize="40dp" />
+        android:text="Auditions Plus"
+        android:textSize="40sp" />
 
     <TextView
         android:id="@+id/version"
@@ -24,43 +24,13 @@
         android:layout_marginTop="17dp"
         android:text="@string/version" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_termcondition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/version"
-        android:layout_marginTop="25dp"
-        android:orientation="vertical">
-
-        <TableRow
-            android:id="@+id/settings_r1"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp">
-
-            <ImageView
-                android:layout_width="22sp"
-                android:layout_height="22sp"
-                android:layout_marginLeft="10dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/ic_power_settings_new_black_24dp"/>
-
-            <TextView
-                android:id="@+id/settings_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nav_logout"
-                android:layout_gravity="center"
-                android:textColor="#000000"
-                android:layout_marginLeft="10dp"
-                android:textSize="22sp" />
-        </TableRow>
-
-    </LinearLayout>
-
-
-
-
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical|center_horizontal|center"
+        android:layout_marginBottom="20dp" />
 
 </RelativeLayout>

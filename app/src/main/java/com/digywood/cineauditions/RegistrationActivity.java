@@ -61,7 +61,7 @@ public class RegistrationActivity extends AppCompatActivity {
         awesomeValidation.addValidation(this, R.id.cityET_ForReg, "^[a-zA-Z_ ]*$", R.string.cityerror);
         awesomeValidation.addValidation(this, R.id.stateET_ForReg, "^[a-zA-Z_ ]*$", R.string.stateerror);
         awesomeValidation.addValidation(this, R.id.emailET_ForReg, Patterns.EMAIL_ADDRESS, R.string.emailerror);
-        awesomeValidation.addValidation(this, R.id.phnoET_ForReg, "^([0-9]{1})([0-9]{9})$", R.string.mobileerror);
+        awesomeValidation.addValidation(this, R.id.phnoET_ForReg, "^([0-9]{1})([0-9]{9})$",R.string.mobileerror);
 
         RegistrationLbl.setTypeface(myTypeface1);
         reg_submit.setTypeface(myTypeface1);
@@ -94,9 +94,9 @@ public class RegistrationActivity extends AppCompatActivity {
                         @Override
                         public void inetSatus(Boolean netStatus) {
                             if(netStatus){
+                                Log.e("RegActivity----","OTP: "+otp);
                                 HashMap<String, String> hmap = new HashMap<String, String>();
                                 url =URLClass.hosturl+"insertProducerDetails.php";
-
                                 hmap.put("producer_name", nameSt);
                                 hmap.put("address", addressSt);
                                 hmap.put("city", citySt);
@@ -104,7 +104,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 hmap.put("contact_person", contact_PersonSt);//
                                 hmap.put("phno", phnoSt);
                                 hmap.put("emailId", emailIDSt);
-                                hmap.put("otpNo", otp);
+                                hmap.put("otpNo",otp);
                                 hmap.put("dateOfRegistration", regDate);
                                 hmap.put("status", status);
 
@@ -130,14 +130,16 @@ public class RegistrationActivity extends AppCompatActivity {
                                                     new MyBagroundTask("http://www.jcbpoint.com/sms/sms.php", otp, phnoSt, RegistrationActivity.this, new IBagroundListener() {
                                                         @Override
                                                         public void bagroundData(String json) throws JSONException {
+
+                                                            Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
+                                                            intent.putExtra("mobileNo",phnoSt);
+                                                            startActivity(intent);
+                                                            finish();
+                                                            Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
+
                                                         }
                                                     }).execute();
 
-                                                    Intent intent = new Intent(RegistrationActivity.this,OTPEntryActivity.class);
-                                                    intent.putExtra("mobileNo",phnoSt);
-                                                    startActivity(intent);
-                                                    finish();
-                                                    Toast.makeText(RegistrationActivity.this, "Registration Successfull", Toast.LENGTH_LONG).show();
                                                 }else{
                                                     Toast.makeText(RegistrationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                                                 }

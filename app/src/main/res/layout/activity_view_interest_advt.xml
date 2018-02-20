@@ -25,13 +25,31 @@
             app:expandedTitleMarginEnd="64dp"
             app:title="@string/collapsing_toolbar">
 
-            <ImageView
-                android:id="@+id/interest_view_imgView1"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax" />
+                android:fitsSystemWindows="true">
+
+                <ImageView
+                    android:id="@+id/interest_view_imgView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax" />
+
+                <TextView
+                    android:src="@drawable/fullscreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:text="tap to get full view"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="10dp" />
+
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/interest_toolbar"

@@ -24,6 +24,7 @@ import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.DBHelper.DBHelper;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 public class OTPEntryActivity extends AppCompatActivity {
     /**
@@ -57,7 +59,7 @@ public class OTPEntryActivity extends AppCompatActivity {
     EditText et1_otp;
     DBHelper dbHelper;
 
-    String otpnumber,otpNo,regDate,url,url1,gpsAddress,EmailId1,Password1,MobileNo;
+    String otpnumber,otpNo,regDate,MobileNo;
     JSONObject jo;
     private AwesomeValidation awesomeValidation;
 
@@ -131,15 +133,15 @@ public class OTPEntryActivity extends AppCompatActivity {
         myTypeface2 = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Medium.ttf");
 
 
-        app_title = (TextView)findViewById(R.id.appName);
-        otp_submit = (Button)findViewById(R.id.otp_submit);
-        otp_cancel = (Button)findViewById(R.id.otp_cancel);
-        tv_verifytitle = (TextView)findViewById(R.id.tv_verifytitle);
-        tv_phno = (TextView)findViewById(R.id.tv_phno);
-        tv1_phno = (TextView)findViewById(R.id.tv1_phno);
-        timer = (TextView) findViewById(R.id.timer);
-        skip = (TextView) findViewById(R.id.skip);
-        et1_otp = (EditText)findViewById(R.id.et1_otp);
+        app_title = findViewById(R.id.appName);
+        otp_submit = findViewById(R.id.otp_submit);
+        otp_cancel = findViewById(R.id.otp_cancel);
+        tv_verifytitle = findViewById(R.id.tv_verifytitle);
+        tv_phno = findViewById(R.id.tv_phno);
+        tv1_phno = findViewById(R.id.tv1_phno);
+        timer = findViewById(R.id.timer);
+        skip = findViewById(R.id.skip);
+        et1_otp = findViewById(R.id.et1_otp);
         dbHelper = new DBHelper(this);
 
         app_title.setTypeface(myTypeface1);
@@ -177,101 +179,165 @@ public class OTPEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new AsyncCheckInternet(OTPEntryActivity.this, new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            otpnumber = et1_otp.getText().toString();
-                            HashMap<String, String> hmap = new HashMap<String, String>();
-                            hmap.put("phno", MobileNo);
+//                new AsyncCheckInternet(OTPEntryActivity.this,new INetStatus() {
+//                    @Override
+//                    public void inetSatus(Boolean netStatus) {
+//                        if(netStatus){
+//                            otpnumber = et1_otp.getText().toString();
+//                            HashMap<String, String> hmap = new HashMap<String, String>();
+//                            hmap.put("phno", MobileNo);
+//
+//                            url = URLClass.hosturl+"checkProducerExist.php";
+//
+//                            new BagroundTask(url, hmap, OTPEntryActivity.this,new IBagroundListener() {
+//
+//                                @Override
+//                                public void bagroundData(String json) {
+//                                    try {
+//                                        Log.d("ja", "comes:" + json);
+//                                        if (json.equals("User_Not_Exist")) {
+//                                            Toast.makeText(OTPEntryActivity.this, "UserId does not exist", Toast.LENGTH_LONG).show();
+//                                        } else {
+//                                            //Toast.makeText(FullscreenActivity.this, "Order Insertion failed", Toast.LENGTH_SHORT).show();}
+//                                            JSONArray ja = new JSONArray(json);
+//                                            Log.d("ja", "comes:" + ja);
+//                                            if (ja.length() != 0) {
+//                                                jo = null;
+//                                                for (int j = 0; j < ja.length(); j++) {
+//                                                    try {
+//                                                        jo = ja.getJSONObject(j);
+//                                                        Log.d("OTPEntry--->", "ServerOTP:" + jo.getString("otpNo")+":::Localotpnumber:"+otpnumber);
+//                                                        otpNo = jo.getString("otpNo");
+//                                                        if (otpnumber.equals(otpNo)) {
+//
+//                                                            Calendar c1 = Calendar.getInstance();
+//                                                            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//                                                            regDate = sdf1.format(c1.getTime());
+//
+//                                                            long updateFlag = 0;
+//
+//                                                            //Toast.makeText(OTPEntry.this, "status update success ", Toast.LENGTH_LONG).show();
+//                                                            HashMap<String, String> hmap = new HashMap<String, String>();
+//
+//                                                            Calendar c2 = Calendar.getInstance();
+//                                                            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//                                                            regDate = sdf2.format(c2.getTime());
+//
+//                                                            hmap.put("phno", MobileNo);
+//                                                            hmap.put("otpNo", otpNo);
+//                                                            hmap.put("status", "verified");
+//                                                            hmap.put("dateOfRegistration", regDate);
+//
+//                                                            url = URLClass.hosturl+"updateProducerDetails.php";
+//
+//                                                            final String str = "";
+//                                                            try {
+//                                                                new BagroundTask(url,hmap,OTPEntryActivity.this, new IBagroundListener() {
+//                                                                    @Override
+//                                                                    public void bagroundData(String json) {
+//                                                                        Log.d("OTP", "comes:" + json);
+//                                                                        if (json.equals("Updated")) {
+//                                                                            dbHelper.updateProducer(MobileNo,otpNo,"verified",regDate);
+//                                                                            Intent intent = new Intent(OTPEntryActivity.this, FullscreenActivity.class);
+//                                                                            intent.putExtra("mobileNo",MobileNo);
+//                                                                            startActivity(intent);
+//                                                                            finish();
+//                                                                        }
+//                                                                        else {
+//                                                                            Toast.makeText(OTPEntryActivity.this, "OTP Status updation failed", Toast.LENGTH_SHORT).show();
+//                                                                        }
+//                                                                    }
+//                                                                }).execute();
+//                                                                Log.v("jo", str);
+//                                                            } catch (Exception e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//                                                        }
+//                                                        //Toast.makeText(OTPEntry.this, "OTP Successfull", Toast.LENGTH_SHORT).show();
+//
+//                                                    } catch (Exception e) {
+//                                                        e.printStackTrace();
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    } catch (Exception e1) {
+//                                        e1.printStackTrace();
+//                                    }
+//                                }
+//                            }).execute();
+//                        }else{
+//                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                }).execute();
 
-                            url = URLClass.hosturl+"checkProducerExist.php";
 
-                            BagroundTask task1 = new BagroundTask(url, hmap, OTPEntryActivity.this, new IBagroundListener() {
+                if(et1_otp.getText().toString().equalsIgnoreCase("")){
+                    Toast.makeText(getApplicationContext(),"Please Enter OTP",Toast.LENGTH_SHORT).show();
+                }else{
+                    otpNo=et1_otp.getText().toString();
+                    new AsyncCheckInternet(OTPEntryActivity.this, new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
 
+                            HashMap<String, String> hmap = new HashMap<>();
+
+                            Calendar c2 = Calendar.getInstance(TimeZone.getDefault());
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            regDate = sdf2.format(c2.getTime());
+
+                            hmap.put("phno",MobileNo);
+                            hmap.put("otpNo",otpNo);
+                            hmap.put("status","verified");
+                            hmap.put("dateOfRegistration",regDate);
+
+                            new BagroundTask(URLClass.hosturl + "updateProducerDetails.php", hmap, OTPEntryActivity.this,new IBagroundListener() {
                                 @Override
-                                public void bagroundData(String json) {
-                                    try {
-                                        Log.d("ja", "comes:" + json);
-                                        if (json.equals("User_Not_Exist")) {
-                                            Toast.makeText(OTPEntryActivity.this, "UserId does not exist", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            //Toast.makeText(FullscreenActivity.this, "Order Insertion failed", Toast.LENGTH_SHORT).show();}
-                                            JSONArray ja = new JSONArray(json);
-                                            Log.d("ja", "comes:" + ja);
-                                            if (ja.length() != 0) {
-                                                jo = null;
-                                                for (int j = 0; j < ja.length(); j++) {
-                                                    try {
-                                                        jo = ja.getJSONObject(j);
-                                                        Log.d("OTPEntry--->", "ServerOTP:" + jo.getString("otpNo")+":::Localotpnumber:"+otpnumber);
-                                                        otpNo = jo.getString("otpNo");
-                                                        if (otpnumber.equals(otpNo)) {
+                                public void bagroundData(String json) throws JSONException {
+                                    try{
+                                        Log.e("OTPEntrySkip---",json);
+                                        if(json.equalsIgnoreCase("User_Not_Exist")){
+                                            Toast.makeText(OTPEntryActivity.this, "UserId is not exist", Toast.LENGTH_LONG).show();
 
-                                                            Calendar c1 = Calendar.getInstance();
-                                                            SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                                            regDate = sdf1.format(c1.getTime());
+                                            Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
+                                            intent.putExtra("mobileNo", MobileNo);
+                                            startActivity(intent);
+                                            finish();
 
-                                                            long updateFlag = 0;
-
-                                                            //Toast.makeText(OTPEntry.this, "status update success ", Toast.LENGTH_LONG).show();
-                                                            HashMap<String, String> hmap = new HashMap<String, String>();
-
-                                                            Calendar c2 = Calendar.getInstance();
-                                                            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                                            regDate = sdf2.format(c2.getTime());
-
-                                                            hmap.put("phno", MobileNo);
-                                                            hmap.put("otpNo", otpNo);
-                                                            hmap.put("status", "verified");
-                                                            hmap.put("dateOfRegistration", regDate);
-
-                                                            url = URLClass.hosturl+"updateProducerDetails.php";
-
-                                                            final String str = "";
-                                                            try {
-                                                                BagroundTask task = new BagroundTask(url,hmap,OTPEntryActivity.this, new IBagroundListener() {
-                                                                    @Override
-                                                                    public void bagroundData(String json) {
-                                                                        Log.d("OTP", "comes:" + json);
-                                                                        if (json.equals("Updated")) {
-                                                                            dbHelper.updateProducer(MobileNo,otpNo,"verified",regDate);
-                                                                            Intent intent = new Intent(OTPEntryActivity.this, FullscreenActivity.class);
-                                                                            intent.putExtra("mobileNo",MobileNo);
-                                                                            startActivity(intent);
-                                                                            finish();
-                                                                        }
-                                                                        else {
-                                                                            Toast.makeText(OTPEntryActivity.this, "OTP Status updation failed", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
-                                                                task.execute();
-                                                                Log.v("jo", str);
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                        //Toast.makeText(OTPEntry.this, "OTP Successfull", Toast.LENGTH_SHORT).show();
-
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
+                                        }else{
+                                            if(json.equalsIgnoreCase("Otp_Validation_Failed")){
+                                                Toast.makeText(OTPEntryActivity.this, "Please Enter Valid OTP", Toast.LENGTH_LONG).show();
+                                            }else{
+                                                if(json.equalsIgnoreCase("Otp_Validation_Successful_Update_Success")){
+                                                    long updateFlag = 0;
+                                                    updateFlag = dbHelper.updateProducer(MobileNo,otpNo,"verified",regDate);
+                                                    if(updateFlag>0){
+                                                        Log.e("OTPActivity---","Inserted Local");
+                                                    }else{
+                                                        Log.e("OTPActivity---","Not Inserted in Local");
                                                     }
+                                                    Toast.makeText(OTPEntryActivity.this, "User Validated", Toast.LENGTH_LONG).show();
+                                                }else{
+                                                    Toast.makeText(OTPEntryActivity.this, "Unable to Validate User", Toast.LENGTH_LONG).show();
                                                 }
+                                                Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
+                                                intent.putExtra("mobileNo", MobileNo);
+                                                startActivity(intent);
+                                                finish();
                                             }
                                         }
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                        Log.e("OTPEntrySkip---",e.toString());
                                     }
                                 }
-                            });
-                            task1.execute();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
+                            }).execute();
 
-                    }
-                }).execute();
+                        }
+                    }).execute();
+                }
             }
         });
 
@@ -288,112 +354,163 @@ public class OTPEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new AsyncCheckInternet(OTPEntryActivity.this,new INetStatus() {
+//                new AsyncCheckInternet(OTPEntryActivity.this,new INetStatus() {
+//                    @Override
+//                    public void inetSatus(Boolean netStatus) {
+//                        if(netStatus){
+//                            otpnumber = et1_otp.getText().toString();
+//                            HashMap<String, String> hmap = new HashMap<>();
+//                            hmap.put("phno", MobileNo);
+//
+//                            url = URLClass.hosturl+"checkProducerExist.php";
+//
+//                            BagroundTask task1 = new BagroundTask(url, hmap, OTPEntryActivity.this, new IBagroundListener() {
+//
+//                                @Override
+//                                public void bagroundData(String json) {
+//                                    try {
+//                                        Log.d("ja", "comes:" + json);
+//                                        if (json.equals("User_Not_Exist")) {
+//                                            Toast.makeText(OTPEntryActivity.this, "UserId is not exist", Toast.LENGTH_LONG).show();
+//                                        } else {
+//                                            //Toast.makeText(FullscreenActivity.this, "Order Insertion failed", Toast.LENGTH_SHORT).show();}
+//                                            JSONArray ja = new JSONArray(json);
+//                                            Log.d("ja", "comes:" + ja);
+//                                            if (ja.length() != 0) {
+//                                                jo = null;
+//                                                for (int j = 0; j < ja.length(); j++) {
+//                                                    try {
+//                                                        jo = ja.getJSONObject(j);
+//                                                        Log.d("ja", "comes:" + jo.getString("otpNo")+":::otpnumber:"+otpnumber);
+//                                                        otpNo = jo.getString("otpNo");
+//                                                        //if (otpnumber.equals(otpNo)) {
+//
+//                                                        Calendar c1 = Calendar.getInstance();
+//                                                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//                                                        regDate = sdf1.format(c1.getTime());
+//
+//                                                        long updateFlag = 0;
+//                                                        updateFlag = dbHelper.updateProducer(MobileNo,otpNo,"skipped",regDate);
+//                                                        if (updateFlag != 1) {
+//                                                            //Toast.makeText(OTPEntry.this, "status update failed ", Toast.LENGTH_LONG).show();
+//                                                        } else {
+//                                                            //Toast.makeText(OTPEntry.this, "status update success ", Toast.LENGTH_LONG).show();
+//                                                            HashMap<String, String> hmap = new HashMap<String, String>();
+//
+//                                                            Calendar c2 = Calendar.getInstance();
+//                                                            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//                                                            regDate = sdf2.format(c2.getTime());
+//
+//                                                            hmap.put("phno", MobileNo);hmap.put("otpNo", otpNo);
+//
+//                                                            hmap.put("status", "skipped");
+//                                                            hmap.put("dateOfRegistration", regDate);
+//
+//                                                            url = URLClass.hosturl+"updateProducerDetails.php";
+//
+//                                                            final String str = "";
+//                                                            try {
+//                                                                BagroundTask task = new BagroundTask(url, hmap, OTPEntryActivity.this, new IBagroundListener() {
+//                                                                    @Override
+//                                                                    public void bagroundData(String json) {
+//                                                                        Log.d("ja", "comes:" + json);
+//                                                                        if (json.equals("Updated")) {
+//                                                                            //Toast.makeText(OTPEntry.this, "OTP Updated Successfull", Toast.LENGTH_LONG).show();
+//                                                                        }
+//                                                                        else {
+//                                                                            //Toast.makeText(OTPEntry.this, "OTP updation failed", Toast.LENGTH_SHORT).show();
+//                                                                        }
+//                                                                    }
+//                                                                });
+//                                                                task.execute();
+//                                                                Log.v("jo", str);
+//                                                            } catch (Exception e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//                                                        }
+//
+//                                                    } catch (Exception e) {
+//                                                        e.printStackTrace();
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    } catch (Exception e1) {
+//                                        e1.printStackTrace();
+//                            });
+//                                    }
+//                                }
+//                            task1.execute();
+//                        }else{
+//                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                }).execute();
+
+                new AsyncCheckInternet(OTPEntryActivity.this, new INetStatus() {
                     @Override
                     public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            otpnumber = et1_otp.getText().toString();
-                            HashMap<String, String> hmap = new HashMap<String, String>();
-                            hmap.put("phno", MobileNo);
 
-                            url = URLClass.hosturl+"checkProducerExist.php";
+                        HashMap<String, String> hmap = new HashMap<>();
 
-                            BagroundTask task1 = new BagroundTask(url, hmap, OTPEntryActivity.this, new IBagroundListener() {
+                        Calendar c2 = Calendar.getInstance(TimeZone.getDefault());
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                        regDate = sdf2.format(c2.getTime());
 
-                                @Override
-                                public void bagroundData(String json) {
-                                    try {
-                                        Log.d("ja", "comes:" + json);
-                                        if (json.equals("User_Not_Exist")) {
-                                            Toast.makeText(OTPEntryActivity.this, "UserId is not exist", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            //Toast.makeText(FullscreenActivity.this, "Order Insertion failed", Toast.LENGTH_SHORT).show();}
-                                            JSONArray ja = new JSONArray(json);
-                                            Log.d("ja", "comes:" + ja);
-                                            if (ja.length() != 0) {
-                                                jo = null;
-                                                for (int j = 0; j < ja.length(); j++) {
-                                                    try {
-                                                        jo = ja.getJSONObject(j);
-                                                        Log.d("ja", "comes:" + jo.getString("otpNo")+":::otpnumber:"+otpnumber);
-                                                        otpNo = jo.getString("otpNo");
-                                                        //if (otpnumber.equals(otpNo)) {
-
-                                                        Calendar c1 = Calendar.getInstance();
-                                                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                                        regDate = sdf1.format(c1.getTime());
-
-                                                        long updateFlag = 0;
-                                                        updateFlag = dbHelper.updateProducer(MobileNo,otpNo,"skipped",regDate);
-                                                        if (updateFlag != 1) {
-                                                            //Toast.makeText(OTPEntry.this, "status update failed ", Toast.LENGTH_LONG).show();
-                                                        } else {
-                                                            //Toast.makeText(OTPEntry.this, "status update success ", Toast.LENGTH_LONG).show();
-                                                            HashMap<String, String> hmap = new HashMap<String, String>();
-
-                                                            Calendar c2 = Calendar.getInstance();
-                                                            SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                                            regDate = sdf2.format(c2.getTime());
-
-                                                            hmap.put("phno", MobileNo);
-                                                            hmap.put("otpNo", otpNo);
-                                                            hmap.put("status", "skipped");
-                                                            hmap.put("dateOfRegistration", regDate);
-
-                                                            url = URLClass.hosturl+"updateProducerDetails.php";
-
-                                                            final String str = "";
-                                                            try {
-                                                                BagroundTask task = new BagroundTask(url, hmap, OTPEntryActivity.this, new IBagroundListener() {
-                                                                    @Override
-                                                                    public void bagroundData(String json) {
-                                                                        Log.d("ja", "comes:" + json);
-                                                                        if (json.equals("Updated")) {
-                                                                            //Toast.makeText(OTPEntry.this, "OTP Updated Successfull", Toast.LENGTH_LONG).show();
-                                                                        }
-                                                                        else {
-                                                                            //Toast.makeText(OTPEntry.this, "OTP updation failed", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
-                                                                task.execute();
-                                                                Log.v("jo", str);
-                                                            } catch (Exception e) {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-
-                                                        //Toast.makeText(OTPEntry.this, "OTP Successfull", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
-                                                        intent.putExtra("mobileNo", MobileNo);
-                                                        startActivity(intent);
-                                                        finish();
-                                                        //}else {
-                                                        // Toast.makeText(OTPEntry.this, "OTP not Successfull", Toast.LENGTH_SHORT).show();
-                                                        //}
-
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            });
-                            task1.execute();
+                        if(et1_otp.getText().toString().equalsIgnoreCase("")){
+                            otpNo="";
                         }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
+                            otpNo=et1_otp.getText().toString();
                         }
+
+                        hmap.put("phno",MobileNo);
+                        hmap.put("otpNo",otpNo);
+                        hmap.put("status","skipped");
+                        hmap.put("dateOfRegistration", regDate);
+
+                        new BagroundTask(URLClass.hosturl + "updateProducerDetails.php", hmap, OTPEntryActivity.this,new IBagroundListener() {
+                            @Override
+                            public void bagroundData(String json) throws JSONException {
+                                try{
+                                    Log.e("OTPEntrySkip---",json);
+                                    if(json.equalsIgnoreCase("User_Not_Exist")){
+                                        Toast.makeText(OTPEntryActivity.this, "UserId is not exist", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
+                                        intent.putExtra("mobileNo", MobileNo);
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        if(json.equalsIgnoreCase("Skipped_Successful_Update_Success")){
+                                            long updateFlag = 0;
+                                            updateFlag = dbHelper.updateProducer(MobileNo,otpNo,"skipped",regDate);
+                                            if(updateFlag>0){
+                                                Log.e("OTPActivity---","Inserted Local");
+                                            }else{
+                                                Log.e("OTPActivity---","Not Inserted in Local");
+                                            }
+                                            Toast.makeText(OTPEntryActivity.this, "User Skipped", Toast.LENGTH_LONG).show();
+
+                                            Intent intent = new Intent(OTPEntryActivity.this,FullscreenActivity.class);
+                                            intent.putExtra("mobileNo", MobileNo);
+                                            startActivity(intent);
+                                            finish();
+
+                                        }else{
+                                            Toast.makeText(OTPEntryActivity.this, "Unable Process User Skip", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    Log.e("OTPEntrySkip---",e.toString());
+                                }
+                            }
+                        }).execute();
 
                     }
                 }).execute();
-
             }
         });
-
 
     }
 
