@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     Context context;
     SQLiteDatabase db;
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION =3;
 
     public DBHelper(Context c)
     {
@@ -107,6 +107,11 @@ public class DBHelper extends SQLiteOpenHelper {
             default:
                 throw new IllegalStateException("onUpgrade() with unknown old version "+oldVersion);
         }
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        super.onDowngrade(db, oldVersion, newVersion);
     }
 
     public long insertNewProducer(String name, String address, String city, String state, String contact_Person, String phno, String emailId, String otp, String regDate, String status){
