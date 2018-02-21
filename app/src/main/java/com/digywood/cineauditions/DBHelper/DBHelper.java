@@ -73,9 +73,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_pref_producer(advtId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, producer_id text, caption text, description text," +
                         " image BLOB, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(tblAdvtPrefTable);
-                String tblAdvtInterestTable="ALTER TABLE advt_pref_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
-                db.execSQL(tblAdvtInterestTable);
 
+                String tblAdvtInterestTable="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
+                db.execSQL(tblAdvtInterestTable);
 
                 String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text, caption text, description text," +
                         "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
