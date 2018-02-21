@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class ViewAdvtInfo extends AppCompatActivity {
 
-    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_cat,tv_subcat,view_adId,view_status;
+    TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_cat,tv_subcat,view_adId;
     ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo,category;
@@ -79,7 +79,7 @@ public class ViewAdvtInfo extends AppCompatActivity {
         nameTv = findViewById(R.id.personnameTv);
         numberTv = findViewById(R.id.personnumberTv);
         view_emailTv = findViewById(R.id.view_emailTv);
-        view_status = findViewById(R.id.view_status);
+//        view_status = findViewById(R.id.view_status);
         view_img = findViewById(R.id.view_imgView1);
         view_interests = findViewById(R.id.view_interests);
         mCollapsingToolbarLayout = findViewById(R.id.collapsingToolbar);
@@ -109,8 +109,8 @@ public class ViewAdvtInfo extends AppCompatActivity {
                 Log.e("ViewAdvtInfo---",e.toString());
             }
 
-            captionview.setText("" + myad.getCaption() + " ");
-            view_adId.setText("AdvtId: " +advtId);
+            captionview.setText(myad.getCaption());
+            view_adId.setText(""+advtId);
             view_startTv.setText(myad.getStartDate());
             view_endTv.setText(myad.getEndDate());
             view_description.setText(myad.getDescription());
@@ -283,9 +283,9 @@ public class ViewAdvtInfo extends AppCompatActivity {
                     catstr=catstr+","+catNameList.get(i);
                 }
             }
-            tv_cat.setText("Category: "+catstr);
+            tv_cat.setText(catstr);
         }else{
-            tv_cat.setText("Category: No Selection");
+            tv_cat.setText("No Selection");
         }
 
 
@@ -301,9 +301,9 @@ public class ViewAdvtInfo extends AppCompatActivity {
                     subcatstr=subcatstr+","+subcatList.get(i);
                 }
             }
-            tv_subcat.setText("Sub-Categories: "+subcatstr);
+            tv_subcat.setText(subcatstr);
         }else{
-            tv_subcat.setText("Sub-Categories: No Selection");
+            tv_subcat.setText("No Selection");
         }
 
     }
