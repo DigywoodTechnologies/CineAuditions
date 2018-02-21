@@ -210,9 +210,12 @@ public class LandingActivity extends AppCompatActivity {
                 CURRENT_TAG = TAG_NOTICE_LIST;
                 loadHomeFragment();
                 return;
+            }else {
+                Intent i=new Intent(getApplicationContext(),FullscreenActivity.class);
+                startActivity(i);
+                finish();
             }
         }
-
         super.onBackPressed();
     }
 

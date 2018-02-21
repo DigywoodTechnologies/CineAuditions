@@ -200,7 +200,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
                     }
 
-                    new AsyncCheckInternet(FullscreenActivity.this, new INetStatus() {
+                    new AsyncCheckInternet(FullscreenActivity.this,new INetStatus() {
                         @Override
                         public void inetSatus(Boolean netStatus) {
                             if(netStatus){
@@ -242,9 +242,9 @@ public class FullscreenActivity extends AppCompatActivity {
                                                         long insertFlag=dbHelper.insertNewProducer(jo.getString("producer_name"), jo.getString("address"), jo.getString("city"), jo.getString("state"), jo.getString("contact_person"),
                                                                 jo.getString("phno"), jo.getString("emailId"), jo.getString("otpNo"), jo.getString("dateofRegistration"), jo.getString("status"));
                                                         if(insertFlag>0){
-                                                            Toast.makeText(getApplicationContext(),"Interested",Toast.LENGTH_SHORT).show();
+                                                            Log.e("FullScreen--","inserted");
                                                         }else{
-                                                            Toast.makeText(getApplicationContext(),"Not Interested",Toast.LENGTH_SHORT).show();
+                                                            Log.e("FullScreen--","Not inserted");
                                                         }
 
                                                     }
