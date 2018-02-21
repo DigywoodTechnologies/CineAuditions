@@ -108,7 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
             case 2:
                 // upgrade logic from version 2 to 3
 
-                String tblAdvtInterestTable2="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
+                String tblAdvtInterestTable2="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text";
                 db.execSQL(tblAdvtInterestTable2);
 
 //                String copytable21="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
