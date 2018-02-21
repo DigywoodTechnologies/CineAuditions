@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.digywood.cineauditions.AsyncTasks.AsyncCheckInternet;
 import com.digywood.cineauditions.AsyncTasks.BagroundTask;
 import com.digywood.cineauditions.AsyncTasks.DownloadFileAsync;
@@ -666,13 +665,12 @@ public class LandingActivity extends AppCompatActivity {
                 try{
                     JSONObject myObj=new JSONObject(json);
 
-                    long prefdelcount=dbHelper.deleteAllPreferences(phno);
-                    Log.e("prefdelcount---",""+prefdelcount);
-
                     Object obj=myObj.get("preferences_table");
 
                     if (obj instanceof JSONArray)
                     {
+                        long prefdelcount=dbHelper.deleteAllPreferences(phno);
+                        Log.e("prefdelcount---",""+prefdelcount);
                         ja_preferences_table=myObj.getJSONArray("preferences_table");
                         if(ja_preferences_table!=null && ja_preferences_table.length()>0){
                             Log.e("prefLength---",""+ja_preferences_table.length());

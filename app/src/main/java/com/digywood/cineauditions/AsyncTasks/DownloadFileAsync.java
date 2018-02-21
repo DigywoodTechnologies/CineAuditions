@@ -47,6 +47,7 @@ public class DownloadFileAsync extends AsyncTask<Void,String, String> {
         this.context=c;
         this.filePath=path;
         mProgressDialog= new ProgressDialog(context);
+        mProgressDialog.setCanceledOnTouchOutside(false);
         this.file_paths=urlslist;
         this.file_names=nameslist;
         listner=iDownloadStatus;
