@@ -77,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.execSQL(tblAdvtInterestTable);
 
 
-                String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
+                String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text, caption text, description text," +
                         "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(copytable11);
                 String copydata11="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
@@ -89,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 String renametable11="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
                 db.execSQL(renametable11);
 
-                String copytable12="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                String copytable12="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text,currentuserid text,caption text, description text," +
                         "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(copytable12);
                 String copydata12="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
