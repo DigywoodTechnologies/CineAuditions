@@ -190,6 +190,7 @@ public class ViewInterestAdInfo extends AppCompatActivity {
                                 date=jo.getString("uploadDateTime");
                             }
                             if(des.equals("")){
+                                tv_interest.setText("No Response");
                                 tv_interestdate.setText(date);
                             }else{
                                 tv_interest.setText(des);

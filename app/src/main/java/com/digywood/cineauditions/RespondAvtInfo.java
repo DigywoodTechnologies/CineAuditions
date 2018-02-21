@@ -140,8 +140,8 @@ public class RespondAvtInfo extends AppCompatActivity {
             Log.e("RespondAdvtInfo---",e.toString());
         }
 
-        captionview.setText("" + cmcaption + " ");
-        resp_adId.setText("AdvtId: " +advtId);
+        captionview.setText(cmcaption);
+        resp_adId.setText(""+advtId);
         view_startTv.setText(cmstart);
         view_endTv.setText(cmend);
         view_description.setText(cmdes);
@@ -149,7 +149,7 @@ public class RespondAvtInfo extends AppCompatActivity {
         numberTv.setText(cmnumber);
         view_emailTv.setText(cmemail);
 
-        new AsyncCheckInternet(RespondAvtInfo.this, new INetStatus() {
+        new AsyncCheckInternet(RespondAvtInfo.this,new INetStatus() {
             @Override
             public void inetSatus(Boolean netStatus) {
                 if(netStatus){
@@ -192,6 +192,7 @@ public class RespondAvtInfo extends AppCompatActivity {
                                         }
                                         try {
                                             if(des.equals("")){
+                                                tv_interest.setText("No Response");
                                                 tv_interestdate.setText(date);
                                             }else{
                                                 tv_interest.setText(des);

@@ -73,167 +73,199 @@
             android:id="@+id/interest_layout"
             android:layout_margin="5dp">
 
-            <TextView
-                android:id="@+id/interest_view_caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
-            <TableRow
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
+                android:weightSum="10">
                 <TextView
-                    android:layout_width="20dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Start Date:"
-                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:layout_weight="6"
+                    android:text="Title: "
                     android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
+                    android:textStyle="bold"/>
                 <TextView
-                    android:id="@+id/interest_view_start_dateTv"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/interest_view_caption"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:text="End Date:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-                <TextView
-                    android:id="@+id/interest_view_end_dateTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-            </TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:text="Description:"
-                android:textSize="24dp"/>
-            <TextView
-                android:id="@+id/interest_view_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textSize="24dp"/>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="75dp"
-                    android:layout_height="wrap_content"
-                    android:text="Contact Person:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-                <TextView
-                    android:id="@+id/interest_personnameTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="65dp"
-                    android:layout_height="wrap_content"
-                    android:text="Contact No.  "
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-                <TextView
-                    android:id="@+id/interest_personnumberTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="65dp"
-                    android:layout_height="wrap_content"
-                    android:text="Email-Id:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-                <TextView
-                    android:id="@+id/interest_view_emailTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24dp"/>
-            </TableRow>
+                    android:textSize="16sp"
+                    android:layout_weight="4"
+                    android:textColor="#000000"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+                android:orientation="horizontal"
+                android:weightSum="10">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:text="Categories:"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="Description:"
+                    android:textSize="16sp"/>
                 <TextView
-                    android:id="@+id/interest_tv_rescategory"
+                    android:id="@+id/interest_view_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_weight="4"
                     android:textColor="#000000"
-                    android:textSize="18sp"/>
+                    android:textSize="16sp"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Person:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_personnameTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact No: "
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_personnumberTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email-Id:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_view_emailTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_view_start_dateTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="End Date:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_view_end_dateTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="Categories:"
+                    android:layout_weight="6"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/interest_tv_rescategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -241,36 +273,40 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:text="Sub-Categories:"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:layout_weight="6"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/interest_tv_ressubcategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:layout_margin="5dp"
-                    android:textSize="18sp"/>
+                    android:layout_weight="4"
+                    android:textSize="16sp"/>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:weightSum="10">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="Reponse:"
+                    android:layout_weight="6"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:layout_weight="4"
+                    android:textSize="16sp"
                     android:id="@+id/interest_tv_interest"
                     android:hint="interest"
                     />
@@ -280,23 +316,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="10">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="ReponseTime:"
-                    android:layout_weight="1"
+                    android:layout_weight="6"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:layout_weight="4"
                     android:id="@+id/interest_tv_interestdate"
                     android:hint="interest"
                     />

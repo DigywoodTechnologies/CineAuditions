@@ -114,11 +114,13 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
     CustomGrid adapter;
     byte[] imagebyte=null;
     Bitmap bitmap=null;
+    String timeStamp;
+    Calendar cal1,cal2;
     HashMap<String, String> hmap = new HashMap<>();
     private AwesomeValidation awesomeValidation;
     EditText captionEt,descEt,contactnameEt,phnoEt,emailIdEt;
     Typeface myTypeface1,myTypeface2,myTypeface3,myTypeface4;
-    String fileName=null,fileUrl=null;
+    String fileName=null,fileUrl=null,enddate="";
     String categoryId,MobileNo,captionSt,descSt,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,status,url,url1,downloadDate,orgIdSt,encodedImage=null;
 
     final int REQUEST_CODE_GALLERY = 999;
@@ -134,7 +136,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS,R.string.emailerror);
 
-        title_newAdvt = (TextView)findViewById(R.id.title_newAdvt);
+        title_newAdvt = findViewById(R.id.title_newAdvt);
 //        start_date = (Button)findViewById(R.id.btn_startDate);
         end_date = (Button)findViewById(R.id.btn_endDate);
         btn_submit = (Button)findViewById(R.id.submit_Info);
@@ -196,7 +198,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
         dataAdapter2.notifyDataSetChanged();
         s1.setAdapter(dataAdapter2);
 
-        String timeStamp = new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance(TimeZone.getDefault()).getTime());
+        timeStamp= new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance(TimeZone.getDefault()).getTime());
 
         startdateEt.setText(timeStamp);
 
@@ -215,6 +217,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
                                                   int monthOfYear, int dayOfMonth) {
 
                                 endDateEt.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                enddate=""+dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
 
                             }
                         }, mYear, mMonth, mDay);
@@ -240,111 +243,127 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
 
-                if (awesomeValidation.validate()) {
+                try {
+                    Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(timeStamp);
+                    Date date2 = new SimpleDateFormat("dd-MM-yyyy").parse(enddate);
+                    cal1 = Calendar.getInstance();
+                    cal2 = Calendar.getInstance();
+                    cal1.setTime(date1);
+                    cal2.setTime(date2);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Log.e("AdvtInfoScreen---",e.toString());
+                }
 
+                if (awesomeValidation.validate() ) {
 
-                    new AsyncCheckInternet(AdvtInfoScreen.this, new INetStatus() {
-                        @Override
-                        public void inetSatus(Boolean netStatus) {
+                    if(!enddate.equalsIgnoreCase("") && cal1.before(cal2)){
 
-                            if(netStatus){
+                        new AsyncCheckInternet(AdvtInfoScreen.this, new INetStatus() {
+                            @Override
+                            public void inetSatus(Boolean netStatus) {
 
-                                try {
-                                    myList = adapter.getChkList();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                    Log.e("AdvtInfoScreen---",e.toString());
-                                }
-
-                                if(myList.size()!=0){
-                                    orgIdSt ="ORG001";
-                                    captionSt = captionEt.getText().toString();
-                                    descSt = descEt.getText().toString();
-                                    startdateSt = startdateEt.getText().toString();
-                                    endDateSt = endDateEt.getText().toString();
-                                    contactnameSt = contactnameEt.getText().toString();
-                                    phnoSt = phnoEt.getText().toString();
-                                    emailIdSt = emailIdEt.getText().toString();
-                                    status ="created";
-
-                                    Calendar c1 = Calendar.getInstance();
-                                    SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                                    downloadDate = sdf1.format(c1.getTime());
-
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                                    String currentDateandTime = sdf.format(new Date());
-
-                                    if(fileType!=null){
-
-                                        fileName=MobileNo+"_"+currentDateandTime +fileType;
-                                        fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
-
-                                    }else{
-
-                                        fileType="";
-                                        fileName="";
-                                        fileUrl="";
-
-                                    }
-
-                                    url = URLClass.hosturl+"insertAdvtInfo.php";
-                                    hmap.clear();
-                                    hmap.put("orgId",orgIdSt);
-                                    hmap.put("userId",MobileNo);
-                                    hmap.put("caption",captionSt);
-                                    hmap.put("description",descSt);
-                                    hmap.put("fileType",fileType);
-                                    hmap.put("fileName",fileName);
-                                    hmap.put("filePath",fileUrl);
-                                    hmap.put("startDate",startdateSt);
-                                    hmap.put("endDate",endDateSt);
-                                    hmap.put("contactName",contactnameSt);
-                                    hmap.put("contactNumber",phnoSt);
-                                    hmap.put("emailId",emailIdSt);
-                                    hmap.put("createdTime",downloadDate);
-                                    hmap.put("status",status);
-
-                                    final String str = "";
+                                if(netStatus){
 
                                     try {
-                                        //inserting advertisement into server
-                                        new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
-                                            @Override
-                                            public void bagroundData(String json) {
-                                                Log.e("ja", "comes:" + json);
-
-                                                if (!json.equalsIgnoreCase("Not Inserted")) {
-                                                    advtId = Integer.parseInt(json);
-                                                    Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
-                                                    //inserting advertisement into local advertisement list
-                                                    long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
-                                                    if(insertFlag>0){
-                                                        Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
-                                                        insertCatSubcat(advtId);
-                                                    }else{
-                                                        Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                } else {
-                                                    Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        }).execute();
-                                        Log.v("jo", str);
-
-                                    } catch (Exception e) {
+                                        myList = adapter.getChkList();
+                                    }catch (Exception e){
                                         e.printStackTrace();
+                                        Log.e("AdvtInfoScreen---",e.toString());
                                     }
+
+                                    if(myList.size()!=0){
+                                        orgIdSt ="ORG001";
+                                        captionSt = captionEt.getText().toString();
+                                        descSt = descEt.getText().toString();
+                                        startdateSt = startdateEt.getText().toString();
+                                        endDateSt = endDateEt.getText().toString();
+                                        contactnameSt = contactnameEt.getText().toString();
+                                        phnoSt = phnoEt.getText().toString();
+                                        emailIdSt = emailIdEt.getText().toString();
+                                        status ="created";
+
+                                        Calendar c1 = Calendar.getInstance();
+                                        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                                        downloadDate = sdf1.format(c1.getTime());
+
+                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                                        String currentDateandTime = sdf.format(new Date());
+
+                                        if(fileType!=null){
+
+                                            fileName=MobileNo+"_"+currentDateandTime +fileType;
+                                            fileUrl=URLClass.imageurl+MobileNo+"_"+currentDateandTime +fileType;
+
+                                        }else{
+
+                                            fileType="";
+                                            fileName="";
+                                            fileUrl="";
+
+                                        }
+
+                                        url = URLClass.hosturl+"insertAdvtInfo.php";
+                                        hmap.clear();
+                                        hmap.put("orgId",orgIdSt);
+                                        hmap.put("userId",MobileNo);
+                                        hmap.put("caption",captionSt);
+                                        hmap.put("description",descSt);
+                                        hmap.put("fileType",fileType);
+                                        hmap.put("fileName",fileName);
+                                        hmap.put("filePath",fileUrl);
+                                        hmap.put("startDate",startdateSt);
+                                        hmap.put("endDate",endDateSt);
+                                        hmap.put("contactName",contactnameSt);
+                                        hmap.put("contactNumber",phnoSt);
+                                        hmap.put("emailId",emailIdSt);
+                                        hmap.put("createdTime",downloadDate);
+                                        hmap.put("status",status);
+
+                                        final String str = "";
+
+                                        try {
+                                            //inserting advertisement into server
+                                            new AdvtBagroundTask(url,hmap,MobileNo,path,fileName,AdvtInfoScreen.this,new IBagroundListener() {
+                                                @Override
+                                                public void bagroundData(String json) {
+                                                    Log.e("ja", "comes:" + json);
+
+                                                    if (!json.equalsIgnoreCase("Not Inserted")) {
+                                                        advtId = Integer.parseInt(json);
+                                                        Toast.makeText(AdvtInfoScreen.this, "Advt Inserted ", Toast.LENGTH_LONG).show();
+                                                        //inserting advertisement into local advertisement list
+                                                        long insertFlag=dbHelper.insertNewAdvt(advtId,orgIdSt,MobileNo,captionSt,descSt,fileType,fileName,fileUrl,startdateSt,endDateSt,contactnameSt,phnoSt,emailIdSt,downloadDate,status);
+                                                        if(insertFlag>0){
+                                                            Toast.makeText(getApplicationContext(),"Inserted",Toast.LENGTH_SHORT).show();
+                                                            insertCatSubcat(advtId);
+                                                        }else{
+                                                            Toast.makeText(getApplicationContext(),"Advt Insertion failed in Local",Toast.LENGTH_SHORT).show();
+                                                        }
+
+                                                    } else {
+                                                        Toast.makeText(AdvtInfoScreen.this, "Insertion failed in Server", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }).execute();
+                                            Log.v("jo", str);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }else{
+                                        Toast.makeText(AdvtInfoScreen.this,"Please Choose Any Services", Toast.LENGTH_LONG).show();
+                                    }
+
                                 }else{
-                                    Toast.makeText(AdvtInfoScreen.this,"Please Choose Any Services", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                                 }
 
-                            }else{
-                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                             }
-
-                        }
-                    }).execute();
+                        }).execute();
+                    }else{
+                        showAlert("End Date Should be greater than Current Date, Please Choose Valid One");
+                    }
 
                 }
 

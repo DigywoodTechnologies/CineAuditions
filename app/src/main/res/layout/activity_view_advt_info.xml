@@ -76,198 +76,238 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:weightSum="3">
+                android:weightSum="10">
                 <TextView
-                    android:id="@+id/view_adId"
-                    android:hint="advt Id"
-                    android:textSize="18sp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#000000" />
-                <TextView
-                    android:id="@+id/view_caption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:hint="Caption"
+                    android:textSize="16sp"
+                    android:layout_weight="6"
+                    android:text="Title: "
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/view_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_weight="4"
+                    android:textColor="#000000"
+                    android:textStyle="bold"/>
             </LinearLayout>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start Date:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/view_start_dateTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="End Date:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/view_end_dateTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:text="Description:"
-                android:textSize="24sp"/>
-            <TextView
-                android:id="@+id/view_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textSize="24sp"/>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contact Person:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/personnameTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contact No.  "
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/personnumberTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email-Id:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/view_emailTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:weightSum="4">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Status:"
-                    android:layout_weight="1"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-                <TextView
-                    android:id="@+id/view_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:textStyle="bold"
-                    android:textSize="24sp"/>
-            </TableRow>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:weightSum="10">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_gravity="center"
+                    android:layout_weight="6"
+                    android:text="Advt Id:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/view_adId"
+                    android:hint="id"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_weight="4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="Description:"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/view_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Person:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/personnameTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contact No: "
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/personnumberTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Email-Id:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/view_emailTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/view_start_dateTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="End Date:"
+                    android:layout_weight="6"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/view_end_dateTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="Categories:"
+                    android:layout_weight="6"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
                 <TextView
                     android:id="@+id/tv_ownadrescategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_weight="4"
                     android:textColor="#000000"
-                    android:textSize="20sp"/>
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="Sub-Categories:"
+                    android:textStyle="bold"
+                    android:layout_weight="6"
+                    android:textSize="16sp"/>
+
                 <TextView
                     android:id="@+id/tv_ownadressubcategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:layout_margin="5dp"
-                    android:textSize="20sp"/>
+                    android:layout_weight="4"
+                    android:textSize="16sp"/>
 
             </LinearLayout>
 
@@ -275,7 +315,7 @@
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/custom_button"
                 android:text="View Interested"
                 android:id="@+id/view_interests"
