@@ -74,32 +74,32 @@ public class DBHelper extends SQLiteOpenHelper {
                         " image BLOB, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(tblAdvtPrefTable);
 
-                String tblAdvtInterestTable="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
-                db.execSQL(tblAdvtInterestTable);
-
-                String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text, caption text, description text," +
-                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
-                db.execSQL(copytable11);
-                String copydata11="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
-                db.execSQL(copydata11);
-                String dropexist11="DROP TABLE advt_info_producer";
-                db.execSQL(dropexist11);
-                String renametable11="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
-                db.execSQL(renametable11);
-
-                String copytable12="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text,currentuserid text,caption text, description text," +
-                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
-                db.execSQL(copytable12);
-                String copydata12="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
-                db.execSQL(copydata12);
-                String dropexist12="DROP TABLE advt_interest_producer";
-                db.execSQL(dropexist12);
-                String renametable12="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
-                db.execSQL(renametable12);
+//                String tblAdvtInterestTable="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
+//                db.execSQL(tblAdvtInterestTable);
+//
+//                String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text, caption text, description text," +
+//                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+//                db.execSQL(copytable11);
+//                String copydata11="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+//                db.execSQL(copydata11);
+//                String dropexist11="DROP TABLE advt_info_producer";
+//                db.execSQL(dropexist11);
+//                String renametable11="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
+//                db.execSQL(renametable11);
+//
+//                String copytable12="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER,orgId text,producer_id text,currentuserid text,caption text, description text," +
+//                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+//                db.execSQL(copytable12);
+//                String copydata12="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
+//                db.execSQL(copydata12);
+//                String dropexist12="DROP TABLE advt_interest_producer";
+//                db.execSQL(dropexist12);
+//                String renametable12="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
+//                db.execSQL(renametable12);
 
 
 //                String tblAdvtPrefTable1="ALTER TABLE advt_interest_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
@@ -108,37 +108,38 @@ public class DBHelper extends SQLiteOpenHelper {
             case 2:
                 // upgrade logic from version 2 to 3
 
-                String copytable21="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
-                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
-                db.execSQL(copytable21);
-                String copydata21="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
-                db.execSQL(copydata21);
-                String dropexist21="DROP TABLE advt_info_producer";
-                db.execSQL(dropexist21);
-                String renametable21="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
-                db.execSQL(renametable21);
+                String tblAdvtInterestTable2="ALTER TABLE advt_interest_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
+                db.execSQL(tblAdvtInterestTable2);
 
-                String copytable22="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
-                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
-                db.execSQL(copytable22);
-                String copydata22="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
-                db.execSQL(copydata22);
-                String dropexist22="DROP TABLE advt_interest_producer";
-                db.execSQL(dropexist22);
-                String renametable22="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
-                db.execSQL(renametable22);
+//                String copytable21="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
+//                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+//                db.execSQL(copytable21);
+//                String copydata21="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+//                db.execSQL(copydata21);
+//                String dropexist21="DROP TABLE advt_info_producer";
+//                db.execSQL(dropexist21);
+//                String renametable21="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
+//                db.execSQL(renametable21);
+//
+//                String copytable22="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
+//                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+//                db.execSQL(copytable22);
+//                String copydata22="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+//                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
+//                db.execSQL(copydata22);
+//                String dropexist22="DROP TABLE advt_interest_producer";
+//                db.execSQL(dropexist22);
+//                String renametable22="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
+//                db.execSQL(renametable22);
 
 //                String tblItemTable2="ALTER TABLE advt_info_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
 //                db.execSQL(tblItemTable2);
 //
 //                String tblAdvtPrefTable2="ALTER TABLE advt_interest_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
 //                db.execSQL(tblAdvtPrefTable2);
-
-                break;
             case 3:
                 // upgrade logic from version 3 to 4
 
