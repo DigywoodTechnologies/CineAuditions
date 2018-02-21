@@ -3,6 +3,8 @@ package com.digywood.cineauditions.Fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,7 +35,7 @@ public class SettingsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    TextView tv_termsandconditions;
+    TextView tv_termsandconditions,app_version;
     AlertDialog.Builder builder;
     String phno;
     DBHelper dbHelper;
@@ -80,7 +82,15 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        app_version=view.findViewById(R.id.version);
+        try {
+            PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
+            String version= pInfo.versionName;
+            app_version.setText("V "+version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Log.e("FeedbackActivity---",e.toString());
+        }
 
         phno = getActivity().getIntent().getStringExtra("mobileNo");
         dbHelper = new DBHelper(getActivity());

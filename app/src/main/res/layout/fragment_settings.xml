@@ -22,7 +22,7 @@
         android:layout_below="@+id/appName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
-        android:text="@string/version" />
+        />
 
     <TextView
         android:id="@+id/tv_termcondition"
