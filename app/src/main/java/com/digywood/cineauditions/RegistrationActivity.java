@@ -81,11 +81,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     phnoSt = phnoEt.getText().toString();
                     emailIDSt = emailIDEt.getText().toString();
                     status = "created";
-
-                    Random r = new Random();
-                    otpInt = r.nextInt(9999 - 1000) + 1000;
-                    otp = String.valueOf(otpInt);
-
                     Calendar c1 = Calendar.getInstance();
                     SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                     regDate = sdf1.format(c1.getTime());
@@ -94,16 +89,20 @@ public class RegistrationActivity extends AppCompatActivity {
                         @Override
                         public void inetSatus(Boolean netStatus) {
                             if(netStatus){
-                                Log.e("RegActivity----","OTP: "+otp);
                                 HashMap<String, String> hmap = new HashMap<String, String>();
                                 url =URLClass.hosturl+"insertProducerDetails.php";
                                 hmap.put("producer_name", nameSt);
                                 hmap.put("address", addressSt);
                                 hmap.put("city", citySt);
                                 hmap.put("state", stateSt);
-                                hmap.put("contact_person", contact_PersonSt);//
+                                hmap.put("contact_person", contact_PersonSt);
                                 hmap.put("phno", phnoSt);
                                 hmap.put("emailId", emailIDSt);
+                                otp=getOtp();
+                                if(otp.isEmpty()){
+                                    otp=getOtp();
+                                }
+                                Log.e("OTP: ",""+otp);
                                 hmap.put("otpNo",otp);
                                 hmap.put("dateOfRegistration", regDate);
                                 hmap.put("status", status);
@@ -155,6 +154,13 @@ public class RegistrationActivity extends AppCompatActivity {
                             }
 
                         }
+                        public String getOtp() {
+                            Random r = new Random();
+                            otpInt = r.nextInt(9999 - 1000) + 1000;
+                            otp = String.valueOf(otpInt);
+                            return otp;
+                        }
+
                     }).execute();
 
                 }

@@ -338,12 +338,11 @@ public class FullscreenActivity extends AppCompatActivity {
                try{
                    JSONObject myObj=new JSONObject(json);
 
-                   long catdelcount=dbHelper.deleteAllCategories();
-                   Log.e("catdelcount---",""+catdelcount);
-
                    ja_category_table=myObj.getJSONArray("category_table");
                    if(ja_category_table!=null){
                        Log.e("catLength---",""+ja_category_table.length());
+                       long catdelcount=dbHelper.deleteAllCategories();
+                       Log.e("catdelcount---",""+catdelcount);
                        int p=0,q=0;
                        for(int i=0;i<ja_category_table.length();i++){
 
@@ -364,12 +363,11 @@ public class FullscreenActivity extends AppCompatActivity {
                        Log.e("BackGroundTask--","Inserted: "+p);
                    }
 
-                   long subcatdelcount=dbHelper.deleteAllSubCategories();
-                   Log.e("subcatdelcount---",""+subcatdelcount);
-
                    ja_sub_category_table=myObj.getJSONArray("sub_category_table");
                    if(ja_sub_category_table!=null){
                        Log.e("subcatLength---",""+ja_sub_category_table.length());
+                       long subcatdelcount=dbHelper.deleteAllSubCategories();
+                       Log.e("subcatdelcount---",""+subcatdelcount);
                        int p=0,q=0;
                        for(int i=0;i<ja_sub_category_table.length();i++){
 
@@ -391,13 +389,12 @@ public class FullscreenActivity extends AppCompatActivity {
 
                    }
 
-                   long prefdelcount=dbHelper.deleteAllPreferences(MobileNo);
-                   Log.e("prefdelcount---",""+prefdelcount);
-
                    Object obj=myObj.get("preferences_table");
 
                    if (obj instanceof JSONArray)
                    {
+                       long prefdelcount=dbHelper.deleteAllPreferences(MobileNo);
+                       Log.e("prefdelcount---",""+prefdelcount);
                        ja_preferences_table=myObj.getJSONArray("preferences_table");
                        if(ja_preferences_table!=null && ja_preferences_table.length()>0){
                            Log.e("prefLength---",""+ja_preferences_table.length());
@@ -421,14 +418,12 @@ public class FullscreenActivity extends AppCompatActivity {
                        Log.e("pref--","No Preferences: ");
                    }
 
-
-                   long interestdelcount=dbHelper.deleteAllInterests(MobileNo);
-                   Log.e("interestdelcount---",""+interestdelcount);
-
                    Object obj2=myObj.get("user_intrests");
 
                    if (obj2 instanceof JSONArray)
                    {
+                       long interestdelcount=dbHelper.deleteAllInterests(MobileNo);
+                       Log.e("interestdelcount---",""+interestdelcount);
                        ja_user_interests=myObj.getJSONArray("user_intrests");
                        if(ja_user_interests.length()>0){
 

@@ -57,6 +57,7 @@ public class AdvtBagroundTask extends AsyncTask<Void, String, String> {
 
     public AdvtBagroundTask(String url,HashMap<String, String> hmap1,String userId,String path,String fileName,Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
+        dialog.setCanceledOnTouchOutside(false);
         this.urlAddress=url;
         this.hmap=hmap1;
         this.path=path;

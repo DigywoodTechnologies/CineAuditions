@@ -54,6 +54,7 @@ public class BagroundAsynkTask extends AsyncTask<Void, String, String> {
 
     public BagroundAsynkTask(String url, ArrayList<SingleCategory> list1,ArrayList<SingleSubCategory> list2, String MobileNo,String orgId,DBHelper dbHelper, Context activity, IBagroundListener iListener) {
         dialog = new ProgressDialog(activity);
+        dialog.setCanceledOnTouchOutside(false);
         this.urlAddress=url;
         this.list1 = list1;
         this.list2 = list2;

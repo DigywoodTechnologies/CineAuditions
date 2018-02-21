@@ -21,11 +21,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     Context context;
     SQLiteDatabase db;
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public DBHelper(Context c)
     {
-        super(c,"digywoodAdsDB",null,1);
+        super(c,"digywoodAdsDB",null,DATABASE_VERSION);
         this.context=c;
         db=getWritableDatabase();
     }
@@ -33,31 +33,31 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String tblProducerReg_Status="CREATE TABLE IF NOT EXISTS producer_table( producer_id INTEGER PRIMARY KEY AUTOINCREMENT, name text, address text, city text, state text, contact_Person text, phno text, emailId text, otp text, regDate text, status text)";
+        String tblProducerReg_Status="CREATE TABLE IF NOT EXISTS producer_table(producer_id INTEGER PRIMARY KEY AUTOINCREMENT, name text, address text, city text, state text, contact_Person text, phno text, emailId text, otp text, regDate text, status text)";
         db.execSQL(tblProducerReg_Status);
 
-        String tblItemTable="CREATE TABLE IF NOT EXISTS advt_info_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text, caption text, description text," +
+        String tblItemTable="CREATE TABLE IF NOT EXISTS advt_info_producer(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
                 "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblItemTable);
 
-        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
+        String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
                 "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
         db.execSQL(tblAdvtPrefTable);
 
-        String tblPreferences="CREATE TABLE IF NOT EXISTS preferences_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, userId text, " +
+        String tblPreferences="CREATE TABLE IF NOT EXISTS preferences_table(keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, userId text, " +
                 "category text, subCategory text, createdBy text, createdDate text, modifiedBy text, modifiedDate text, status text)";
         db.execSQL(tblPreferences);
 
-        String tblCategory="CREATE TABLE IF NOT EXISTS category_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, categoryId text, longName text, shortName text, createdBy text, createdDate text, modifiedBy text, modifiedDate text, status text)";
+        String tblCategory="CREATE TABLE IF NOT EXISTS category_table(keyId INTEGER PRIMARY KEY AUTOINCREMENT,orgId text, categoryId text, longName text, shortName text, createdBy text, createdDate text, modifiedBy text, modifiedDate text, status text)";
         db.execSQL(tblCategory);
 
-        String tblSubCategory="CREATE TABLE IF NOT EXISTS sub_category_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, categoryId text, subCategoryId text, longName text, shortName text, createdBy text, createdDate text, modifiedBy text, modifiedDate text, status text)";
+        String tblSubCategory="CREATE TABLE IF NOT EXISTS sub_category_table(keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, categoryId text, subCategoryId text, longName text, shortName text, createdBy text, createdDate text, modifiedBy text, modifiedDate text, status text)";
         db.execSQL(tblSubCategory);
 
-        String tbladvtCategory="CREATE TABLE IF NOT EXISTS advt_category_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, advtId text, category text, subCategory text)";
+        String tbladvtCategory="CREATE TABLE IF NOT EXISTS advt_category_table(keyId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, advtId text, category text, subCategory text)";
         db.execSQL(tbladvtCategory);
 
-        String tblCategoryCheck="CREATE TABLE IF NOT EXISTS category_check_table( keyId INTEGER PRIMARY KEY AUTOINCREMENT, category text, subCategory text, status text)";
+        String tblCategoryCheck="CREATE TABLE IF NOT EXISTS category_check_table(keyId INTEGER PRIMARY KEY AUTOINCREMENT, category text, subCategory text, status text)";
         db.execSQL(tblCategoryCheck);
 
         String tblUserIntrests="CREATE TABLE IF NOT EXISTS user_interests(seqId INTEGER PRIMARY KEY,userId text,advtId integer(10),description text,status text)";
@@ -73,15 +73,104 @@ public class DBHelper extends SQLiteOpenHelper {
                 String tblAdvtPrefTable="CREATE TABLE IF NOT EXISTS advt_pref_producer(advtId INTEGER PRIMARY KEY AUTOINCREMENT, orgId text, producer_id text, caption text, description text," +
                         " image BLOB, startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
                 db.execSQL(tblAdvtPrefTable);
-                String tblAdvtInterestTable="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
-                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                String tblAdvtInterestTable="ALTER TABLE advt_pref_producer ADD COLUMN `currentuserid` text AFTER `producer_id`";
                 db.execSQL(tblAdvtInterestTable);
+
+
+                String copytable11="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(copytable11);
+                String copydata11="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata11);
+                String dropexist11="DROP TABLE advt_info_producer";
+                db.execSQL(dropexist11);
+                String renametable11="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
+                db.execSQL(renametable11);
+
+                String copytable12="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(copytable12);
+                String copydata12="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata12);
+                String dropexist12="DROP TABLE advt_interest_producer";
+                db.execSQL(dropexist12);
+                String renametable12="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
+                db.execSQL(renametable12);
+
+
+//                String tblAdvtPrefTable1="ALTER TABLE advt_interest_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
+//                db.execSQL(tblAdvtPrefTable1);
 
             case 2:
                 // upgrade logic from version 2 to 3
-                String tblAdvtInterestTable1="CREATE TABLE IF NOT EXISTS advt_interest_producer(advtRefNo INTEGER PRIMARY KEY, orgId text,producer_id text,currentuserid text,caption text, description text," +
+
+                String copytable21="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
                         "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
-                db.execSQL(tblAdvtInterestTable1);
+                db.execSQL(copytable21);
+                String copydata21="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata21);
+                String dropexist21="DROP TABLE advt_info_producer";
+                db.execSQL(dropexist21);
+                String renametable21="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
+                db.execSQL(renametable21);
+
+                String copytable22="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(copytable22);
+                String copydata22="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata22);
+                String dropexist22="DROP TABLE advt_interest_producer";
+                db.execSQL(dropexist22);
+                String renametable22="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
+                db.execSQL(renametable22);
+
+//                String tblItemTable2="ALTER TABLE advt_info_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
+//                db.execSQL(tblItemTable2);
+//
+//                String tblAdvtPrefTable2="ALTER TABLE advt_interest_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
+//                db.execSQL(tblAdvtPrefTable2);
+
+                break;
+            case 3:
+                // upgrade logic from version 3 to 4
+
+                String copytable31="CREATE TABLE my_table_copy1(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text, caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(copytable31);
+                String copydata31="INSERT INTO my_table_copy1 (advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata31);
+                String dropexist31="DROP TABLE advt_info_producer";
+                db.execSQL(dropexist31);
+                String renametable31="ALTER TABLE my_table_copy1 RENAME TO advt_info_producer";
+                db.execSQL(renametable31);
+
+                String copytable32="CREATE TABLE my_table_copy2(keyId INTEGER PRIMARY KEY,advtRefNo INTEGER, orgId text,producer_id text,currentuserid text,caption text, description text," +
+                        "  fileType text,fileName text,filePath text,startDate text, endDate text, contactName text, contactNumber text, emailId text, createdTime text, status text)";
+                db.execSQL(copytable32);
+                String copydata32="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                db.execSQL(copydata32);
+                String dropexist32="DROP TABLE advt_interest_producer";
+                db.execSQL(dropexist32);
+                String renametable32="ALTER TABLE my_table_copy2 RENAME TO advt_interest_producer";
+                db.execSQL(renametable32);
+
+//                String tblItemTable3="ALTER TABLE advt_info_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
+//                db.execSQL(tblItemTable3);
+//
+//                String tblAdvtPrefTable3="ALTER TABLE advt_interest_producer DROP PRIMARY KEY,ADD COLUMN `keyId` integer AUTOINCREMENT  FIRST,ADD PRIMARY KEY (`keyid`)";
+//                db.execSQL(tblAdvtPrefTable3);
 
                 break;
             default:
@@ -326,7 +415,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public long deleteAllInterestedAdvts(String userid){
         long deleteFlag=0;
-        deleteFlag=db.delete("advt_interest_producer","producer_id='"+userid+"'", null);
+        deleteFlag=db.delete("advt_interest_producer","currentuserid='"+userid+"'", null);
         //db.delete("SQLITE_SEQUENCE","NAME = ?",new String[]{"ItemTable"});
         return  deleteFlag;
     }
