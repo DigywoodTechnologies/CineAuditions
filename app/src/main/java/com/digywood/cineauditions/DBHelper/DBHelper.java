@@ -94,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.execSQL(copytable12);
                 String copydata12="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
                         "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
                 db.execSQL(copydata12);
                 String dropexist12="DROP TABLE advt_interest_producer";
                 db.execSQL(dropexist12);
@@ -125,7 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.execSQL(copytable22);
                 String copydata22="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
                         "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
                 db.execSQL(copydata22);
                 String dropexist22="DROP TABLE advt_interest_producer";
                 db.execSQL(dropexist22);
@@ -159,7 +159,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 db.execSQL(copytable32);
                 String copydata32="INSERT INTO my_table_copy2 (advtRefNo,orgId,producer_id,currentuserid,caption,description," +
                         "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status) SELECT advtRefNo,orgId,producer_id,currentuserid,caption,description," +
-                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_info_producer";
+                        "  fileType,fileName,filePath,startDate,endDate,contactName,contactNumber,emailId,createdTime,status FROM advt_interest_producer";
                 db.execSQL(copydata32);
                 String dropexist32="DROP TABLE advt_interest_producer";
                 db.execSQL(dropexist32);
