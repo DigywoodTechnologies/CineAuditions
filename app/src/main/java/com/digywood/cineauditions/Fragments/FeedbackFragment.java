@@ -140,7 +140,7 @@ public class FeedbackFragment extends Fragment {
                         hmap.put("subject",et_subject.getText().toString());
                         hmap.put("message",et_comment.getText().toString());
 
-                        new AsyncCheckInternet(getActivity(), new INetStatus() {
+                        new AsyncCheckInternet(getActivity(),new INetStatus() {
                             @Override
                             public void inetSatus(Boolean netStatus) {
 

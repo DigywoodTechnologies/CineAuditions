@@ -89,7 +89,7 @@ public class MyAdapter extends BaseAdapter {
             try {
                 holder.post_date.setText(singlead.getCreatedTime());
                 holder.caption.setText(singlead.getCaption());
-                holder.tv_adid.setText("AdvtId: " +String.valueOf(singlead.getAdvtRefNo()));
+                holder.tv_adid.setText(String.valueOf(singlead.getAdvtRefNo()));
                 if(allAdIds.contains(singlead.getAdvtRefNo())){
                     holder.check.setVisibility(View.VISIBLE);
                 }

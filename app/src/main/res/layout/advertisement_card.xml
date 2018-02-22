@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:card="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="20dp"
+    android:layout_margin="8dp"
     card:cardCornerRadius="5dp"
     card:cardElevation="5dp"
-    card:contentPadding="10dp">
+    card:contentPadding="8dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10">
 
         <!--<ImageView-->
             <!--android:id="@+id/photo"-->
@@ -23,57 +22,100 @@
             <!--android:layout_height="65dp" />-->
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:weightSum="3"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/tv_adId"
-                android:hint="advt Id"
-                android:textSize="18sp"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#000000" />
+                android:orientation="horizontal"
+                android:weightSum="10">
 
-            <TextView
-                android:id="@+id/caption_notice"
-                android:hint="caption"
-                android:gravity="center_vertical"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:text="Advt Id:"
+                    android:layout_weight="6.5"
+                    android:textStyle="bold|italic"/>
+                <TextView
+                    android:id="@+id/tv_adId"
+                    android:textSize="16sp"
+                    android:layout_weight="3.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000" />
 
-            <TextView
-                android:id="@+id/date_notice"
-                android:hint="posted date"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#000000" />
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:text="Caption:"
+                    android:layout_weight="6.5"
+                    android:textStyle="bold|italic"/>
+                <TextView
+                    android:id="@+id/caption_notice"
+                    android:layout_weight="3.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp"
+                    android:text="PostedDate:"
+                    android:layout_weight="6.5"
+                    android:textStyle="bold|italic"/>
+                <TextView
+                    android:id="@+id/date_notice"
+                    android:layout_weight="3.5"
+                    android:textSize="14dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
 
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:layout_gravity="right">
 
-        <ImageView
-            android:id="@+id/check"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"
-            android:tint="#60c438"
-            android:src="@drawable/ic_tick"
-            android:visibility="invisible" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal|center"
+            android:layout_weight="9">
+            <ImageView
+                android:id="@+id/check"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:tint="@color/colorPrimaryDark"
+                android:src="@drawable/ic_tick"
+                android:visibility="invisible" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
