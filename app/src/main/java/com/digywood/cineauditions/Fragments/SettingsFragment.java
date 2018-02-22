@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,9 +36,10 @@ public class SettingsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    TextView tv_termsandconditions,app_version;
+    TextView tv_termsandconditions,app_version,tv_appname;
     AlertDialog.Builder builder;
     String phno;
+    Typeface myTypeface2;
     DBHelper dbHelper;
 
     // TODO: Rename and change types of parameters
@@ -83,6 +85,7 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         app_version=view.findViewById(R.id.version);
+        tv_appname=view.findViewById(R.id.appName_settings);
         try {
             PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(),0);
             String version= pInfo.versionName;
@@ -92,11 +95,14 @@ public class SettingsFragment extends Fragment {
             Log.e("FeedbackActivity---",e.toString());
         }
 
+        myTypeface2 = Typeface.createFromAsset(getActivity().getAssets(),"fonts/MontserratAlternates-Medium.ttf");
+        tv_appname.setTypeface(myTypeface2);
+
         phno = getActivity().getIntent().getStringExtra("mobileNo");
         dbHelper = new DBHelper(getActivity());
 
         tv_termsandconditions = view.findViewById(R.id.tv_termcondition);
-        tv_termsandconditions.setText(Html.fromHtml("<u>Terms and Conditions</u> "));
+        tv_termsandconditions.setText(Html.fromHtml("<u>Terms and Conditions</u>"));
         tv_termsandconditions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

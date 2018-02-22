@@ -6,7 +6,7 @@
     tools:context="com.digywood.cineauditions.Fragments.SettingsFragment">
 
     <TextView
-        android:id="@+id/appName"
+        android:id="@+id/appName_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -19,7 +19,7 @@
         android:id="@+id/version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appName"
+        android:layout_below="@+id/appName_settings"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         />

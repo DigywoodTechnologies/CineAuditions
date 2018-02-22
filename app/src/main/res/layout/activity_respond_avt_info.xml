@@ -75,35 +75,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="10">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_weight="6"
-                    android:text="Title: "
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/view_caption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_weight="4"
-                    android:textColor="#000000"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_gravity="center"
                     android:layout_weight="6"
                     android:text="Advt Id:"
@@ -111,8 +89,7 @@
                     android:textStyle="bold"/>
                 <TextView
                     android:id="@+id/resp_adId"
-                    android:hint="id"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_gravity="center"
                     android:layout_weight="4"
                     android:layout_width="match_parent"
@@ -125,6 +102,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
+                android:weightSum="10">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_weight="6"
+                    android:text="Title: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/view_caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_weight="4"
+                    android:textColor="#000000"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
                 <TextView
                     android:layout_width="match_parent"
@@ -133,14 +135,14 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="Description:"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/view_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:textColor="#000000"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -148,6 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -157,14 +160,14 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/personnameTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -172,6 +175,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -181,14 +185,14 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/personnumberTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -196,6 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -205,14 +210,14 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/view_emailTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -220,6 +225,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
                 <TextView
                     android:layout_width="match_parent"
@@ -228,20 +234,21 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/view_start_dateTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="18sp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -251,14 +258,14 @@
                     android:layout_weight="6"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/view_end_dateTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textColor="#000000"
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -266,6 +273,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -275,14 +283,14 @@
                     android:text="Categories:"
                     android:layout_weight="6"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/tv_rescategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:textColor="#000000"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -290,6 +298,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_margin="3dp"
                 android:weightSum="10">
 
                 <TextView
@@ -299,7 +308,7 @@
                     android:text="Sub-Categories:"
                     android:textStyle="bold"
                     android:layout_weight="6"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/tv_ressubcategory"
@@ -307,7 +316,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
                     android:layout_weight="4"
-                    android:textSize="16sp"/>
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
@@ -315,7 +324,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_margin="6dp"
                 android:weightSum="4">
 
                 <CheckBox
@@ -323,7 +332,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:id="@+id/cb_interested"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_gravity="left" />
 
@@ -342,6 +351,7 @@
                 android:id="@+id/interest_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="3dp"
                 android:visibility="gone"
                 android:orientation="vertical">
 
@@ -358,14 +368,14 @@
                         android:text="Reponse:"
                         android:layout_weight="6"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#000000"
                         android:layout_weight="4"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:id="@+id/tv_interest"
                         android:hint="interest"
                         />
@@ -376,6 +386,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_margin="3dp"
                     android:weightSum="10">
 
                     <TextView
@@ -385,14 +396,14 @@
                         android:text="ReponseTime:"
                         android:layout_weight="6"
                         android:textStyle="bold"
-                        android:textSize="16sp"/>
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="#000000"
-                        android:textSize="16sp"
-                        android:layout_weight="5"
+                        android:textSize="18sp"
+                        android:layout_weight="4"
                         android:id="@+id/tv_interestdate"
                         android:hint="interest"
                         />

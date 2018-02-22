@@ -50,6 +50,7 @@
                             android:theme="@style/EditTextTheme"
                             android:background="@drawable/custom_edittext"
                             android:inputType="text"
+                            android:maxLength="45"
                             android:hint="Name*" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -64,6 +65,7 @@
                             android:theme="@style/EditTextTheme"
                             android:background="@drawable/custom_edittext"
                             android:inputType="number"
+                            android:maxLength="10"
                             android:hint="Phone Number" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -76,6 +78,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:theme="@style/EditTextTheme"
+                            android:maxLength="45"
                             android:background="@drawable/custom_edittext"
                             android:inputType="textEmailAddress"
                             android:hint="Email-Id" />
@@ -94,6 +97,7 @@
                             android:minLines="3"
                             android:gravity="top|left"
                             android:maxLines="4"
+                            android:maxLength="500"
                             android:scrollbars="vertical"
                             android:background="@drawable/custom_edittext"
                             android:inputType="textMultiLine"
@@ -111,6 +115,7 @@
                             android:theme="@style/EditTextTheme"
                             android:background="@drawable/custom_edittext"
                             android:inputType="text"
+                            android:maxLength="45"
                             android:hint="City" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -125,6 +130,7 @@
                             android:theme="@style/EditTextTheme"
                             android:background="@drawable/custom_edittext"
                             android:inputType="text"
+                            android:maxLength="45"
                             android:hint="State" />
                     </android.support.design.widget.TextInputLayout>
 

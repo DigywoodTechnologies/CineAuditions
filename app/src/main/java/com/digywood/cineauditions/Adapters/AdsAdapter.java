@@ -1,6 +1,7 @@
 package com.digywood.cineauditions.Adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,20 +27,16 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder>{
     private ArrayList<String> chknumberList=new ArrayList<>();
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView tv_postdate,tv_caption,tv_startdate,tv_enddate,tv_advtId,tv_surveytaluk,tv_surveyhobli,tv_surveystarttime;
-        public FloatingActionButton fab_play;
+        public TextView tv_postdate,tv_caption,tv_startdate,tv_enddate,tv_advtId;
 
         public MyViewHolder(View view) {
             super(view);
             tv_postdate =view.findViewById(R.id.cust_post_date);
             tv_caption =view.findViewById(R.id.cust_caption);
+            Typeface myTypeface1 = Typeface.createFromAsset(mycontext.getApplicationContext().getAssets(), "fonts/MontserratAlternates-Medium.ttf");
+            tv_caption.setTypeface(myTypeface1);
             tv_startdate =view.findViewById(R.id.start_dateTv);
-            tv_enddate =view.findViewById(R.id.end_dateTv);
             tv_advtId=view.findViewById(R.id.tv_advtid);
-//            tv_surveyhobli =view.findViewById(R.id.surveyHobli);
-//            tv_regprofcount =view.findViewById(R.id.RegProfCount);
-//            tv_uploadprofcount =view.findViewById(R.id.UploadProfCount);
-//            tv_surveystarttime =view.findViewById(R.id.surveyStartTime);
         }
     }
 
@@ -66,9 +63,8 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder>{
         Log.e("Adp----",""+singlead.getAdvtid());
         holder.tv_postdate.setText(singlead.getCreatetime());
         holder.tv_caption.setText(singlead.getCaption());
-        holder.tv_startdate.setText(singlead.getStarttime());
-        holder.tv_enddate.setText(singlead.getEndtime());
-        holder.tv_advtId.setText("Id: "+String.valueOf(singlead.getAdvtid()));
+        holder.tv_startdate.setText(singlead.getStarttime()+" --> "+singlead.getEndtime());
+        holder.tv_advtId.setText(String.valueOf(singlead.getAdvtid()));
 
 
     }

@@ -4,26 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="5dp">
+    android:layout_margin="8dp">
 
     <TextView
         android:id="@+id/tv_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textSize="14sp"
         android:textColor="@color/colorPrimaryDark" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dip"
+        android:layout_marginTop="3dp"
+        android:background="@color/colorPrimaryDark"/>
 
     <TextView
         android:id="@+id/tv_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textColor="#000000" />
+        android:textSize="12sp"
+        android:visibility="gone" />
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="0.1dip"
-        android:layout_margin="3dp"
-        android:background="@color/colorPrimaryDark"/>
 
 </LinearLayout>

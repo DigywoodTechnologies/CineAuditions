@@ -133,7 +133,7 @@ public class AdvtInfoScreen extends AppCompatActivity implements AdapterView.OnI
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         awesomeValidation.addValidation(this, R.id.contactnameET, "^[a-zA-Z0-9_ ]*$",R.string.nameerror);
-        awesomeValidation.addValidation(this, R.id.phnoET, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
+        awesomeValidation.addValidation(this, R.id.phnoET, "^([0-9]{1})([0-9]{9})$", R.string.mobileerror);
         awesomeValidation.addValidation(this, R.id.emailET, Patterns.EMAIL_ADDRESS,R.string.emailerror);
 
         title_newAdvt = findViewById(R.id.title_newAdvt);
