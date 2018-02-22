@@ -41,7 +41,7 @@ public class FeedbackFragment extends Fragment {
     private final int COUNTDOWN_RUNNING_TIME = 300;
 
     DBHelper myhelper;
-    TextView tv_name;
+    TextView tv_name,tv_number,tv_email;
     EditText et_subject,et_comment;
     Button btn_submit;
     SingleProducer user;
@@ -89,6 +89,8 @@ public class FeedbackFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_feedback, container, false);
         tv_name=view.findViewById(R.id.tv_feedusername);
+        tv_number=view.findViewById(R.id.tv_feednumber);
+        tv_email=view.findViewById(R.id.tv_feedmail);
         et_subject=view.findViewById(R.id.et_feedsubject);
         et_comment=view.findViewById(R.id.et_feedcomment);
         btn_submit=view.findViewById(R.id.btn_feedsubmit);
@@ -98,6 +100,7 @@ public class FeedbackFragment extends Fragment {
         Intent cmgintent = getActivity().getIntent();
         if (cmgintent != null) {
             number=cmgintent.getStringExtra("mobileNo");
+            tv_number.setText(number);
         }
 
         if(number!=null){
@@ -108,6 +111,8 @@ public class FeedbackFragment extends Fragment {
                 name=user.getName();
                 email=user.getEmailId();
                 tv_name.setText(name);
+                tv_email.setText(email);
+
             }else{
                 Log.e("LandingActivity-----","Empty User");
             }

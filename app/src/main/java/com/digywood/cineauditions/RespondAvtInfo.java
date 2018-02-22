@@ -47,7 +47,7 @@ public class RespondAvtInfo extends AppCompatActivity {
     TextView captionview,view_startTv,view_endTv,view_description,nameTv,numberTv,view_emailTv,tv_interest,tv_interestdate,tv_cat,tv_subcat,resp_adId;
     String cmcaption,cmstart,cmend,cmdes,cmname,cmnumber,cmemail,category,cmdownloadUrl=null,cmfileName=null,cmfileType=null,cmcreatetime=null,cmstatus=null;
     String cmproducerid;
-    ImageView view_img,iv_full;
+    ImageView view_img;
     DBHelper dbHelper;
     String time,MobileNo;
     int advtId=0;
@@ -306,57 +306,61 @@ public class RespondAvtInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new AsyncCheckInternet(RespondAvtInfo.this,new INetStatus() {
-                    @Override
-                    public void inetSatus(Boolean netStatus) {
-                        if(netStatus){
-                            final String url = URLClass.hosturl+"insertUserIntrest.php";
-                            HashMap<String, String> hmap1 = new HashMap<>();
-                            String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().getTime());
-                            hmap1.put("userId", MobileNo);
-                            hmap1.put("advtId", String.valueOf(advtId));
-                            hmap1.put("description", comment.getText().toString());
-                            hmap1.put("uploadDateTime",timeStamp);
-                            hmap1.put("flag","A");
+                if(interested.isChecked()){
+                    new AsyncCheckInternet(RespondAvtInfo.this,new INetStatus() {
+                        @Override
+                        public void inetSatus(Boolean netStatus) {
+                            if(netStatus){
+                                final String url = URLClass.hosturl+"insertUserIntrest.php";
+                                HashMap<String, String> hmap1 = new HashMap<>();
+                                String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(Calendar.getInstance().getTime());
+                                hmap1.put("userId", MobileNo);
+                                hmap1.put("advtId", String.valueOf(advtId));
+                                hmap1.put("description", comment.getText().toString());
+                                hmap1.put("uploadDateTime",timeStamp);
+                                hmap1.put("flag","A");
 
-                            try {
-                                BagroundTask task = new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
-                                    @Override
-                                    public void bagroundData(String json) {
-                                        Log.e("AdvtInfo------",json);
-                                        if (json.equalsIgnoreCase("Not Inserted")) {
-                                            Toast.makeText(getApplicationContext(), "Interest Insertion failed", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Interest Inserted", Toast.LENGTH_SHORT).show();
-                                            int interestId=Integer.parseInt(json);
-                                            long insertFlag=dbHelper.insertInterest(interestId,MobileNo,advtId,comment.getText().toString(),"A");
-                                            if(insertFlag>0){
-                                                Toast.makeText(getApplicationContext(), "Inserted in Local", Toast.LENGTH_SHORT).show();
-                                            }else{
-                                                Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
+                                try {
+                                    BagroundTask task = new BagroundTask(url,hmap1,RespondAvtInfo.this,new IBagroundListener() {
+                                        @Override
+                                        public void bagroundData(String json) {
+                                            Log.e("AdvtInfo------",json);
+                                            if (json.equalsIgnoreCase("Not Inserted")) {
+                                                Toast.makeText(getApplicationContext(), "Interest Insertion failed", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Interest Inserted", Toast.LENGTH_SHORT).show();
+                                                int interestId=Integer.parseInt(json);
+                                                long insertFlag=dbHelper.insertInterest(interestId,MobileNo,advtId,comment.getText().toString(),"A");
+                                                if(insertFlag>0){
+                                                    Toast.makeText(getApplicationContext(), "Inserted in Local", Toast.LENGTH_SHORT).show();
+                                                }else{
+                                                    Toast.makeText(getApplicationContext(), "Unable to Inserted in Local", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                if(checkPermission()){
+                                                    configureInterestAds();
+                                                }else{
+                                                    requestPermission();
+                                                }
+
                                             }
-
-                                            if(checkPermission()){
-                                                configureInterestAds();
-                                            }else{
-                                                requestPermission();
-                                            }
-
                                         }
-                                    }
-                                });
-                                task.execute();
+                                    });
+                                    task.execute();
 
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }else{
+                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                             }
-                        }else{
-                            Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                        }
 
-                    }
-                }).execute();
+                        }
+                    }).execute();
+                }else{
+                    Toast.makeText(getApplicationContext(),"Please Check 'Interested' Checkbox,Inorder to send your interest",Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

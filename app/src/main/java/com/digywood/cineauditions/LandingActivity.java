@@ -200,23 +200,24 @@ public class LandingActivity extends AppCompatActivity {
             return;
         }
 
-        // This code loads home fragment when back key is pressed
-        // when user is in other fragment than home
-        if (shouldLoadHomeFragOnBackPress) {
-            // checking if user is on other navigation menu
-            // rather than home
-            if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_NOTICE_LIST;
-                loadHomeFragment();
-                return;
-            }else {
+        builder = new AlertDialog.Builder(LandingActivity.this);
+        builder.setMessage("Do you want to exit?")
+                .setTitle("Exit");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
                 Intent i=new Intent(getApplicationContext(),FullscreenActivity.class);
                 startActivity(i);
                 finish();
             }
-        }
-        super.onBackPressed();
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        builder.create().show();
+//        super.onBackPressed();
     }
 
 
@@ -334,7 +335,6 @@ public class LandingActivity extends AppCompatActivity {
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button
-                                dbHelper.deleteProducer(phno);
                                 Intent in = new Intent(LandingActivity.this,FullscreenActivity.class);
                                 startActivity(in);
                                 finish();

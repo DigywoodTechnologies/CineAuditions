@@ -1,45 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/grp1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_items"
+            android:checked="true"
             android:icon="@drawable/ic_list_black_24dp"
             android:title="@string/nav_items" />
+    </group>
+
+    <group android:id="@+id/grp2"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dev_points"
             android:icon="@drawable/ic_publish_black_24dp"
             android:title="@string/nav_dev_points" />
+    </group>
 
+    <group android:id="@+id/grp3"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_publish"
             android:icon="@drawable/ic_tune_black"
             android:title="@string/nav_publish" />
+    </group>
 
+    <group android:id="@+id/grp4"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_interestedads"
             android:icon="@drawable/interestedicon"
             android:title="Interested Ads" />
+    </group>
 
+    <group android:id="@+id/grp5"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/nav_settings" />
+    </group>
 
+    <group android:id="@+id/grp6"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/faq"
-            android:title="FAQ"/>
+            android:title="FAQ" />
+    </group>
 
+    <group android:id="@+id/grp7"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_report"
             android:icon="@drawable/feedback"
-            android:title="FeedBack"/>
+            android:title="FeedBack" />
+    </group>
 
+    <group android:id="@+id/grp8"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
-            android:title="Logout"/>
+            android:title="Logout" />
     </group>
-
 </menu>

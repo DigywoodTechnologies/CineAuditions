@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="8dp"
     card:cardCornerRadius="5dp"
     card:cardElevation="5dp"
     card:contentPadding="8dp">
@@ -105,13 +104,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal|center"
+            android:layout_gravity="bottom|end"
             android:layout_weight="9">
             <ImageView
                 android:id="@+id/check"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:tint="@color/colorPrimaryDark"
                 android:src="@drawable/ic_tick"
                 android:visibility="invisible" />
         </LinearLayout>

@@ -138,9 +138,8 @@ public class FullscreenActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
-        awesomeValidation.addValidation(this, R.id.et_mobileNo, "^([7-9]{1})([0-9]{9})$", R.string.mobileerror);
+        awesomeValidation.addValidation(this, R.id.et_mobileNo, "^([0-9]{1})([0-9]{9})$",R.string.mobileerror);
 
         mVisible = true;
         mContentView = findViewById(R.id.fullscreen_content);

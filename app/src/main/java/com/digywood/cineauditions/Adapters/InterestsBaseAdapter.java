@@ -60,10 +60,10 @@ public class InterestsBaseAdapter extends BaseAdapter {
 
         View rowView = inflater.inflate(R.layout.popup_item, parent, false);
         final ViewHolder holder = new ViewHolder();
-        holder.name = (TextView) rowView.findViewById(R.id.interest_name);
-        holder.email = (TextView) rowView.findViewById(R.id.interest_email);
-        holder.contact = (TextView) rowView.findViewById(R.id.interest_contact);
-        holder.comment = (TextView) rowView.findViewById(R.id.interest_comment);
+        holder.name = rowView.findViewById(R.id.interest_name);
+        holder.email = rowView.findViewById(R.id.interest_email);
+        holder.contact =rowView.findViewById(R.id.interest_contact);
+        holder.comment =rowView.findViewById(R.id.interest_comment);
 
         int []_intAdvtlist = new int[Interestlist.size()];
         //Log.d("BrochuresInfoList.size", "comes:" + _intAdvtlist.length);

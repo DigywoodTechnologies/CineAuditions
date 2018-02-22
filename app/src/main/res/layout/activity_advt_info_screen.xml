@@ -50,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_edittext"
                     android:hint="Caption"
+                    android:maxLength="45"
                     android:inputType="text"
                     android:theme="@style/EditTextTheme" />
             </android.support.design.widget.TextInputLayout>
@@ -70,6 +71,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_edittext"
                     android:hint="Description"
+                    android:maxLength="500"
                     android:theme="@style/EditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
@@ -150,6 +152,7 @@
                     android:background="@drawable/custom_edittext"
                     android:hint="Contact Name"
                     android:inputType="text"
+                    android:maxLength="45"
                     android:theme="@style/EditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
@@ -168,6 +171,7 @@
                     android:background="@drawable/custom_edittext"
                     android:hint="Phone Number"
                     android:inputType="number"
+                    android:maxLength="10"
                     android:theme="@style/EditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
@@ -185,7 +189,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_edittext"
                     android:hint="Email-Id"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="45"
                     android:theme="@style/EditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
