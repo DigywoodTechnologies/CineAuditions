@@ -34,7 +34,7 @@ public class RegistrationActivity extends AppCompatActivity {
     int otpInt;
     DBHelper dbHelper;
     private AwesomeValidation awesomeValidation;
-    EditText nameEt, addressEt , cityEt , stateEt, contact_PersonEt, phnoEt, emailIDEt;
+    EditText nameEt, addressEt , cityEt , stateEt,contact_PersonEt, phnoEt,emailIDEt;
     String nameSt, addressSt , citySt , stateSt, contact_PersonSt, phnoSt, emailIDSt, otp,status,url,regDate;
 
     @Override
@@ -170,13 +170,9 @@ public class RegistrationActivity extends AppCompatActivity {
         reg_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nameEt.setText("");
-                addressEt.setText("");
-                cityEt.setText("");
-                stateEt.setText("");
-                contact_PersonEt.setText("");
-                phnoEt.setText("");
-                emailIDEt.setText("");
+                finish();
+                Intent intent = new Intent(RegistrationActivity.this,FullscreenActivity.class);
+                startActivity(intent);
             }
         });
 

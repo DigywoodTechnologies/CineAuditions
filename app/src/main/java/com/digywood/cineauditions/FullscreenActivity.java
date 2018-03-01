@@ -199,24 +199,24 @@ public class FullscreenActivity extends AppCompatActivity {
 
                     }
 
-                    new AsyncCheckInternet(FullscreenActivity.this,new INetStatus() {
-                        @Override
-                        public void inetSatus(Boolean netStatus) {
-                            if(netStatus){
-                                MobileNo = phno.getText().toString();
-                                int checkFlag = 0;
-                                checkFlag =dbHelper.checkProducerExists(MobileNo);
-                                if (checkFlag == 1) {
-                                    count=dbHelper.checkCategoryExists();
-                                    if(count>0){
-                                        Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
-                                        intent.putExtra("mobileNo", MobileNo);
-                                        intent.putExtra("key", "F1");
-                                        startActivity(intent);
-                                    }else{
-                                        syncData(MobileNo);
-                                    }
-                                } else {
+                    MobileNo = phno.getText().toString();
+                    int checkFlag = 0;
+                    checkFlag =dbHelper.checkProducerExists(MobileNo);
+                    if (checkFlag == 1) {
+                        count=dbHelper.checkCategoryExists();
+                        if(count>0){
+                            Intent intent = new Intent(FullscreenActivity.this,LandingActivity.class);
+                            intent.putExtra("mobileNo", MobileNo);
+                            intent.putExtra("key", "F1");
+                            startActivity(intent);
+                        }else{
+                            syncData(MobileNo);
+                        }
+                    }else{
+                        new AsyncCheckInternet(FullscreenActivity.this,new INetStatus() {
+                            @Override
+                            public void inetSatus(Boolean netStatus) {
+                                if(netStatus){
                                     MobileNo = phno.getText().toString();
                                     HashMap<String, String> hmap1 = new HashMap<>();
                                     hmap1.put("phno", MobileNo);
@@ -265,14 +265,13 @@ public class FullscreenActivity extends AppCompatActivity {
                                             }
                                         }
                                     }).execute();
-
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
                                 }
-                            }else{
-                                Toast.makeText(getApplicationContext(),"No Internet,Please Check Your Connection",Toast.LENGTH_SHORT).show();
-                            }
 
-                        }
-                    }).execute();
+                            }
+                        }).execute();
+                    }
                 }
             }
         });
