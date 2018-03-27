@@ -164,6 +164,7 @@ public class MyAdapter extends BaseAdapter {
 
         return rowView;
     }
+
     public class ViewHolder
     {
         public TextView post_date,caption,tv_adid;

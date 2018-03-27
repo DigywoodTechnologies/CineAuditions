@@ -216,6 +216,7 @@ public class LandingActivity extends AppCompatActivity {
                 // User cancelled the dialog
             }
         });
+        builder.setCancelable(false);
         builder.create().show();
 //        super.onBackPressed();
     }
@@ -345,6 +346,7 @@ public class LandingActivity extends AppCompatActivity {
                                 // User cancelled the dialog
                             }
                         });
+                        builder.setCancelable(false);
                         builder.create().show();
                         break;
                     default:
@@ -707,7 +709,6 @@ public class LandingActivity extends AppCompatActivity {
         }).execute();
     }
 
-    ///
     public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
                 WRITE_EXTERNAL_STORAGE);
